@@ -8,4 +8,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/YS_Project/Scenes/TitleScene.unity
     guid: a358750c3701fc64b926cd28a072f9f5
+  - enabled: 1
+    path: Assets/SG_Project/Scene/Tutorial.unity
+    guid: e02c052d7368eb7448284c93f379246b
   m_configObjects: {}

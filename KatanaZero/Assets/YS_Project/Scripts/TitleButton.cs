@@ -17,5 +17,12 @@ public class TitleButton : MonoBehaviour
     {
         
     }
-
+    public void GameStart()
+    {
+        SceneManager.LoadScene("Tutorial");
+    }
+    public void QuitGame()
+    {
+        Application.Quit();
+    }
 }

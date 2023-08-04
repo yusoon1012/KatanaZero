@@ -2787,7 +2787,7 @@ Animator:
   m_GameObject: {fileID: 1794668238}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: b5e1122c8046f894c896f4ee4082e80e, type: 2}
+  m_Controller: {fileID: 9100000, guid: 13a7ce1cd88ef3840b2ca2324d25443f, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -3054,6 +3054,14 @@ PrefabInstance:
     - target: {fileID: 1646051367302684268, guid: ab46d954279e0244cbc4614f1b7fea58, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5211287953345278161, guid: ab46d954279e0244cbc4614f1b7fea58, type: 3}
+      propertyPath: m_SortingLayer
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5211287953345278161, guid: ab46d954279e0244cbc4614f1b7fea58, type: 3}
+      propertyPath: m_SortingLayerID
+      value: -1895274017
       objectReference: {fileID: 0}
     - target: {fileID: 8565004085503407693, guid: ab46d954279e0244cbc4614f1b7fea58, type: 3}
       propertyPath: m_Name
