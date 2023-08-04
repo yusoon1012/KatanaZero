@@ -3,7 +3,8 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Floor
   layers:
   - Default
   - TransparentFX
@@ -55,4 +56,7 @@ TagManager:
     locked: 0
   - name: UI
     uniqueID: 3006786669
+    locked: 0
+  - name: FrontUI
+    uniqueID: 1437373557
     locked: 0
