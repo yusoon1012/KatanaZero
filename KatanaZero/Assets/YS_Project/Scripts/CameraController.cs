@@ -14,16 +14,16 @@ public class CameraController : MonoBehaviour
     private void FixedUpdate()
     {
       
-        if(target.position.y>1.9f)
-        {
-            transform.position =new Vector3(0f, 3.5f,-10f);
-        }
-        else
-        {
-            transform.position = new Vector3(0f,0, -10f);
+        //if(target.position.y>1.9f)
+        //{
+        //    transform.position =new Vector3(0f, 3.5f,-10f);
+        //}
+        //else
+        //{
+        //    transform.position = new Vector3(0f,0, -10f);
 
-        }
-        //transform.position = target.position + cameraPosition;
+        //}
+        transform.position = target.position + cameraPosition;
 
     }
 

@@ -11,4 +11,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/SG_Project/Scene/Tutorial.unity
     guid: e02c052d7368eb7448284c93f379246b
+  - enabled: 1
+    path: Assets/YS_Project/Scenes/Tutorial_Bunker.unity
+    guid: b3c132400d1671d47bc7afe87e0e5d3a
   m_configObjects: {}
