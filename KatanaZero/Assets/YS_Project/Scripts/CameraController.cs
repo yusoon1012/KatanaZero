@@ -5,7 +5,7 @@ using UnityEngine;
 public class CameraController : MonoBehaviour
 {
    public Transform target;
-    Vector3 cameraPosition = new Vector3(0f, 2f, -10f);
+    Vector3 cameraPosition = new Vector3(0f, 5f, -30f);
     // Start is called before the first frame update
     void Start()
     {
@@ -13,7 +13,7 @@ public class CameraController : MonoBehaviour
     }
     private void FixedUpdate()
     {
-      
+
         //if(target.position.y>1.9f)
         //{
         //    transform.position =new Vector3(0f, 3.5f,-10f);
@@ -23,7 +23,8 @@ public class CameraController : MonoBehaviour
         //    transform.position = new Vector3(0f,0, -10f);
 
         //}
-        transform.position = target.position + cameraPosition;
+        Vector3 camera = new Vector3(target.position.x, 2, -10f);
+        transform.position = camera;
 
     }
 
