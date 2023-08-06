@@ -105,7 +105,7 @@ public class PlayerMove : MonoBehaviour
     }//Update()
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if(collision.collider.tag.Equals("Floor"))
+        if(collision.collider.tag.Equals("Floor")||collision.collider.tag.Equals("Platform"))
         {
             isJump = false;
         }

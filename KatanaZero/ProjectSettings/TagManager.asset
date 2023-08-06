@@ -8,6 +8,8 @@ TagManager:
   - Stair
   - Platform
   - Door
+  - Enemy
+  - Turn
   layers:
   - Default
   - TransparentFX

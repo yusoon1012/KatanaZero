@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Door : MonoBehaviour
 {
+    public GameObject doorAttackPrefab;
     BoxCollider2D doorCollider;
     Animator doorAni;
     // Start is called before the first frame update
@@ -19,6 +20,7 @@ public class Door : MonoBehaviour
         if(doorAni.GetCurrentAnimatorStateInfo(0).IsName("DoorOpen")&&doorAni.GetCurrentAnimatorStateInfo(0).normalizedTime>=1.0f)
         {
             doorCollider.enabled=false;
+            
         }
     }
     private void OnCollisionEnter2D(Collision2D collision)
@@ -27,6 +29,7 @@ public class Door : MonoBehaviour
         {
             
             doorAni.SetTrigger("DoorOpen");
+            Instantiate(doorAttackPrefab, transform.position, transform.rotation);
         }
     }
 }
