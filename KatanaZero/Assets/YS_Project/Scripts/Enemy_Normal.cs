@@ -9,14 +9,16 @@ public class Enemy_Normal : MonoBehaviour
         stand, moveAround
     }
     public EnemyType type;
-    private bool isPlayerIn = false;
+    public bool isPlayerIn = false;
     private float moveSpeed = 3f;
     private WaitForSeconds missingPlayer = new WaitForSeconds(5f);
     private bool isGoLeft;
     private bool isGoRight;
     private bool isDie = false;
+    private bool isGround;
+    BoxCollider2D enemyBoxCollider;
     Animator enemyAni;
-    GameObject target;
+    public GameObject target;
     Rigidbody2D enemyRigid;
     Vector3 leftScale = new Vector3(-1, 1, 1);
     Vector3 rightScale = new Vector3(1, 1, 1);
@@ -25,6 +27,7 @@ public class Enemy_Normal : MonoBehaviour
     {
         enemyAni = GetComponent<Animator>();
         enemyRigid = GetComponent<Rigidbody2D>();
+        enemyBoxCollider = GetComponent<BoxCollider2D>();
         if (type == EnemyType.moveAround)
         {
             isGoLeft = true;
@@ -35,11 +38,17 @@ public class Enemy_Normal : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(isDie==true&&isGround)
+        {
+            enemyRigid.velocity = Vector3.zero;
+            enemyRigid.gravityScale = 0;
+            enemyBoxCollider.enabled = false;
+        }
         if (isDie)
         {
             return;
         }
-        Debug.LogFormat("isplayerIn{0}", isPlayerIn);
+        //Debug.LogFormat("isplayerIn{0}", isPlayerIn);
         if (isPlayerIn == true)
         {
             StopCoroutine(MoveAround());
@@ -80,6 +89,22 @@ public class Enemy_Normal : MonoBehaviour
     {
         enemyAni.SetTrigger("Die");
         isDie = true;
+        StopCoroutine(MoveAround());
+    }
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.collider.tag.Equals("Floor"))
+        {
+            isGround = true;
+        }
+    }
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.collider.tag.Equals("Floor"))
+        {
+            isGround = false;
+        }
+
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -130,6 +155,10 @@ public class Enemy_Normal : MonoBehaviour
     {
         while (true)
         {
+            if(isDie)
+            {
+                break;
+            }
             if (isPlayerIn)
             {
                 break;
