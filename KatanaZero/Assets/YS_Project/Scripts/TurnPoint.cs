@@ -21,7 +21,7 @@ public class TurnPoint : MonoBehaviour
     {
         if(collision.tag.Equals("Enemy"))
         {
-            collision.GetComponent<Enemy_Chasing>().TurnEnemy();
+            //collision.GetComponent<Enemy_Chasing>().TurnEnemy();
         }
     }
 }
