@@ -7,7 +7,7 @@ public class PlayerMove : MonoBehaviour
 {
     public enum PlayerState
     {
-        Idle,Run,Jump
+       Intro,Idle,Run,Jump
     }
     PlayerState state;
     Player player;
@@ -28,11 +28,17 @@ public class PlayerMove : MonoBehaviour
         playerRigid = GetComponent<Rigidbody2D>();
         playerAni = GetComponent<Animator>();
         ghost = FindAnyObjectByType<Ghost>();
+        StartCoroutine(Intro());
     }
 
     // Update is called once per frame
     void Update()
     {
+        if(state==PlayerState.Intro)
+        {
+            ghost.isGhostMake = false;
+            return;
+        }
         if (player.GetButton("MoveLeft"))
         {
             isRun = true;
@@ -122,6 +128,14 @@ public class PlayerMove : MonoBehaviour
             
             isStair = false;
         }
+    }
+    private IEnumerator Intro()
+    {
+        GameManager manager = FindAnyObjectByType<GameManager>();
+        manager.IntroAction();
+        playerAni.SetTrigger("PlaySong");
+        yield return new WaitForSeconds(3);
+        state = PlayerState.Idle;
     }
 
 }
