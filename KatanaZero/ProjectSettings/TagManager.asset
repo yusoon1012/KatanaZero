@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Floor
   - Enemy
+  - SG_ClingWall
   layers:
   - Default
   - TransparentFX
