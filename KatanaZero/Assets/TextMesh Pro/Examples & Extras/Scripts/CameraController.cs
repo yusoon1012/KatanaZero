@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using Rewired;
 
 
 namespace TMPro.Examples
@@ -42,6 +43,10 @@ namespace TMPro.Examples
         private Vector3 moveVector;
         private float mouseWheel;
 
+
+
+
+
         // Controls for Touches on Mobile devices
         //private float prev_ZoomDelta;
 
@@ -74,6 +79,13 @@ namespace TMPro.Examples
                 dummyTarget = new GameObject("Camera Target").transform;
                 CameraTarget = dummyTarget;
             }
+        
+        }
+
+
+        public void FixedUpdate()
+        {
+         
         }
 
         // Update is called once per frame
@@ -288,5 +300,8 @@ namespace TMPro.Examples
 
 
         }
+
+
+
     }
 }
