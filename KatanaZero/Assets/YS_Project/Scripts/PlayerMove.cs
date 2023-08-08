@@ -38,10 +38,9 @@ public class PlayerMove : MonoBehaviour
         playerRigid = GetComponent<Rigidbody2D>();
         playerAni = GetComponent<Animator>();
         ghost = FindAnyObjectByType<Ghost>();
-        if (state == PlayerState.Intro)
-        { 
+       
         StartCoroutine(Intro());
-        }
+        
     }
 
     // Update is called once per frame
@@ -50,15 +49,15 @@ public class PlayerMove : MonoBehaviour
         playerScale = transform.localScale.x;
        isWall= Physics2D.Raycast(wallCheck.position, Vector2.right * playerScale, wallCheckDis, wall_mask);
 
-        //if(IntroCanvas.isIntroOver==false)
-        //{
-        //if(state==PlayerState.Intro)
-        //{
-        //    ghost.isGhostMake = false;
-           
-        //}
-        //    return;
-        //}
+        if (IntroCanvas.isIntroOver == false)
+        {
+            if (state == PlayerState.Intro)
+            {
+                ghost.isGhostMake = false;
+
+            }
+            return;
+        }
         if (player.GetButton("MoveLeft"))
         {
             isRun = true;
