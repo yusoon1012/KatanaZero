@@ -10,6 +10,7 @@ public class TimeManager : MonoBehaviour
     public Slider timerSlider;
     public GameObject slowLight;
     public GameObject[] batterys;
+    public GameObject globalLight;
     public bool isTimeSlow=false;
     private float timeMax = 90f;
     private float currentTime;
@@ -51,6 +52,8 @@ public class TimeManager : MonoBehaviour
         if(isTimeSlow&&currentBattery>0)
         {
             slowLight.SetActive(true);
+            globalLight.SetActive(false);
+
             if (isBatteryUse==false)
             {
             StartCoroutine(UseBattery());
@@ -62,7 +65,7 @@ public class TimeManager : MonoBehaviour
         {
 
             slowLight.SetActive(false);
-
+            globalLight.SetActive(true);
             Time.timeScale = 1;
             if(isBatteryCharge==false)
             {

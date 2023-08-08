@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Rewired;
+using static PlayerMove;
+using Unity.VisualScripting;
 
 public class PlayerMove : MonoBehaviour
 {
@@ -9,7 +11,10 @@ public class PlayerMove : MonoBehaviour
     {
        Intro,Idle,Run,Jump
     }
-    PlayerState state;
+    public Transform wallCheck;
+    public float wallCheckDis;
+    public LayerMask wall_mask;
+    public PlayerState state;
     Player player;
     int playerId = 0;
     public float moveSpeed = 3f;
@@ -17,6 +22,9 @@ public class PlayerMove : MonoBehaviour
     private bool isRun;
     private bool isJump;
     private bool isStair;
+    private bool isWallJump;
+    private bool isWall;
+    private float playerScale;
     Rigidbody2D playerRigid;
     Animator playerAni;
     Ghost ghost;
@@ -30,21 +38,27 @@ public class PlayerMove : MonoBehaviour
         playerRigid = GetComponent<Rigidbody2D>();
         playerAni = GetComponent<Animator>();
         ghost = FindAnyObjectByType<Ghost>();
+        if (state == PlayerState.Intro)
+        { 
         StartCoroutine(Intro());
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(IntroCanvas.isIntroOver==false)
-        {
-        if(state==PlayerState.Intro)
-        {
-            ghost.isGhostMake = false;
+        playerScale = transform.localScale.x;
+       isWall= Physics2D.Raycast(wallCheck.position, Vector2.right * playerScale, wallCheckDis, wall_mask);
+
+        //if(IntroCanvas.isIntroOver==false)
+        //{
+        //if(state==PlayerState.Intro)
+        //{
+        //    ghost.isGhostMake = false;
            
-        }
-            return;
-        }
+        //}
+        //    return;
+        //}
         if (player.GetButton("MoveLeft"))
         {
             isRun = true;
@@ -97,6 +111,12 @@ public class PlayerMove : MonoBehaviour
             playerRigid.AddForce(new Vector2(0f, jumpForce), ForceMode2D.Impulse);
 
         }
+        //if(isWallJump)
+        //{
+        //    Vector3 wallJump = new Vector3(-10f, jumpForce, 0f);
+        //    playerRigid.AddForce(wallJump, ForceMode2D.Impulse);
+        //    transform.localScale = new Vector3(-1, 1, 1);
+        //}
         if(isJump==true)
         {
             state = PlayerState.Jump;
@@ -114,7 +134,37 @@ public class PlayerMove : MonoBehaviour
             playerRigid.gravityScale = 1.2f;
 
         }
+        Debug.LogFormat("isWall{0}", isWall);
     }//Update()
+
+    private void FixedUpdate()
+    {
+        if(isWall)
+        {
+            isWallJump = false;
+            playerRigid.velocity = new Vector2(playerRigid.velocity.x, playerRigid.velocity.y * 0.9f);
+            if(isWallJump==false)
+            if(player.GetButton("Jump"))
+            {
+                isWallJump = true;
+                Invoke("FreezeX", 0.3f);
+                playerRigid.velocity = new Vector2(-playerScale * 5f, 0.9f * 5f);
+                if(transform.localScale.x==1)
+                {
+                    transform.localScale = new Vector3(-1, 1, 1);
+                }
+                else if (transform.localScale.x == -1)
+                {
+                    transform.localScale = new Vector3(1, 1, 1);
+
+                }
+            }
+        }
+    }
+    void FreezeX()
+    {
+        isWallJump = false;
+    }
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if(collision.collider.tag.Equals("Floor")||collision.collider.tag.Equals("Platform"))
@@ -125,6 +175,14 @@ public class PlayerMove : MonoBehaviour
         {
             isJump = false;
             isStair = true;
+        }
+        if(collision.collider.tag.Equals("Wall"))
+        {
+            //isJump = false;
+            if(player.GetButtonDown("Jump"))
+            {
+                isWallJump = true;
+            }
         }
     }
     private void OnCollisionExit2D(Collision2D collision)
