@@ -27553,7 +27553,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9406e484113124949ac0bf4cc747dd9a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  testObj: {fileID: 470095107}
   moveSpeed: 5
   jumpForce: 8
   playerIsAir: 0

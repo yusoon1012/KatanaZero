@@ -97,6 +97,11 @@ public class Enemy_Normal : MonoBehaviour
         {
             isGround = true;
         }
+        if(collision.collider.tag.Equals("Platform"))
+        {
+            isGround = true;
+
+        }
     }
     private void OnCollisionExit2D(Collision2D collision)
     {
