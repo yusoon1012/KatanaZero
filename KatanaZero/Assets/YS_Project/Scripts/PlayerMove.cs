@@ -21,9 +21,11 @@ public class PlayerMove : MonoBehaviour
     Animator playerAni;
     Ghost ghost;
     
+    
     // Start is called before the first frame update
     void Start()
     {
+        
         player = ReInput.players.GetPlayer(playerId);
         playerRigid = GetComponent<Rigidbody2D>();
         playerAni = GetComponent<Animator>();
@@ -34,9 +36,13 @@ public class PlayerMove : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(IntroCanvas.isIntroOver==false)
+        {
         if(state==PlayerState.Intro)
         {
             ghost.isGhostMake = false;
+           
+        }
             return;
         }
         if (player.GetButton("MoveLeft"))

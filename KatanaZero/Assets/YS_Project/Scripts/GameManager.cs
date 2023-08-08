@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
@@ -8,18 +9,26 @@ public class GameManager : MonoBehaviour
     public  AudioClip backgroundClip;
     public AudioClip SlowmotionClip;
     public  AudioSource bgm;
+    public TMP_Text songName;
+    public GameObject introUi;
     private bool isSlow=false;
+
+
     TimeManager timeManager;
     // Start is called before the first frame update
     void Start()
     {
         bgm.clip = backgroundClip;
-        timeManager = FindAnyObjectByType<TimeManager>();
     }
 
     // Update is called once per frame
     void Update()
     {
+       if(IntroCanvas.isIntroOver==false)
+        {
+            return;
+        }
+        timeManager = FindAnyObjectByType<TimeManager>();
        if( timeManager.isTimeSlow==true)
         {
             if(isSlow==false)
@@ -48,5 +57,8 @@ public class GameManager : MonoBehaviour
         {
             bgm.Play();
         }
+        songName.text = string.Format("{0}", backgroundClip.name);
+        introUi.SetActive(true);
+
     }
 }

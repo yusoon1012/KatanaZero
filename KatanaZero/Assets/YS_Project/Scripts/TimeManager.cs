@@ -23,10 +23,14 @@ public class TimeManager : MonoBehaviour
     void Start()
     {
         player = ReInput.players.GetPlayer(0);
+        
+        
+    }
+    private void OnEnable()
+    {
         currentTime = timeMax;
         StartCoroutine(StageTimer());
         currentBattery = batteryMax;
-        
     }
 
     // Update is called once per frame
