@@ -4847,7 +4847,7 @@ GameObject:
   - component: {fileID: 1537496549}
   - component: {fileID: 1537496548}
   m_Layer: 0
-  m_Name: Grunt (1)
+  m_Name: Grunt_Patrol
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
