@@ -5020,7 +5020,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rayCastLength: 6
-  attackDistance: 0.5
+  attackDistance: 0.7
   moveSpeed: 2
   timer: 0
   leftLimit: {fileID: 190364233}
@@ -5495,7 +5495,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 5
+  m_Radius: 6
 --- !u!4 &1656480666
 Transform:
   m_ObjectHideFlags: 0

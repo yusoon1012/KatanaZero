@@ -53,7 +53,7 @@ public class EnemyRay : MonoBehaviour
         }
         if (inRange)
         {
-            if(onPlatform&&target.position.y<transform.position.y)
+            if(onPlatform&&target.position.y<transform.position.y-0.5f)
             {
                 platformPass.isPass = true;
             }
@@ -62,6 +62,7 @@ public class EnemyRay : MonoBehaviour
                 platformPass.isPass = false;
 
             }
+            anim.SetBool("Run", true);
             //! LEGACY
             //    hit = Physics2D.Raycast(rayCast.position, transform.right, rayCastLength, rayCastMask);
 
@@ -102,8 +103,11 @@ public class EnemyRay : MonoBehaviour
     {
         if(collision.collider.tag.Equals("Platform"))
         {
-            Debug.Log("enemy°¡ ÇÃ·§Æû¿¡ ¿Ã¶ó°¨");
+            if(!anim.GetCurrentAnimatorStateInfo(0).IsName("Grunt_attack"))
+            {
             onPlatform = true;
+
+            }
         }
     }
     private void OnCollisionExit2D(Collision2D collision)
