@@ -1,4 +1,5 @@
 using Rewired;
+using Rewired.ComponentControls.Data;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -20,10 +21,19 @@ public class SG_PlayerMovement : MonoBehaviour
     public float jumpForce = 7f;
 
 
+
+    #region Bool 변수
+
+    // TEST BOOL
+    private bool PresentWallGrab = false;
+    // TEST BOOL
+
+
+
+
     private bool isJump = false;
 
-    // 덤블링 이후 점프 애니메이션을 위한 변수
-    private bool isJumpClone = false;
+
 
     //나중에 플레이어 공중처리할 Bool변수
     public bool playerIsAir = false;
@@ -38,15 +48,22 @@ public class SG_PlayerMovement : MonoBehaviour
     public bool isRollRock = false;
     public bool isRolling = false;
 
+
     // 벽붙기 제작에 사용할 변수들
     public bool isWallGrab = false;
 
-    // 애니메이션 과도한 연속재생 방지 변수
-    public int wallGrabCount = 0;
+    // 붙을수 있는 벽에 붙거나 나갈때에 변경될 변수
+    private bool exitWallGrab = false;
+
 
     // 벽에 붙은뒤 대각선 점프할때 필요한 변수
+    private bool wallJump = false;
     public bool isleftWall = false;
     public bool isRightWall = false;
+
+    // 벽에 붙은뒤 공격시 에러가 나기때문에 만든 변수
+    private bool isAttackClingWallCoolTimeBool = false;
+
 
     // 덤블링후 앉지 못하게 처리할 변수
     //  true상태일때 못하게 할거임
@@ -56,10 +73,20 @@ public class SG_PlayerMovement : MonoBehaviour
     // 플레이어 데미지 받을수 있는 상태인지 체크하는 변수
     public bool isDodge = false;
 
+    // 현재플레이어가Floor 에  땅에 닿아 있는지 알려줄 Bool변수
+    private bool playerPresentFloor = false;
+
+    #endregion
+
+    #region int 변수
 
     //플레이어가 3번이상 연속으로 공격하지 못하게 할 변수 (collider에서 적이 아닐경우 초기화 되게 해두었음)
     public int attackCount = 0;
 
+    // 애니메이션 과도한 연속재생 방지 변수
+    public int wallGrabCount = 0;
+
+    #endregion
 
     public Vector3 mousePosition;
 
@@ -78,7 +105,8 @@ public class SG_PlayerMovement : MonoBehaviour
     private Coroutine moveRock;
     private Coroutine addforceReset;
     private Coroutine rollRock;
-    
+    private Coroutine isAttackClingWallCoolTime;
+
 
     // 아래 fixedUpdate는 0.02초 주기이기에 계산 잘해야할거같음
     public WaitForFixedUpdate fixedUpdate = new WaitForFixedUpdate(); // yield return fixedUpdate캐싱
@@ -113,6 +141,7 @@ public class SG_PlayerMovement : MonoBehaviour
         IsDownKey();
         IsRoll();
         JumpMove();
+        WallGrabAtInput();
         AttackClick();
 
 
@@ -123,8 +152,10 @@ public class SG_PlayerMovement : MonoBehaviour
     //========================================콜라이더=======================================
 
     #region        콜라이더
-    
 
+
+
+    // --------------------------------------Collision Enter------------------------------------
     public void OnCollisionEnter2D(Collision2D collision)
     {
         // 아래 변수를 조건을 조금 변경해야 함 SG_ClingWall이라는 벽이 아니라면 으로 조건걸고 넣어야함
@@ -143,39 +174,60 @@ public class SG_PlayerMovement : MonoBehaviour
         }
         #endregion
 
+        //Debug.LogFormat("Enter -> {0}", collision.gameObject.tag);
 
 
 
-        //여기서 다시 점프가능
-        isJump = false;
+        ////여기서 다시 점프가능
+        //isJump = false;
+        //playerAni.SetBool("IsJumpBool", isJump);
 
         //아래변수는 플레이어가 공중에 있나? 를 의미
         // 애니메이션 컨트롤러 수정 이후 다시 확인할예정
         playerIsAir = false;
 
-        playerAni.SetBool("IsJumpBool", isJump);
+
 
         // ================================= 태그가 붙을수 있는 벽일때 SG_ClingWall =================================
         #region
         // 아래는 붙을수 있는 벽에 붙었을때에 if (Collider)
         if (collision.gameObject.CompareTag("SG_ClingWall"))
         {
-            isJumpClone = false;
+            Debug.LogFormat("조건 1: {0} / 조건 2: {1}", isAttackClingWallCoolTimeBool, playerPresentFloor);
+        }
+
+        if (collision.gameObject.CompareTag("SG_ClingWall") && isAttackClingWallCoolTimeBool == false &&
+            playerPresentFloor == false)
+        {
+            //Debug.Log("Enter에서 붙는벽 인식");
+
+            // 점프해서 벽에 붙으면 달리지 않는다.
+            readyRun = false;
+            playerAni.SetBool("ReadyRun", readyRun);
+
+            // TEST
+            PresentWallGrab = true;
+            playerAni.SetBool("PresentWallGrab", PresentWallGrab);
+            // TEST
+
+
+            exitWallGrab = false;
             isWallGrab = true;
             wallGrabCount = 1;
-            
+
             // 여기다 bool 형 오른쪽 왼쪽 넘겨주어야함
-            if(collision.gameObject.transform.position.x < this.gameObject.transform.position.x)
+            if (collision.gameObject.transform.position.x < this.gameObject.transform.position.x)
             {
                 isleftWall = true;
             }
-            else if(collision.gameObject.transform.position.x > this.gameObject.transform.position.x)
+            else if (collision.gameObject.transform.position.x > this.gameObject.transform.position.x)
             {
                 isRightWall = true;
             }
+            else { /*PASS*/ }
 
             // 아래는 붙는 벽에따라 플레이어 좌,우 변경 if문
-            if(isleftWall == true)
+            if (isleftWall == true)
             {
                 this.gameObject.transform.localScale = backScale;
             }
@@ -183,7 +235,7 @@ public class SG_PlayerMovement : MonoBehaviour
             {
                 this.gameObject.transform.localScale = frontScale;
             }
-
+            else { /*PASS*/ }
 
             //Debug.Log("CollisionEnter 어느 주기로 체크?");
             if (playerRigid.gravityScale == 1 && playerRigid.mass > 0)
@@ -193,23 +245,57 @@ public class SG_PlayerMovement : MonoBehaviour
                 playerRigid.mass = 0.3f;
 
             }
+            else { /*PASS*/ }
 
-            if (wallGrabCount == 1)
-            {
-                playerAni.SetTrigger("WallGrabTrigger");
-            }
+            playerAni.SetTrigger("WallGrabTrigger");
+
+            Debug.LogFormat("벽에 붙에 붙었는지? PresentWallGrab: {0}, isWallGrab: {1}, Jump: {2}, isRun: {3}", 
+                PresentWallGrab, isWallGrab, playerAni.GetBool("IsJump"), playerAni.GetBool("ReadyRun"));
+
+            //if (wallGrabCount == 1)
+            //{
+            //playerAni.SetTrigger("WallGrabTrigger");
+
+            //}
 
         }
+
 
         #endregion
         // 덤블링 후 바닥에 닿았을떄에 if
 
         // ================================= 태그가 바닥일때 Floor ================================================
         #region
-        if (collision.gameObject.CompareTag("Floor") && isJumpClone == false)
+
+        if (collision.gameObject.CompareTag("Floor"))
         {
-            isJumpClone = true;
-            playerAni.SetBool("JumpAniCloneBool", isJumpClone);
+            //여기서 다시 점프가능
+            isJump = false;
+
+            playerPresentFloor = true;
+
+            // TEST
+            PresentWallGrab = false;
+            playerAni.SetBool("PresentWallGrab", PresentWallGrab);
+            // TEST
+
+
+            playerAni.SetBool("IsJumpBool", isJump);
+
+            playerAni.SetTrigger("GrabwallToIdleTrigger");
+        }
+
+
+        if (collision.gameObject.CompareTag("Floor") && wallJump == true)
+        {
+            wallJump = false;
+            playerAni.SetBool("WallJumpBool", wallJump);
+
+        }
+
+        if(collision.gameObject.CompareTag("Floor") && isWallGrab == true)
+        {
+            
         }
         #endregion
         // !플레이어가 무적이 아닐때
@@ -220,24 +306,29 @@ public class SG_PlayerMovement : MonoBehaviour
         }
         // !플레이어가 무적이 아닐때
 
-        
+
 
     }   //OnCollisionEnter
 
+
+    //------------------------------------------- Collision Stay ---------------------------------------------
     public void OnCollisionStay2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("SG_ClingWall"))
         {
-            Debug.Log("CollisionStay 어느 주기로 체크?");
+            //Debug.Log("CollisionStay 어느 주기로 체크?");
 
             // 천천히 내려오게 하기 위해 중력 0으로 설정
-            
+
             this.gameObject.transform.position = this.gameObject.transform.position - new Vector3(0f, 0.001f, 0f);
-            
+
         }
+
+        //Debug.LogFormat("Stay -> {0}", collision.gameObject.tag);
 
     }   // OnCollisionStay
 
+    //------------------------------------------ Collision Exit --------------------------------------------
     public void OnCollisionExit2D(Collision2D collision)
     {
         if (playerRigid.gravityScale == 0)
@@ -245,6 +336,28 @@ public class SG_PlayerMovement : MonoBehaviour
             playerRigid.mass = 1;
             playerRigid.gravityScale = 1;
         }
+        else { /*PASS*/ }
+
+        if (collision.gameObject.CompareTag("SG_ClingWall"))
+        {
+            exitWallGrab = true;
+
+            // TEST
+            PresentWallGrab = false;
+            playerAni.SetBool("PresentWallGrab", PresentWallGrab);
+            // TEST
+
+        }
+        else { /*PASS*/ }
+
+        if(collision.gameObject.CompareTag("Floor"))
+        {
+            Debug.Log("Exit에서 False로 바꿈");
+            playerPresentFloor = false;
+        }
+
+        //Debug.LogFormat("Exit -> {0}", collision.gameObject.tag);
+        
 
         ////  바닥에선 점프가 되진 않음 하지만 다시 벽에 붙었을때 점프를 위해 일단 놔둠
         //if (collision.gameObject.CompareTag("SG_ClingWall"))
@@ -354,7 +467,7 @@ public class SG_PlayerMovement : MonoBehaviour
         }
         else { /*PASS*/ }
 
-        if(player.GetButton("DownKey") && headOffPrecrouch == false)
+        if (player.GetButton("DownKey") && headOffPrecrouch == false)
         {
             isDownKeyInput = true;
         }
@@ -381,6 +494,7 @@ public class SG_PlayerMovement : MonoBehaviour
                 isDodge = true;
                 //Debug.Log("구르기 들어옴");
                 //
+
                 playerAni.SetTrigger("Let's_Roll");
                 rollRock = StartCoroutine(RollCoolTime());
                 playerAni.SetBool("IsRollRock", isRollRock);
@@ -424,7 +538,7 @@ public class SG_PlayerMovement : MonoBehaviour
 
         if (player.GetButtonDown("MoveJump") && isJump == false && isWallGrab == false)
         {
-            if(playerRigid.mass < 1 || playerRigid.gravityScale < 1)
+            if (playerRigid.mass < 1 || playerRigid.gravityScale < 1)
             {
                 playerRigid.mass = 1;
                 playerRigid.gravityScale = 1;
@@ -444,9 +558,9 @@ public class SG_PlayerMovement : MonoBehaviour
         }
 
         //  붙는 벽에 달라붙은 상태에서 점프를 했을경우
-        else if(player.GetButtonDown("MoveJump") && isJump == false && isWallGrab == true)
+        else if (player.GetButtonDown("MoveJump") && isJump == false && isWallGrab == true)
         {
-            if(isleftWall == true)
+            if (isleftWall == true)
             {
                 //  점프전에 중력 정상화
                 if (playerRigid.mass < 1 || playerRigid.gravityScale < 1)
@@ -454,17 +568,22 @@ public class SG_PlayerMovement : MonoBehaviour
                     playerRigid.mass = 1;
                     playerRigid.gravityScale = 1;
                 }
+                wallJump = true;
+                playerAni.SetBool("WallJumpBool", wallJump);
+
                 this.gameObject.transform.localScale = backScale;
                 playerRigid.AddForce(new Vector2(8f, 9f), ForceMode2D.Impulse);
+
                 playerAni.SetTrigger("PlayerFlipTrigger");
                 this.gameObject.transform.localScale = frontScale;
                 playerAni.SetTrigger("FlipAfterTrigger");
-                isJump = false;
+
+                isJump = true;
                 isWallGrab = false;
-                headOffPrecrouch= true;
+                headOffPrecrouch = true;
             }
-            
-            else if(isRightWall == true)
+
+            else if (isRightWall == true)
             {
                 //  점프전에 중력 정상화
                 if (playerRigid.mass < 1 || playerRigid.gravityScale < 1)
@@ -472,15 +591,21 @@ public class SG_PlayerMovement : MonoBehaviour
                     playerRigid.mass = 1;
                     playerRigid.gravityScale = 1;
                 }
+                wallJump = true;
+                playerAni.SetBool("WallJumpBool", wallJump);
+
                 this.gameObject.transform.localScale = frontScale;
                 playerRigid.AddForce(new Vector2(-8f, 9f), ForceMode2D.Impulse);
+
                 playerAni.SetTrigger("PlayerFlipTrigger");
                 this.gameObject.transform.localScale = backScale;
                 playerAni.SetTrigger("FlipAfterTrigger");
 
-                isJump = false;
+                isJump = true;
                 isWallGrab = false;
                 headOffPrecrouch = true;
+
+
 
             }
             //  TODO : 콜라이더만이 지금 붙어 있는 아이의 좌표를 알수 있으니 뒤에 Bool 형 변수 LEFT,Right 만들어서 여기로 넘겨주고
@@ -488,7 +613,28 @@ public class SG_PlayerMovement : MonoBehaviour
         }
     }
 
+    // Wall Grab상태일때에 키를 눌른다면
+    public void WallGrabAtInput()
+    {
+        if (isWallGrab == true && !player.GetButtonDown("MoveJump") && exitWallGrab == true)
+        {
+            playerAni.SetTrigger("WallGrabToFallTriger");
+            isWallGrab = false;
+            exitWallGrab = false;
+        }
+        else { /*PASS*/ }
 
+
+        //  { if : 벽에붙어있으며 W키가아닌 A,S,D 키중 하나라도 눌렀을경우 
+        if(isWallGrab == true && 
+            (player.GetButtonDown("MoveLeft") || player.GetButtonDown("MoveRight") || player.GetButtonDown("DownKey")))
+        {
+            // 쿨타임을 주어서 벽에서 붙은판정으로 가지 못하게 막음
+            StartCoroutine(IsAttackClingWallCoolTime());
+
+        }   //  } if : 벽에붙어있으며 W키가아닌 A,S,D 키중 하나라도 눌렀을경우 
+
+    }
 
 
 
@@ -505,6 +651,31 @@ public class SG_PlayerMovement : MonoBehaviour
 
             if (leftClickAttackCoolTime == false && attackCount < 3) // 좌클릭 쿨타임 아닐때에 실행됨                        
             {
+                Debug.Log("!공격");
+                isleftWall = true;
+
+                if (isWallGrab == true)
+                {
+                    isAttackClingWallCoolTimeBool = true;
+                    isAttackClingWallCoolTime = StartCoroutine(IsAttackClingWallCoolTime());
+                }
+                else { /*PASS*/ }
+
+                // 플레이어 중력 정상화 로직
+                if (playerRigid.gravityScale < 1)
+                {
+                    playerRigid.mass = 1;
+                    playerRigid.gravityScale = 1;
+                }
+                else { /*PASS*/ }
+
+                if (isRightWall == true || isleftWall == true)
+                {
+                    isleftWall = false;
+                    isRightWall = false;
+                }
+                else { /*PASS*/ }
+
                 leftAttackObj.SetActive(true);
                 one = 1;
                 attackCount += 1;
@@ -545,8 +716,6 @@ public class SG_PlayerMovement : MonoBehaviour
                     // 계속 눌를시 AddForce 가속화되기때문에 추가전 초기화
                     playerRigid.velocity = Vector3.zero;
 
-
-
                     playerRigid.AddForce(new Vector2(12f, 0f), ForceMode2D.Impulse);
                     //힘을 실어준다음에 시간지나면 초기화시켰고 상,하 는 어차피 좌우도 같이 움직일수 밖에 없기 때문에 삽입X
                     addforceReset = StartCoroutine(AddforceReset());
@@ -568,14 +737,12 @@ public class SG_PlayerMovement : MonoBehaviour
                 // 클릭시 Y좌표 조건
                 if (mousePosition.y > gameObject.transform.position.y)
                 {
-
                     playerAni.SetBool("IsJumpBool", true);
                     playerIsAir = true;
                     playerRigid.AddForce(new Vector2(0f, 5f), ForceMode2D.Impulse);
                 }
                 else if (mousePosition.y < gameObject.transform.position.y)
                 {
-
                     playerAni.SetBool("IsJumpBool", true);
                     playerIsAir = true;
                     playerRigid.AddForce(new Vector2(0f, -5f), ForceMode2D.Impulse);
@@ -612,6 +779,7 @@ public class SG_PlayerMovement : MonoBehaviour
         {
             yield return fixedUpdate;
         }
+
 
         leftClickAttackCoolTime = true;
 
@@ -710,6 +878,13 @@ public class SG_PlayerMovement : MonoBehaviour
         //Debug.Log("구르기쿨 끝남");
     }
     // } 구르기 한뒤에 쿨타임을 줄예정
+
+    private IEnumerator IsAttackClingWallCoolTime()
+    {
+
+        yield return waitSecond;
+        isAttackClingWallCoolTimeBool = false;
+    }
 
 
 
