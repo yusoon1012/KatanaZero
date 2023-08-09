@@ -48,7 +48,7 @@ public class PlayerMove : MonoBehaviour
     {
         playerScale = transform.localScale.x;
        isWall= Physics2D.Raycast(wallCheck.position, Vector2.right * playerScale, wallCheckDis, wall_mask);
-        
+       
         if (IntroCanvas.isIntroOver == false)
         {
             if (state == PlayerState.Intro)

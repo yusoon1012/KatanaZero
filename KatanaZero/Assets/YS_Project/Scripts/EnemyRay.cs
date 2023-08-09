@@ -23,6 +23,7 @@ public class EnemyRay : MonoBehaviour
     private bool cooldown;
     private float intTimer;
     private bool onPlatform;
+    private bool onStair;
     EnemyPlatformPass platformPass;
     Rigidbody2D enemyRigid;
 
@@ -62,6 +63,12 @@ public class EnemyRay : MonoBehaviour
                 platformPass.isPass = false;
 
             }
+            if(target.position.y>transform.position.y+0.5f&& onStair==true)
+            {
+                target = leftLimit;
+               
+            }
+            
             anim.SetBool("Run", true);
             //! LEGACY
             //    hit = Physics2D.Raycast(rayCast.position, transform.right, rayCastLength, rayCastMask);
@@ -93,7 +100,11 @@ public class EnemyRay : MonoBehaviour
         }
         if (collision.gameObject.tag == "Player")
         {
+            if(!onStair)
+            {
             target = collision.transform;
+
+            }
             inRange = true;
             Debug.Log("player가 트리거에 들어옴");
         }
@@ -109,6 +120,10 @@ public class EnemyRay : MonoBehaviour
 
             }
         }
+        if(collision.collider.tag.Equals("Stair"))
+        {
+            onStair = true;
+        }
     }
     private void OnCollisionExit2D(Collision2D collision)
     {
@@ -116,7 +131,10 @@ public class EnemyRay : MonoBehaviour
         {
             onPlatform = false;
         }
-
+        if (collision.collider.tag.Equals("Stair"))
+        {
+            onStair = false;
+        }
 
     }
 
@@ -219,5 +237,10 @@ public class EnemyRay : MonoBehaviour
             rotation.y = 0;
         }
         transform.eulerAngles = rotation;
+    }
+
+    public void Die()
+    {
+
     }
 }
