@@ -39,7 +39,7 @@ public class PlayerMove : MonoBehaviour
         playerAni = GetComponent<Animator>();
         ghost = FindAnyObjectByType<Ghost>();
        
-        StartCoroutine(Intro());
+       StartCoroutine(Intro());
         
     }
 
@@ -48,7 +48,7 @@ public class PlayerMove : MonoBehaviour
     {
         playerScale = transform.localScale.x;
        isWall= Physics2D.Raycast(wallCheck.position, Vector2.right * playerScale, wallCheckDis, wall_mask);
-
+        
         if (IntroCanvas.isIntroOver == false)
         {
             if (state == PlayerState.Intro)
@@ -133,7 +133,7 @@ public class PlayerMove : MonoBehaviour
             playerRigid.gravityScale = 1.2f;
 
         }
-        Debug.LogFormat("isWall{0}", isWall);
+        //Debug.LogFormat("isWall{0}", isWall);
     }//Update()
 
     private void FixedUpdate()
