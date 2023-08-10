@@ -11,6 +11,7 @@ public class PlayerMove : MonoBehaviour
     {
        Intro,Idle,Run,Jump
     }
+    public GameObject slash;
     public Transform wallCheck;
     public float wallCheckDis;
     public LayerMask wall_mask;
@@ -18,7 +19,7 @@ public class PlayerMove : MonoBehaviour
     Player player;
     int playerId = 0;
     public float moveSpeed = 3f;
-    private float jumpForce = 6f;
+    private float jumpForce = 8f;
     private bool isRun;
     private bool isJump;
     private bool isStair;
@@ -42,7 +43,11 @@ public class PlayerMove : MonoBehaviour
         playerAni = GetComponent<Animator>();
         ghost = FindAnyObjectByType<Ghost>();
        
+        if(state==PlayerState.Intro)
+        {
        StartCoroutine(Intro());
+
+        }
         
     }
 
@@ -52,15 +57,15 @@ public class PlayerMove : MonoBehaviour
         playerScale = transform.localScale.x;
        isWall= Physics2D.Raycast(wallCheck.position, Vector2.right * playerScale, wallCheckDis, wall_mask);
        
-        if (IntroCanvas.isIntroOver == false)
-        {
-            if (state == PlayerState.Intro)
-            {
-                ghost.isGhostMake = false;
+        //if (IntroCanvas.isIntroOver == false)
+        //{
+        //    if (state == PlayerState.Intro)
+        //    {
+        //        ghost.isGhostMake = false;
 
-            }
-            return;
-        }
+        //    }
+        //    return;
+        //}
         if (player.GetButton("MoveLeft"))
         {
             isRun = true;
@@ -112,6 +117,11 @@ public class PlayerMove : MonoBehaviour
             }
             playerRigid.AddForce(new Vector2(0f, jumpForce), ForceMode2D.Impulse);
 
+        }
+        if(player.GetButtonDown("Attack"))
+        {
+            slash.transform.position = this.transform.position;
+            slash.SetActive(true);
         }
         //if(isWallJump)
         //{

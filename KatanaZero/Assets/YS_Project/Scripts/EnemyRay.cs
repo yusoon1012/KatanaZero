@@ -24,6 +24,7 @@ public class EnemyRay : MonoBehaviour
     private float intTimer;
     private bool onPlatform;
     private bool onStair;
+    private bool isDie=false;
     EnemyPlatformPass platformPass;
     Rigidbody2D enemyRigid;
 
@@ -43,6 +44,10 @@ public class EnemyRay : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(isDie)
+        {
+            return;
+        }
        if(!attackMode)
         {
             Move();
@@ -100,6 +105,11 @@ public class EnemyRay : MonoBehaviour
         }
         if (collision.gameObject.tag == "Player")
         {
+            if(isDie)
+            {
+                target = null;
+                return;
+            }
             if(!onStair)
             {
             target = collision.transform;
@@ -227,6 +237,10 @@ public class EnemyRay : MonoBehaviour
     }
    public void Flip()
     {
+        if(target==null)
+        {
+            return;
+        }
         Vector3 rotation = transform.eulerAngles;
         if(transform.position.x>target.position.x)
         {
@@ -241,6 +255,7 @@ public class EnemyRay : MonoBehaviour
 
     public void Die()
     {
-
+        anim.Play("Grunt_Die_Ground");
+        isDie = true;
     }
 }
