@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class TitleButton : MonoBehaviour
+public class BunkerDoor : MonoBehaviour
 {
-    SceneManager manager;
     // Start is called before the first frame update
     void Start()
     {
@@ -17,12 +16,11 @@ public class TitleButton : MonoBehaviour
     {
         
     }
-    public void GameStart()
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        SceneManager.LoadScene("Tutorial");
-    }
-    public void QuitGame()
-    {
-        Application.Quit();
+        if(collision.tag.Equals("Player"))
+        {
+            SceneManager.LoadScene("Tutorial_Bunker");
+        }
     }
 }

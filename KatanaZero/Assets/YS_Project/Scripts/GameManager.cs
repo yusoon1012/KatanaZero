@@ -12,22 +12,27 @@ public class GameManager : MonoBehaviour
     public TMP_Text songName;
     public GameObject introUi;
     private bool isSlow=false;
-
+    public IntroCanvas introCanvas;
 
     TimeManager timeManager;
     // Start is called before the first frame update
     void Start()
     {
         bgm.clip = backgroundClip;
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-       if(IntroCanvas.isIntroOver==false)
+      
+
+       if(introCanvas.isIntroOver==false)
         {
             return;
         }
+        
+        
         timeManager = FindAnyObjectByType<TimeManager>();
        if( timeManager.isTimeSlow==true)
         {

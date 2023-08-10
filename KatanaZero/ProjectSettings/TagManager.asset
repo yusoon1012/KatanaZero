@@ -7,6 +7,10 @@ TagManager:
   - Floor
   - Enemy
   - SG_ClingWall
+  - Platform
+  - Stair
+  - Breakable
+  - PlayerAttack
   layers:
   - Default
   - TransparentFX

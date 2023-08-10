@@ -1,15 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
-public class TitleButton : MonoBehaviour
+public class BreakableObject : MonoBehaviour
 {
-    SceneManager manager;
+    GameObject breakable;
     // Start is called before the first frame update
     void Start()
     {
-        
+        breakable = GetComponent<GameObject>();
     }
 
     // Update is called once per frame
@@ -17,12 +16,8 @@ public class TitleButton : MonoBehaviour
     {
         
     }
-    public void GameStart()
+    public void BreakPlatform()
     {
-        SceneManager.LoadScene("Tutorial");
-    }
-    public void QuitGame()
-    {
-        Application.Quit();
+        gameObject.SetActive(false);
     }
 }

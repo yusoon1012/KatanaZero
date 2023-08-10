@@ -32,6 +32,7 @@ public class PlayerMove : MonoBehaviour
     Rigidbody2D playerRigid;
     Animator playerAni;
     Ghost ghost;
+    public IntroCanvas introCan;
     bool isAttacking;
     public float attackDuration = 0.2f; // 공격 지속 시간
     public float attackSpeed = 5f; // 공격 시 움직임 속도
@@ -40,10 +41,7 @@ public class PlayerMove : MonoBehaviour
     private int attackCount = 0;
     private float lastAttackTime;
     Vector2 targetPosition;
-    private void Awake()
-    {
-        DontDestroyOnLoad(gameObject);
-    }
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -52,12 +50,16 @@ public class PlayerMove : MonoBehaviour
         playerRigid = GetComponent<Rigidbody2D>();
         playerAni = GetComponent<Animator>();
         ghost = FindAnyObjectByType<Ghost>();
-       
+        
+
+
         if(state==PlayerState.Intro)
         {
-       StartCoroutine(Intro());
+             StartCoroutine(Intro());
 
         }
+
+      
         
     }
 
@@ -66,17 +68,19 @@ public class PlayerMove : MonoBehaviour
     {
         playerScale = transform.localScale.x;
        isWall= Physics2D.Raycast(wallCheck.position, Vector2.right * playerScale, wallCheckDis, wall_mask);
-       
-        //if (IntroCanvas.isIntroOver == false)
-        //{
-        //    if (state == PlayerState.Intro)
-        //    {
-        //        ghost.isGhostMake = false;
 
-        //    }
-        //    return;
-        //}
-       
+        
+        if (introCan.isIntroOver == false)
+        {
+            if (state == PlayerState.Intro)
+            {
+                ghost.isGhostMake = false;
+
+            }
+            return;
+        }
+        
+
         if (player.GetButton("MoveLeft"))
         {
             isRun = true;
@@ -105,6 +109,7 @@ public class PlayerMove : MonoBehaviour
         }
         else
         {
+
             ghost.isGhostMake = false;
 
             isRun = false;
@@ -136,6 +141,8 @@ public class PlayerMove : MonoBehaviour
         
         if(player.GetButtonDown("Attack")&&attackCount<4)
         {
+
+            ghost.isGhostMake = true;
             attackCount += 1;
             playerAni.Play("PlayerAttack");
              state = PlayerState.Attack;
@@ -143,7 +150,7 @@ public class PlayerMove : MonoBehaviour
             Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Vector2 attackDirection = (mouseWorldPos - transform.position).normalized;
             
-            Vector2 modifiedForce = new Vector2(attackDirection.x * 10f, attackDirection.y * (20f/attackCount));
+            Vector2 modifiedForce = new Vector2(attackDirection.x * 15f, attackDirection.y * (20f/attackCount));
             playerRigid.velocity = Vector2.zero;
             playerRigid.angularVelocity =0;
             slash.transform.position = this.transform.position;
