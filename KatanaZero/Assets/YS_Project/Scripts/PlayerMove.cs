@@ -4,12 +4,14 @@ using UnityEngine;
 using Rewired;
 using static PlayerMove;
 using Unity.VisualScripting;
+using TMPro;
+
 
 public class PlayerMove : MonoBehaviour
 {
     public enum PlayerState
     {
-       Intro,Idle,Run,Jump
+       Intro,Idle,Run,Jump,Attack
     }
     public GameObject slash;
     public Transform wallCheck;
@@ -26,10 +28,18 @@ public class PlayerMove : MonoBehaviour
     private bool isWallJump;
     private bool isWall;
     private float playerScale;
+    private float direction;
     Rigidbody2D playerRigid;
     Animator playerAni;
     Ghost ghost;
+    bool isAttacking;
+    public float attackDuration = 0.2f; // 공격 지속 시간
+    public float attackSpeed = 5f; // 공격 시 움직임 속도
 
+    public float attackCooldown = 1f; // 공격 쿨다운
+    private int attackCount = 0;
+    private float lastAttackTime;
+    Vector2 targetPosition;
     private void Awake()
     {
         DontDestroyOnLoad(gameObject);
@@ -66,6 +76,7 @@ public class PlayerMove : MonoBehaviour
         //    }
         //    return;
         //}
+       
         if (player.GetButton("MoveLeft"))
         {
             isRun = true;
@@ -98,7 +109,10 @@ public class PlayerMove : MonoBehaviour
 
             isRun = false;
             // ghost.isGhostMake = false;
+           
             state = PlayerState.Idle;
+
+            
 
 
 
@@ -118,11 +132,36 @@ public class PlayerMove : MonoBehaviour
             playerRigid.AddForce(new Vector2(0f, jumpForce), ForceMode2D.Impulse);
 
         }
-        if(player.GetButtonDown("Attack"))
+       
+        
+        if(player.GetButtonDown("Attack")&&attackCount<4)
         {
+            attackCount += 1;
+            playerAni.Play("PlayerAttack");
+             state = PlayerState.Attack;
+            targetPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector2 attackDirection = (mouseWorldPos - transform.position).normalized;
+            
+            Vector2 modifiedForce = new Vector2(attackDirection.x * 10f, attackDirection.y * (20f/attackCount));
+            playerRigid.velocity = Vector2.zero;
+            playerRigid.angularVelocity =0;
             slash.transform.position = this.transform.position;
             slash.SetActive(true);
+            playerRigid.AddForce(modifiedForce, ForceMode2D.Impulse);
+            if(attackDirection.x>0)
+            {
+                transform.localScale = new Vector3(1, 1, 1);
+            }
+            else if(attackDirection.x<0)
+            {
+                transform.localScale = new Vector3(-1, 1, 1);
+
+            }
         }
+        
+        
+        
         //if(isWallJump)
         //{
         //    Vector3 wallJump = new Vector3(-10f, jumpForce, 0f);
@@ -181,17 +220,42 @@ public class PlayerMove : MonoBehaviour
     {
         if(collision.collider.tag.Equals("Floor")||collision.collider.tag.Equals("Platform"))
         {
+            attackCount = 0;
             isJump = false;
         }
         if (collision.collider.tag.Equals("Stair"))
         {
+            attackCount = 0;
             isJump = false;
             isStair = true;
         }
         if(collision.collider.tag.Equals("Wall"))
         {
+            attackCount = 0;
             //isJump = false;
-            if(player.GetButtonDown("Jump"))
+            if (player.GetButtonDown("Jump"))
+            {
+                isWallJump = true;
+            }
+        }
+    }
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        if (collision.collider.tag.Equals("Floor") || collision.collider.tag.Equals("Platform"))
+        {
+            attackCount = 0;
+           
+        }
+        if (collision.collider.tag.Equals("Stair"))
+        {
+            attackCount = 0;
+           
+        }
+        if (collision.collider.tag.Equals("Wall"))
+        {
+            attackCount = 0;
+            //isJump = false;
+            if (player.GetButtonDown("Jump"))
             {
                 isWallJump = true;
             }
@@ -213,5 +277,6 @@ public class PlayerMove : MonoBehaviour
         yield return new WaitForSeconds(3);
         state = PlayerState.Idle;
     }
+   
 
 }
