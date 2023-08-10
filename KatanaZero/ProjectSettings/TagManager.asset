@@ -6,9 +6,7 @@ TagManager:
   tags:
   - Floor
   - Enemy
-  - Platform
-  - Stair
-  - Wall
+  - SG_ClingWall
   layers:
   - Default
   - TransparentFX
@@ -16,8 +14,8 @@ TagManager:
   - 
   - Water
   - UI
-  - Wall
-  - Player
+  - 
+  - 
   - 
   - 
   - 
