@@ -28,8 +28,11 @@ public class PlayerMove : MonoBehaviour
     Rigidbody2D playerRigid;
     Animator playerAni;
     Ghost ghost;
-    
-    
+
+    private void Awake()
+    {
+        DontDestroyOnLoad(gameObject);
+    }
     // Start is called before the first frame update
     void Start()
     {
