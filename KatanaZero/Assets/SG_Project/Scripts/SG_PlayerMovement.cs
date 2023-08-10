@@ -191,24 +191,30 @@ public class SG_PlayerMovement : MonoBehaviour
         // ================================= 태그가 붙을수 있는 벽일때 SG_ClingWall =================================
         #region
         // 아래는 붙을수 있는 벽에 붙었을때에 if (Collider)
-        if (collision.gameObject.CompareTag("SG_ClingWall"))
-        {
-            Debug.LogFormat("조건 1: {0} / 조건 2: {1}", isAttackClingWallCoolTimeBool, playerPresentFloor);
-        }
+        //if (collision.gameObject.CompareTag("SG_ClingWall"))
+        //{
+        //    Debug.LogFormat("조건 1: {0} / 조건 2: {1}", isAttackClingWallCoolTimeBool, playerPresentFloor);
+        //}
 
         if (collision.gameObject.CompareTag("SG_ClingWall") && isAttackClingWallCoolTimeBool == false &&
             playerPresentFloor == false)
         {
             //Debug.Log("Enter에서 붙는벽 인식");
 
+            
+            playerAni.SetTrigger("WallGrabTrigger");
+            Debug.LogFormat("Trigger실행시킴");
+
             // 점프해서 벽에 붙으면 달리지 않는다.
             readyRun = false;
-            playerAni.SetBool("ReadyRun", readyRun);
+            //playerAni.SetBool("ReadyRun", readyRun);
 
-            // TEST
-            PresentWallGrab = true;
-            playerAni.SetBool("PresentWallGrab", PresentWallGrab);
-            // TEST
+
+
+            //// TEST
+            //PresentWallGrab = true;
+            //playerAni.SetBool("PresentWallGrab", PresentWallGrab);
+            //// TEST
 
 
             exitWallGrab = false;
@@ -247,10 +253,10 @@ public class SG_PlayerMovement : MonoBehaviour
             }
             else { /*PASS*/ }
 
-            playerAni.SetTrigger("WallGrabTrigger");
+            //playerAni.SetTrigger("WallGrabTrigger");
 
-            Debug.LogFormat("벽에 붙에 붙었는지? PresentWallGrab: {0}, isWallGrab: {1}, Jump: {2}, isRun: {3}", 
-                PresentWallGrab, isWallGrab, playerAni.GetBool("IsJump"), playerAni.GetBool("ReadyRun"));
+            //Debug.LogFormat("벽에 붙에 붙었는지? PresentWallGrab: {0}, isWallGrab: {1}, Jump: {2}, isRun: {3}", 
+            //    PresentWallGrab, isWallGrab, playerAni.GetBool("IsJump"), playerAni.GetBool("ReadyRun"));
 
             //if (wallGrabCount == 1)
             //{
@@ -274,15 +280,16 @@ public class SG_PlayerMovement : MonoBehaviour
 
             playerPresentFloor = true;
 
-            // TEST
-            PresentWallGrab = false;
-            playerAni.SetBool("PresentWallGrab", PresentWallGrab);
-            // TEST
+            //// TEST
+            //PresentWallGrab = false;
+            //playerAni.SetBool("PresentWallGrab", PresentWallGrab);
+            //// TEST
 
 
             playerAni.SetBool("IsJumpBool", isJump);
 
             playerAni.SetTrigger("GrabwallToIdleTrigger");
+
         }
 
 
@@ -342,10 +349,10 @@ public class SG_PlayerMovement : MonoBehaviour
         {
             exitWallGrab = true;
 
-            // TEST
-            PresentWallGrab = false;
-            playerAni.SetBool("PresentWallGrab", PresentWallGrab);
-            // TEST
+            //// TEST
+            //PresentWallGrab = false;
+            //playerAni.SetBool("PresentWallGrab", PresentWallGrab);
+            //// TEST
 
         }
         else { /*PASS*/ }
@@ -616,13 +623,13 @@ public class SG_PlayerMovement : MonoBehaviour
     // Wall Grab상태일때에 키를 눌른다면
     public void WallGrabAtInput()
     {
-        if (isWallGrab == true && !player.GetButtonDown("MoveJump") && exitWallGrab == true)
-        {
-            playerAni.SetTrigger("WallGrabToFallTriger");
-            isWallGrab = false;
-            exitWallGrab = false;
-        }
-        else { /*PASS*/ }
+        //if (isWallGrab == true && !player.GetButtonDown("MoveJump") && exitWallGrab == true)
+        //{
+           
+        //    isWallGrab = false;
+        //    //exitWallGrab = false;
+        //}
+        //else { /*PASS*/ }
 
 
         //  { if : 벽에붙어있으며 W키가아닌 A,S,D 키중 하나라도 눌렀을경우 
@@ -630,7 +637,10 @@ public class SG_PlayerMovement : MonoBehaviour
             (player.GetButtonDown("MoveLeft") || player.GetButtonDown("MoveRight") || player.GetButtonDown("DownKey")))
         {
             // 쿨타임을 주어서 벽에서 붙은판정으로 가지 못하게 막음
+            exitWallGrab = true;
+            playerAni.SetTrigger("WallGrabToFallTriger");
             StartCoroutine(IsAttackClingWallCoolTime());
+            //exitWallGrab = false;
 
         }   //  } if : 벽에붙어있으며 W키가아닌 A,S,D 키중 하나라도 눌렀을경우 
 
@@ -884,6 +894,7 @@ public class SG_PlayerMovement : MonoBehaviour
 
         yield return waitSecond;
         isAttackClingWallCoolTimeBool = false;
+        exitWallGrab = false;
     }
 
 
