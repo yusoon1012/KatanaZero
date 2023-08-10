@@ -28,8 +28,8 @@ public class SG_PlayerMovement : MonoBehaviour
     private bool PresentWallGrab = false;
     // TEST BOOL
 
-
-
+    // 플레이어가 죽었는지 살았는지 구별할 변수 다른곳에서 참조를위해 public 으로 열어둠
+    public bool isPlayerDie = false;
 
     private bool isJump = false;
 
