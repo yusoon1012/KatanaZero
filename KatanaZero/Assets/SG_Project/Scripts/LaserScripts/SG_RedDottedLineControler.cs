@@ -1,44 +1,77 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using UnityEngine;
 
 public class SG_RedDottedLineControler : MonoBehaviour
 {
+    public GameObject shotLaser;
 
     public GameObject dotted001;
     public GameObject dotted002;
     public GameObject dotted003;
     public GameObject dotted004;
 
+    private Switch switchClass;
+
+    private bool redDottedIsButtonSwitch = true;
+
     private float onOffDotted = 0f;
     private float dottedSpeed = 2f;
     private int dottedcontrolNum = 0;
-
-    // Start is called before the first frame update
+    
     void Start()
     {
-        //dotted001 = GetComponent<GameObject>();
-        //dotted002 = GetComponent<GameObject>();
+        switchClass = FindAnyObjectByType<Switch>();
+        switchClass.switchButtionboolChanged += RedDotteLineIsSwitchOn;
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        onOffDotted += dottedSpeed * Time.deltaTime;
-        Debug.LogFormat("Dotted -> {0}", onOffDotted);
-
-        if(onOffDotted >= 0.08f)
+        //Debug.LogFormat("redDottedIsButtonSwitch 값 ->{0}", redDottedIsButtonSwitch);
+        if (redDottedIsButtonSwitch == true)
         {
-            DottedLineControls();
+            onOffDotted += dottedSpeed * Time.deltaTime;
+            //Debug.LogFormat("Dotted -> {0}", onOffDotted);
+
+            if (onOffDotted >= 0.08f)
+            {
+                DottedLineControls();
+            }
+
+            else { /*PASS*/ }
         }
     }
+
+    void OnEnable()
+    {
+
+        // SetActive == true 될 때 수행할 작업
+
+    }
+
+    void OnDisable()
+    {
+        // SetActive == flase 될 때 수행할 작업
+        if (redDottedIsButtonSwitch == true)
+        { 
+            shotLaser.gameObject.SetActive(true);
+        }
+    }
+
+
 
     public void OnTriggerEnter2D(Collider2D collision)
     {
 
-        if(collision.gameObject.CompareTag("Player"))
+        if (redDottedIsButtonSwitch == true)
         {
-
+            if (collision.gameObject.CompareTag("Player"))
+            {
+                this.gameObject.SetActive(false);
+            }
         }
 
     }
@@ -46,6 +79,7 @@ public class SG_RedDottedLineControler : MonoBehaviour
 
     private void DottedLineControls()
     {
+
         if (dottedcontrolNum == 0)
         {
             onOffDotted = 0;
@@ -55,7 +89,7 @@ public class SG_RedDottedLineControler : MonoBehaviour
             dotted004.SetActive(false);
             dottedcontrolNum = 1;
         }
-        else if(dottedcontrolNum == 1)
+        else if (dottedcontrolNum == 1)
         {
             onOffDotted = 0;
             dotted001.SetActive(false);
@@ -84,6 +118,11 @@ public class SG_RedDottedLineControler : MonoBehaviour
         }
 
 
+    }
+
+    private void RedDotteLineIsSwitchOn(bool buttonSwitch)
+    {
+        redDottedIsButtonSwitch = buttonSwitch;
     }
 
 }

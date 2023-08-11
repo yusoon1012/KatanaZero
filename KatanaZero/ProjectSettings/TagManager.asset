@@ -7,6 +7,9 @@ TagManager:
   - Floor
   - Enemy
   - SG_ClingWall
+  - SG_Laser
+  - SG_Switch
+  - SG_TriggerLaser
   layers:
   - Default
   - TransparentFX

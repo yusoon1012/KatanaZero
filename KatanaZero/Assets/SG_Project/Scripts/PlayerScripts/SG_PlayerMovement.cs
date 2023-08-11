@@ -144,7 +144,10 @@ public class SG_PlayerMovement : MonoBehaviour
         WallGrabAtInput();
         AttackClick();
 
-
+        if(isPlayerDie == true)
+        {
+            Debug.Log("플레이어 Die == true");
+        }
 
 
     }
@@ -203,7 +206,7 @@ public class SG_PlayerMovement : MonoBehaviour
 
             
             playerAni.SetTrigger("WallGrabTrigger");
-            Debug.LogFormat("Trigger실행시킴");
+            //Debug.LogFormat("Trigger실행시킴");
 
             // 점프해서 벽에 붙으면 달리지 않는다.
             readyRun = false;
@@ -359,7 +362,7 @@ public class SG_PlayerMovement : MonoBehaviour
 
         if(collision.gameObject.CompareTag("Floor"))
         {
-            Debug.Log("Exit에서 False로 바꿈");
+            //Debug.Log("Exit에서 False로 바꿈");
             playerPresentFloor = false;
         }
 
@@ -527,8 +530,8 @@ public class SG_PlayerMovement : MonoBehaviour
                 readyRun = false;
                 playerAni.SetBool("ReadyRun", readyRun);
 
-                Debug.LogFormat("구르기 끝났을 때 / isRollRock: {0}, readyRun: {1}",
-                    isRollRock, readyRun);
+                //Debug.LogFormat("구르기 끝났을 때 / isRollRock: {0}, readyRun: {1}",
+                    //isRollRock, readyRun);
             }       // if: 왼쪽 구르기인지?
             else { /*PASS*/ }
 
@@ -661,7 +664,7 @@ public class SG_PlayerMovement : MonoBehaviour
 
             if (leftClickAttackCoolTime == false && attackCount < 3) // 좌클릭 쿨타임 아닐때에 실행됨                        
             {
-                Debug.Log("!공격");
+                //Debug.Log("!공격");
                 isleftWall = true;
 
                 if (isWallGrab == true)
