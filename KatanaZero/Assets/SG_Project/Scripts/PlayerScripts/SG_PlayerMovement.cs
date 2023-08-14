@@ -24,12 +24,9 @@ public class SG_PlayerMovement : MonoBehaviour
 
     #region Bool 변수
 
-    // TEST BOOL
-    private bool PresentWallGrab = false;
-    // TEST BOOL
+   
 
-    // 플레이어가 죽었는지 살았는지 구별할 변수 다른곳에서 참조를위해 public 으로 열어둠
-    public bool isPlayerDie = false;
+
 
     private bool isJump = false;
 
@@ -144,10 +141,6 @@ public class SG_PlayerMovement : MonoBehaviour
         WallGrabAtInput();
         AttackClick();
 
-        if(isPlayerDie == true)
-        {
-            Debug.Log("플레이어 Die == true");
-        }
 
 
     }
@@ -161,6 +154,13 @@ public class SG_PlayerMovement : MonoBehaviour
     // --------------------------------------Collision Enter------------------------------------
     public void OnCollisionEnter2D(Collision2D collision)
     {
+        // !플레이어가 무적이 아닐때
+        if (isDodge == false)
+        {
+
+        }
+        // !플레이어가 무적이 아닐때
+
         // 아래 변수를 조건을 조금 변경해야 함 SG_ClingWall이라는 벽이 아니라면 으로 조건걸고 넣어야함
         headOffPrecrouch = false;
 
@@ -168,7 +168,7 @@ public class SG_PlayerMovement : MonoBehaviour
         #region
         if (collision.gameObject.CompareTag("Enemy"))
         {
-
+            
         }
         else
         {
@@ -177,23 +177,13 @@ public class SG_PlayerMovement : MonoBehaviour
         }
         #endregion
 
-        //Debug.LogFormat("Enter -> {0}", collision.gameObject.tag);
 
-
-
-        ////여기서 다시 점프가능
-        //isJump = false;
-        //playerAni.SetBool("IsJumpBool", isJump);
-
-        //아래변수는 플레이어가 공중에 있나? 를 의미
-        // 애니메이션 컨트롤러 수정 이후 다시 확인할예정
         playerIsAir = false;
 
 
 
         // ================================= 태그가 붙을수 있는 벽일때 SG_ClingWall =================================
-        #region
-        // 아래는 붙을수 있는 벽에 붙었을때에 if (Collider)
+        #region       
         //if (collision.gameObject.CompareTag("SG_ClingWall"))
         //{
         //    Debug.LogFormat("조건 1: {0} / 조건 2: {1}", isAttackClingWallCoolTimeBool, playerPresentFloor);
@@ -211,13 +201,6 @@ public class SG_PlayerMovement : MonoBehaviour
             // 점프해서 벽에 붙으면 달리지 않는다.
             readyRun = false;
             //playerAni.SetBool("ReadyRun", readyRun);
-
-
-
-            //// TEST
-            //PresentWallGrab = true;
-            //playerAni.SetBool("PresentWallGrab", PresentWallGrab);
-            //// TEST
 
 
             exitWallGrab = false;
@@ -255,17 +238,7 @@ public class SG_PlayerMovement : MonoBehaviour
 
             }
             else { /*PASS*/ }
-
-            //playerAni.SetTrigger("WallGrabTrigger");
-
-            //Debug.LogFormat("벽에 붙에 붙었는지? PresentWallGrab: {0}, isWallGrab: {1}, Jump: {2}, isRun: {3}", 
-            //    PresentWallGrab, isWallGrab, playerAni.GetBool("IsJump"), playerAni.GetBool("ReadyRun"));
-
-            //if (wallGrabCount == 1)
-            //{
-            //playerAni.SetTrigger("WallGrabTrigger");
-
-            //}
+         
 
         }
 
@@ -308,13 +281,7 @@ public class SG_PlayerMovement : MonoBehaviour
             
         }
         #endregion
-        // !플레이어가 무적이 아닐때
-        if (isDodge == false)
-        {
 
-
-        }
-        // !플레이어가 무적이 아닐때
 
 
 
@@ -506,14 +473,16 @@ public class SG_PlayerMovement : MonoBehaviour
                 //
 
                 playerAni.SetTrigger("Let's_Roll");
+
+                
                 rollRock = StartCoroutine(RollCoolTime());
                 playerAni.SetBool("IsRollRock", isRollRock);
                 // 달리기 끄는 로직
                 readyRun = false;
                 playerAni.SetBool("ReadyRun", readyRun);
 
-                Debug.LogFormat("구르기 끝났을 때 / isRollRock: {0}, readyRun: {1}",
-                    isRollRock, readyRun);
+                //Debug.LogFormat("구르기 끝났을 때 / isRollRock: {0}, readyRun: {1}",
+                   // isRollRock, readyRun);
 
             }       // if: 오른쪽 구르기인지?
             else { /*PASS*/ }
@@ -886,6 +855,7 @@ public class SG_PlayerMovement : MonoBehaviour
         }   // 왼쪽 구르기
         isRollRock = false;
 
+        
 
         //Debug.LogFormat("readyRun -> {0}", readyRun);
         //Debug.Log("구르기쿨 끝남");

@@ -48,6 +48,13 @@ public class SG_CameraMove : MonoBehaviour
         }
         else { /*PASS*/ }
 
+        if(nowScene.name == "SG_LaserPassage002")
+        {
+            offset = new Vector2(0f, 0.75f);
+            minPosition = new Vector2(8.2f, 1.5f);
+            maxPosition = new Vector2(41f, 30f);
+        }
+
 
         //Debug.LogFormat("{0}", nowScene.name);
     }
