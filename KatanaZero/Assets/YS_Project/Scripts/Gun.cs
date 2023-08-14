@@ -6,6 +6,7 @@ public class Gun : MonoBehaviour
 {
     public Transform target;
     public Transform parent;
+    
     public GameObject bulletPrefab;
     public float maxAngle = 50f; // 최대 각도
     public float rotationSpeed = 5f; // 회전 속도
@@ -46,6 +47,9 @@ public class Gun : MonoBehaviour
             bulletOffset.y = bulletOffset.y - 0.2f;
             GameObject bullet = Instantiate(bulletPrefab, bulletPosition, transform.rotation);
             shootingTimer = 0f;
+          
+
         }
+       
     }
 }

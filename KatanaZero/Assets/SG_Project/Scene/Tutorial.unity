@@ -19429,6 +19429,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3397002627486787216, guid: 7198bea8a62eb014f934043d1cf216ab, type: 3}
   m_PrefabInstance: {fileID: 447339041}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1150144069 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8746020917630091827, guid: 5e4880d5f34927b4494208ae8633a0af, type: 3}
+  m_PrefabInstance: {fileID: 1527998293}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1160443932
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -20191,6 +20196,25 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8746020917630091838, guid: 5e4880d5f34927b4494208ae8633a0af, type: 3}
   m_PrefabInstance: {fileID: 1527998293}
   m_PrefabAsset: {fileID: 0}
+--- !u!251 &1415664512
+PlatformEffector2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1150144069}
+  m_Enabled: 1
+  m_UseColliderMask: 1
+  m_ColliderMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_RotationalOffset: 0
+  m_UseOneWay: 1
+  m_UseOneWayGrouping: 0
+  m_SurfaceArc: 180
+  m_UseSideFriction: 0
+  m_UseSideBounce: 0
+  m_SideArc: 1
 --- !u!1 &1453704381
 GameObject:
   m_ObjectHideFlags: 0

@@ -13,9 +13,13 @@ public class Gunner_TriggerArea : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if(collision.gameObject.CompareTag("Player"))
+        {
+
         gameObject.SetActive(false);
         gunnerParent.target = collision.transform;
         gunnerParent.inRange = true;
         gunnerParent.hotZone.SetActive(true);
+        }
     }
 }

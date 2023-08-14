@@ -39,10 +39,14 @@ public class Enemy_Gunner : MonoBehaviour
             gun.SetActive(false);
             return; 
         }
+
         if (inRange)
         {
+           
+
             anim.Play("Gangster_aim");
             gun.SetActive(true);
+           
         }
         else
         {
