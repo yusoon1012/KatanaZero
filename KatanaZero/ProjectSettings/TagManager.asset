@@ -11,6 +11,8 @@ TagManager:
   - Stair
   - Breakable
   - PlayerAttack
+  - Wall
+  - Bullet
   layers:
   - Default
   - TransparentFX

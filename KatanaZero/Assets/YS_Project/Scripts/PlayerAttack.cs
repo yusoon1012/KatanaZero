@@ -39,23 +39,10 @@ public class PlayerAttack : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    //private void OnTriggerEnter2D(Collider2D collision)
-    //{
-    //    if(collision.tag.Equals("Enemy"))
-    //    {
-    //        Vector2 attackDir = new Vector2(direction, 0f);
-    //        collision.GetComponent<EnemyRay>().Die();
-
-    //        Rigidbody2D enemyRigidbody = collision.GetComponent<Rigidbody2D>();
-    //        if (enemyRigidbody != null)
-    //        {
-    //            enemyRigidbody.velocity = Vector2.zero; // Reset any previous velocity
-    //            enemyRigidbody.AddForce(attackDir * 5f, ForceMode2D.Impulse);
-    //        }
-    //    }
-    //}
+    
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        
         if (collision.tag.Equals("Enemy"))
         {
             // Calculate the direction from the enemy to the player
@@ -75,24 +62,6 @@ public class PlayerAttack : MonoBehaviour
             collision.GetComponent<BreakableObject>().BreakPlatform();
         }
     }
-    //private void ApplyForceToEnemies(Vector2 direction)
-    //{
-    //    Collider2D[] hitColliders = Physics2D.OverlapCircleAll(playerObj.transform.position, /* radius */ 5f);
-
-    //    foreach (Collider2D collider in hitColliders)
-    //    {
-    //        if (collider.tag.Equals("Enemy"))
-    //        {
-    //            collider.GetComponent<EnemyRay>().Die();
-    //            Rigidbody2D enemyRigidbody = collider.GetComponent<Rigidbody2D>();
-    //            if (enemyRigidbody != null)
-    //            {
-    //                enemyRigidbody.velocity = Vector2.zero; // Reset any previous velocity
-    //                enemyRigidbody.AddForce(direction * 5f, ForceMode2D.Impulse);
-    //            }
-    //        }
-            
-    //    }
-    //}
+    
 }
 

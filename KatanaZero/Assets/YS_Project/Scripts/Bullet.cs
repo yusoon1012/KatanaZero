@@ -6,23 +6,35 @@ public class Bullet : MonoBehaviour
 {
     public float speed = 5f;
     Rigidbody2D rb;
+    Vector3 initialPosition;
+    bool isReflected = false;
+
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         rb.velocity = transform.right * speed;
+
+        initialPosition = transform.position;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.tag.Equals("Wall")||collision.tag.Equals("Floor"))
+        if (collision.tag.Equals("Wall") || collision.tag.Equals("Floor"))
         {
             Destroy(gameObject);
         }
+        else if (collision.tag.Equals("Reflect") && !isReflected)
+        {
+            ReflectBullet();
+        }
+    }
+
+    private void ReflectBullet()
+    {
+        Vector2 normal = new Vector2(-rb.velocity.x, -rb.velocity.y).normalized;  // 현재 이동 방향의 반대 벡터 계산
+        Vector2 reflectedDirection = Vector2.Reflect(rb.velocity.normalized, normal);  // 법선에 대한 반사 방향 계산
+        rb.velocity = reflectedDirection * speed;
+        isReflected = true;
     }
 }
