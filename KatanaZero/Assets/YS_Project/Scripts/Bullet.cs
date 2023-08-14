@@ -1,15 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
-public class TurnPoint : MonoBehaviour
+public class Bullet : MonoBehaviour
 {
-    Enemy_Chasing enemy;
+    public float speed = 5f;
+    Rigidbody2D rb;
     // Start is called before the first frame update
     void Start()
     {
-        
+        rb = GetComponent<Rigidbody2D>();
+        rb.velocity = transform.right * speed;
     }
 
     // Update is called once per frame
@@ -19,9 +20,9 @@ public class TurnPoint : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.tag.Equals("Enemy"))
+        if(collision.tag.Equals("Wall")||collision.tag.Equals("Floor"))
         {
-            //collision.GetComponent<Enemy_Chasing>().TurnEnemy();
+            Destroy(gameObject);
         }
     }
 }

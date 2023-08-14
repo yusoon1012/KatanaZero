@@ -16,11 +16,14 @@ public class TriggerAreaCheck : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
 
+        if(collision.tag.Equals("Player"))
+        {
 
         gameObject.SetActive(false);
         enemyParent.target = collision.transform;
         enemyParent.inRange = true;
         enemyParent.hotZone.SetActive(true);
+        }
 
 
 

@@ -38,7 +38,7 @@ public class GameManager : MonoBehaviour
         {
             if(isSlow==false)
             {
-            bgm.PlayOneShot(SlowmotionClip);
+           
                 isSlow = true;
             }
             bgm.pitch = 0.4f;
