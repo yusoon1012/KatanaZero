@@ -34,6 +34,11 @@ public class Enemy_Gunner : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(isDie)
+        {
+            gun.SetActive(false);
+            return; 
+        }
         if (inRange)
         {
             anim.Play("Gangster_aim");
@@ -80,7 +85,7 @@ public class Enemy_Gunner : MonoBehaviour
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            if (collision.gameObject.CompareTag("Player"))
+            if (collision.gameObject.CompareTag("Player")&&isDie==false)
             {
                 inRange = true;
             }
@@ -136,7 +141,8 @@ public class Enemy_Gunner : MonoBehaviour
         }
         public void Die()
         {
-
+        anim.Play("Gangster_Die");
+        isDie = true;
         }
         public void Flip()
         {

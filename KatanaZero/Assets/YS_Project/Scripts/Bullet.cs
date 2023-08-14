@@ -8,6 +8,7 @@ public class Bullet : MonoBehaviour
     Rigidbody2D rb;
     Vector3 initialPosition;
     bool isReflected = false;
+    public bool dieTrigger = false;
 
     // Start is called before the first frame update
     void Start()
@@ -26,7 +27,22 @@ public class Bullet : MonoBehaviour
         }
         else if (collision.tag.Equals("Reflect") && !isReflected)
         {
+            dieTrigger = true;
             ReflectBullet();
+        }
+        if(collision.tag.Equals("Enemy")&&dieTrigger==true)
+        {
+            EnemyRay enemyRay = collision.GetComponent<EnemyRay>();
+            if (enemyRay != null)
+            {
+                enemyRay.Die();
+            }
+
+            Enemy_Gunner enemyGunner = collision.GetComponent<Enemy_Gunner>();
+            if (enemyGunner != null)
+            {
+                enemyGunner.Die();
+            }
         }
     }
 
