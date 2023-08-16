@@ -37,6 +37,7 @@ public class PlayerMove : MonoBehaviour
     Animator playerAni;
     Ghost ghost;
     public IntroCanvas introCan;
+    private BoxCollider2D playerCollider;
 
     public float attackDuration = 0.2f; // ���� ���� �ð�
     public float attackSpeed = 5f; // ���� �� ������ �ӵ�
@@ -54,7 +55,7 @@ public class PlayerMove : MonoBehaviour
         playerRigid = GetComponent<Rigidbody2D>();
         playerAni = GetComponent<Animator>();
         ghost = FindAnyObjectByType<Ghost>();
-
+        playerCollider = GetComponent<BoxCollider2D>();
 
 
         if (state == PlayerState.Intro)
@@ -301,6 +302,14 @@ public class PlayerMove : MonoBehaviour
             if (player.GetButtonDown("Jump"))
             {
                 isWallJump = true;
+            }
+        }
+        if(collision.collider.CompareTag("Enemy"))
+        {
+            BoxCollider2D enemyCollider = collision.gameObject.GetComponent<BoxCollider2D>();
+            if(enemyCollider!=null)
+            {
+                Physics2D.IgnoreCollision(playerCollider, enemyCollider);
             }
         }
     }

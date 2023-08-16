@@ -6,7 +6,9 @@ public class Gun : MonoBehaviour
 {
     public Transform target;
     public Transform parent;
-    
+
+    public Animator gunsparkAni;
+   
     public GameObject bulletPrefab;
     public float maxAngle = 50f; // 최대 각도
     public float rotationSpeed = 5f; // 회전 속도
@@ -41,6 +43,8 @@ public class Gun : MonoBehaviour
         
         if(shootingTimer>=shootingRate)
         {
+            
+            gunsparkAni.Play("Gunspark");
             // Calculate the bullet spawn position offset
             Vector3 bulletOffset = transform.right * 1f;
             Vector3 bulletPosition = transform.position + bulletOffset;
