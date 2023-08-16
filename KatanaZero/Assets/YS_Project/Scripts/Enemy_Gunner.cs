@@ -5,6 +5,14 @@ using static Rewired.Data.ConfigVars;
 
 public class Enemy_Gunner : MonoBehaviour
 {
+    public enum EnemyState
+    {
+        Idle,
+        Patrol
+    }
+    public EnemyState startingState = EnemyState.Patrol; // 시작 상태 설정
+
+    private EnemyState currentState;
     public float attackDistance;
     public float moveSpeed;
     [HideInInspector] public Transform target;
@@ -28,7 +36,12 @@ public class Enemy_Gunner : MonoBehaviour
     {
         anim = GetComponent<Animator>();
         enemyRigid = GetComponent<Rigidbody2D>();
+        currentState = startingState;
+        if(currentState==EnemyState.Patrol)
+        {
         SelecTarget();
+
+        }
     }
 
     // Update is called once per frame
@@ -61,7 +74,7 @@ public class Enemy_Gunner : MonoBehaviour
             Move();
 
         }
-        if (!InsideofLisits() && !inRange && !anim.GetCurrentAnimatorStateInfo(0).IsName("Grunt_attack"))
+        if (!InsideofLisits() && !inRange && !anim.GetCurrentAnimatorStateInfo(0).IsName("Gangster_aim"))
         {
             SelecTarget();
         }
@@ -84,6 +97,15 @@ public class Enemy_Gunner : MonoBehaviour
             }
 
             anim.SetBool("Run", true);
+        }
+        switch (currentState)
+        {
+            case EnemyState.Idle:
+                HandleIdleState();
+                break;
+            case EnemyState.Patrol:
+                HandlePatrolState();
+                break;
         }
     }
 
@@ -121,6 +143,10 @@ public class Enemy_Gunner : MonoBehaviour
         }
         void Move()
         {
+            if(target==null)
+        {
+            return;
+        }
             if (!anim.GetCurrentAnimatorStateInfo(0).IsName("Gangster_aim") && target.gameObject.tag != "Player")
             {
                 anim.SetBool("Run", false);
@@ -182,6 +208,39 @@ public class Enemy_Gunner : MonoBehaviour
     private bool InsideofLisits()
     {
         return transform.position.x > leftLimit.position.x && transform.position.x < rightLimit.position.x;
+    }
+    void HandleIdleState()
+    {
+        if (inRange)
+        {
+            anim.Play("Gangster_aim");
+            gun.SetActive(true);
+        }
+        else
+        {
+            gun.SetActive(false);
+        }
+
+        if (!attackMode)
+        {
+            Move();
+        }
+    }
+
+    void HandlePatrolState()
+    {
+        if (inRange)
+        {
+            currentState = EnemyState.Idle; // 플레이어를 만나면 공격 상태로 전환
+            return;
+        }
+
+        Move(); // 계속해서 순찰 진행
+
+        if (InsideofLisits())
+        {
+            SelecTarget();
+        }
     }
 
 }

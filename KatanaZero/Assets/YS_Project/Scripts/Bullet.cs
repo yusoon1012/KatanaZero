@@ -1,4 +1,4 @@
-using System.Collections;
+    using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,14 +9,27 @@ public class Bullet : MonoBehaviour
     Vector3 initialPosition;
     bool isReflected = false;
     public bool dieTrigger = false;
-
+    TimeManager timeManager;
+    TrailRenderer trail;
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         rb.velocity = transform.right * speed;
-
+        timeManager = FindAnyObjectByType<TimeManager>();
+        trail = GetComponent<TrailRenderer>();
         initialPosition = transform.position;
+    }
+    private void Update()
+    {
+        if(timeManager.isTimeSlow)
+        {
+            trail.enabled = false;
+        }
+        else
+        {
+            trail.enabled = true;
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

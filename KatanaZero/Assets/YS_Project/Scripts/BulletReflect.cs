@@ -19,10 +19,10 @@ public class BulletReflect : MonoBehaviour
     //{
     //    if (collision.tag.Equals("Bullet"))
     //    {
-    //        // Calculate the direction from the bullet to the player
+            
     //        Vector2 repelDirection = (transform.position - collision.transform.position).normalized;
 
-    //        // Apply force to the bullet
+           
     //        Rigidbody2D bulletRigidbody = collision.GetComponent<Rigidbody2D>();
     //        if (bulletRigidbody != null)
     //        {

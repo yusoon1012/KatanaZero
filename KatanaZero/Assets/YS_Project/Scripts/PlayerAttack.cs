@@ -47,7 +47,17 @@ public class PlayerAttack : MonoBehaviour
         {
             // Calculate the direction from the enemy to the player
             Vector2 attackDirection = (playerObj.transform.position - collision.transform.position).normalized;
-            collision.GetComponent<EnemyRay>().Die();
+            EnemyRay enemyCollision = collision.GetComponent<EnemyRay>();
+            if(enemyCollision!=null)
+            {
+                enemyCollision.Die();
+            }
+            Enemy_Gunner gunnerCollision = collision.GetComponent<Enemy_Gunner>();
+            if(gunnerCollision!=null)
+            {
+                gunnerCollision.Die();
+            }
+           
 
             // Apply force to the enemy
             Rigidbody2D enemyRigidbody = collision.GetComponent<Rigidbody2D>();

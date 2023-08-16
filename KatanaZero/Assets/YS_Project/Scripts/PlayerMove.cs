@@ -21,7 +21,7 @@ public class PlayerMove : MonoBehaviour
     Player player;
     int playerId = 0;
     public float moveSpeed = 3f;
-    private float jumpForce = 6f;
+    private float jumpForce = 7f;
     private bool isRun;
     private bool isJump;
     private bool isStair;
