@@ -12,6 +12,13 @@ TagManager:
   - SG_TriggerLaser
   - SG_LaserShot
   - SG_Fan
+  - Bullet
+  - Reflect
+  - PlayerAttack
+  - Stair
+  - Platform
+  - Wall
+  - Boss
   layers:
   - Default
   - TransparentFX
