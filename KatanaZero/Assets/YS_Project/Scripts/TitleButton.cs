@@ -21,6 +21,10 @@ public class TitleButton : MonoBehaviour
     {
         SceneManager.LoadScene("Tutorial");
     }
+    public void BossRoom()
+    {
+        SceneManager.LoadScene("BossScene");
+    }
     public void QuitGame()
     {
         Application.Quit();
