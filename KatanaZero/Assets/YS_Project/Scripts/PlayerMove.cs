@@ -5,6 +5,7 @@ using Rewired;
 using static PlayerMove;
 using Unity.VisualScripting;
 using TMPro;
+using UnityEngine.EventSystems;
 
 
 public class PlayerMove : MonoBehaviour
@@ -33,7 +34,7 @@ public class PlayerMove : MonoBehaviour
     private float wallJumpTimer=0;
     private float wallJumpRate = 0.2f;
     private bool isGrounded;
-    float moveDirection = 0;
+    private float moveDirection;
     Rigidbody2D playerRigid;
     Animator playerAni;
     Ghost ghost;
@@ -96,6 +97,16 @@ public class PlayerMove : MonoBehaviour
             ghost.isGhostMake = true;
 
         }
+        if (player.GetButtonDown("MoveLeft"))
+        {
+            moveDirection = -1;
+
+        }
+        else if (player.GetButtonDown("MoveRight"))
+        {
+            moveDirection = 1;
+
+        }
         if (player.GetButton("MoveLeft"))
         {
             if (isWallJump)
@@ -112,7 +123,6 @@ public class PlayerMove : MonoBehaviour
             Vector3 movement = new Vector3(-moveSpeed, playerRigid.velocity.y, 0f);
             transform.localScale = new Vector3(-1f, 1f, 1f);
             state = PlayerState.Run;
-            moveDirection = -1;
             playerRigid.velocity = movement;
 
 
@@ -131,7 +141,7 @@ public class PlayerMove : MonoBehaviour
                 return;
             }
             ghost.isGhostMake = true;
-            moveDirection = 1;
+
             isRun = true;
             Vector3 movement = new Vector3(moveSpeed, playerRigid.velocity.y, 0f);
             transform.localScale = new Vector3(1f, 1f, 1f);
@@ -156,6 +166,11 @@ public class PlayerMove : MonoBehaviour
 
 
         }
+        if(player.GetButtonUp("MoveRight")&& isGrounded||player.GetButtonUp("MoveLeft")&&isGrounded)
+        {
+            Vector2 stopVelocity = new Vector2(0, playerRigid.velocity.y);
+            playerRigid.velocity = stopVelocity;
+        }
        
         playerAni.SetBool("Run", isRun);
         if (player.GetButtonDown("Jump"))
@@ -174,7 +189,7 @@ public class PlayerMove : MonoBehaviour
         }
         if (isJump && moveDirection != 0 && Mathf.Sign(moveDirection) != Mathf.Sign(transform.localScale.x))
         {
-            playerRigid.velocity = new Vector2(playerRigid.velocity.x * 0.2f, playerRigid.velocity.y);
+            playerRigid.velocity = new Vector2(playerRigid.velocity.x * 0.01f, playerRigid.velocity.y);
         }
 
         if (!isAttacking)

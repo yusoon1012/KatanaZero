@@ -10,6 +10,7 @@ public class Kissyface_Lunge : MonoBehaviour
     public float stoppingDistance = 1.5f; // ¿øÇÏ´Â ¸ØÃã °Å¸® ¼³Á¤
     bool isjump = false;
     bool isAttack = false;
+    bool isGrounded = false;
     float jumpForce;
     Animator anim;
     Rigidbody2D rb;
@@ -53,8 +54,11 @@ public class Kissyface_Lunge : MonoBehaviour
             Vector2 stopx = new Vector2(0, rb.velocity.y);
             anim.Play("Kissyface_lungeAttack");
             rb.velocity = stopx;
-            
+            if(isGrounded)
+            {
+
             manager.isAction = false;
+            }
             return;
         }
 
@@ -97,5 +101,19 @@ public class Kissyface_Lunge : MonoBehaviour
         }
        
 
+    }
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if(collision.collider.CompareTag("Floor"))
+        {
+            isGrounded = true;
+        }
+    }
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.collider.CompareTag("Floor"))
+        {
+            isGrounded = false;
+        }
     }
 }

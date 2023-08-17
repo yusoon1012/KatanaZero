@@ -73,10 +73,7 @@ public class Kissyface_manager : MonoBehaviour
             isAction = true;
         }
     }
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        
-    }
+   
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("PlayerAttack"))
