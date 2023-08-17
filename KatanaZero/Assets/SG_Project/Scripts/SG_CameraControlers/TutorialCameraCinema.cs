@@ -28,11 +28,11 @@ public class TutorialCameraCinema : MonoBehaviour
     void Update()
     {
 
-        if(Input.anyKey)
-        {
+        //if(Input.anyKey)
+        //{
 
-            firstVirtual.Follow = player.transform;
-        }
+        //    firstVirtual.Follow = player.transform;
+        //}
 
 
 
