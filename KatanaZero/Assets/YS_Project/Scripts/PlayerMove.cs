@@ -33,6 +33,7 @@ public class PlayerMove : MonoBehaviour
     private float wallJumpTimer=0;
     private float wallJumpRate = 0.2f;
     private bool isGrounded;
+    float moveDirection = 0;
     Rigidbody2D playerRigid;
     Animator playerAni;
     Ghost ghost;
@@ -111,7 +112,7 @@ public class PlayerMove : MonoBehaviour
             Vector3 movement = new Vector3(-moveSpeed, playerRigid.velocity.y, 0f);
             transform.localScale = new Vector3(-1f, 1f, 1f);
             state = PlayerState.Run;
-
+            moveDirection = -1;
             playerRigid.velocity = movement;
 
 
@@ -130,7 +131,7 @@ public class PlayerMove : MonoBehaviour
                 return;
             }
             ghost.isGhostMake = true;
-
+            moveDirection = 1;
             isRun = true;
             Vector3 movement = new Vector3(moveSpeed, playerRigid.velocity.y, 0f);
             transform.localScale = new Vector3(1f, 1f, 1f);
@@ -155,11 +156,7 @@ public class PlayerMove : MonoBehaviour
 
 
         }
-        if(player.GetButtonUp("MoveRight")&& isGrounded||player.GetButtonUp("MoveLeft")&&isGrounded)
-        {
-            Vector2 stopVelocity = new Vector2(0, playerRigid.velocity.y);
-            playerRigid.velocity = stopVelocity;
-        }
+       
         playerAni.SetBool("Run", isRun);
         if (player.GetButtonDown("Jump"))
         {
@@ -175,7 +172,11 @@ public class PlayerMove : MonoBehaviour
             playerRigid.AddForce(new Vector2(0f, jumpForce), ForceMode2D.Impulse);
 
         }
-        
+        if (isJump && moveDirection != 0 && Mathf.Sign(moveDirection) != Mathf.Sign(transform.localScale.x))
+        {
+            playerRigid.velocity = new Vector2(playerRigid.velocity.x * 0.2f, playerRigid.velocity.y);
+        }
+
         if (!isAttacking)
         {
 

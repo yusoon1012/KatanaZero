@@ -10,14 +10,20 @@ public class JumpAxe : MonoBehaviour
     bool isMaxSize = false;
     private Vector3 initialCenterPosition; // 초기 중심점 위치
     private float angle = 0;
+    Kissyface_manager manager;
     private void Start()
     {
         radius = 0.1f;
         Destroy(gameObject, 0.8f);
         initialCenterPosition = transform.position;
+        manager = FindAnyObjectByType<Kissyface_manager>();
     }
     void Update()
     {
+        if(manager.isHit)
+        {
+            Destroy(gameObject);
+        }
         if(radius<0)
         {
             return;

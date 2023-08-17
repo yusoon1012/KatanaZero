@@ -9,18 +9,25 @@ public class ThrowAxe : MonoBehaviour
     Rigidbody2D rb;
     private Vector3 rotate;
     private bool isWall=false;
+    Kissyface_manager manager;
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         rb.velocity = transform.right * speed;
         rotateClass = GetComponentInChildren<Rotate>();
+        manager = FindAnyObjectByType<Kissyface_manager>();
+
+
     }
 
     // Update is called once per frame
     void Update()
     {
-       
+       if(manager.isHit)
+        {
+            Destroy(gameObject);
+        }
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -33,6 +40,7 @@ public class ThrowAxe : MonoBehaviour
         }
         if(collision.tag.Equals("Boss"))
         {
+
             Kissyface_Throw throwClass = collision.GetComponent<Kissyface_Throw>();
             if(throwClass!=null)
             {

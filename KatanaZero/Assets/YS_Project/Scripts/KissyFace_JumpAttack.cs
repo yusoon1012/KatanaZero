@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class KissyFace_JumpAttack : MonoBehaviour
@@ -11,7 +12,8 @@ public class KissyFace_JumpAttack : MonoBehaviour
     Rigidbody2D rb;
     bool jumpAttack = false;
     Kissyface_manager manager;
-
+    private IEnumerator jumpAttackCoroutine;
+    private IEnumerator axeCoroutine;
     // Start is called before the first frame update
     void Start()
     {
@@ -24,23 +26,40 @@ public class KissyFace_JumpAttack : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         rb.gravityScale = 1f;
         jumpAttack = false;
-        StartCoroutine(JumpAttack());
+        manager.isAttackable = true;
+        jumpAttackCoroutine = JumpAttack();
+        StartCoroutine(jumpAttackCoroutine);
+
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        if(manager.isHit)
+        {
+            StopCoroutine(jumpAttackCoroutine);
+            StopCoroutine(axeCoroutine);
+            return;
+        }
         
         
     }
     private IEnumerator AxeRoutine()
     {
+        Debug.Log("AxeRoutine() 실행1");
+
         yield return new WaitForSeconds(0.2f);
         GameObject axe = Instantiate(attackPrefab, transform.position, transform.rotation);
        
         rb.gravityScale = 1.2f;
         yield return new WaitForSeconds(1f);
+        if (manager.isHit)
+        {
+            yield break;
+
+        }
+        Debug.Log("AxeRoutine() 실행2");
+        
         kissyAni.Play("Kissyface_landattack");
         manager.isAction = false;
 
@@ -56,7 +75,16 @@ public class KissyFace_JumpAttack : MonoBehaviour
             jumpAttack = true;
             Vector3 jump = new Vector3(0, 7f, 0);
             rb.AddForce(jump, ForceMode2D.Impulse);
-            StartCoroutine(AxeRoutine());
+            axeCoroutine= AxeRoutine();
+            if (manager.isHit)
+            {
+                StopCoroutine(jumpAttackCoroutine);
+                StopCoroutine(axeCoroutine);
+               
+            }
+            Debug.Log("AxeRoutine() 실행");
+
+            StartCoroutine(axeCoroutine);
         }
     }
 

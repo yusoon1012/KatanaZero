@@ -9,7 +9,9 @@ public class Kissyface_manager : MonoBehaviour
     public int lastPattern=0;
     public BoxCollider2D playerCollider;
     public Transform playerTransform;
-
+    public bool isAttackable = false;
+    public bool isHit = false;
+    private bool isBlock = false;  
     private KissyFace_JumpAttack jumpAttack;
     private Kissyface_Lunge lunge;
     private Kissyface_Throw throwAttack;
@@ -21,6 +23,7 @@ public class Kissyface_manager : MonoBehaviour
     Animator anim;
     Vector3 leftAngle = new Vector3(0, 180, 0);
     Vector3 rightAngle = new Vector3(0, 0, 0);
+    Rigidbody2D rb;
     // Start is called before the first frame update
     void Start()
     {
@@ -30,6 +33,7 @@ public class Kissyface_manager : MonoBehaviour
         jumpAttack = GetComponent<KissyFace_JumpAttack>();
         lunge = GetComponent<Kissyface_Lunge>();
         StartCoroutine(SelectAction());
+        rb = GetComponent<Rigidbody2D>();
         Physics2D.IgnoreCollision(kissyfaceCollider, playerCollider);
 
     }
@@ -39,7 +43,8 @@ public class Kissyface_manager : MonoBehaviour
     {
         if(!isAction)
         {
-            
+            rb.gravityScale = 1;
+            isAttackable = false;
             if(playerTransform.position.x<transform.position.x&&transform.eulerAngles!=leftAngle)
             {
                 transform.eulerAngles = leftAngle;
@@ -53,9 +58,53 @@ public class Kissyface_manager : MonoBehaviour
             throwAttack.enabled = false;
             StartCoroutine(SelectAction());
         }
+        if(isHit)
+        {
+            lunge.enabled = false;
+            jumpAttack.enabled = false;
+            throwAttack.enabled = false;
+            isAction = true;
+        }
+        if(!isHit&& isBlock)
+        {
+            lunge.enabled = false;
+            jumpAttack.enabled = false;
+            throwAttack.enabled = false;
+            isAction = true;
+        }
+    }
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        
+    }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("PlayerAttack"))
+        {
+            Debug.Log("공격에 맞았다.");
+            if (isAttackable)
+            {
+                anim.Play("Kissyface_hurt");
+                isHit = true;
+                isAction = true;
+                rb.gravityScale = 2;
+                StartCoroutine(RecoverRoutine());
+
+            }
+            else
+            {
+                anim.Play("Kissyface_block");
+                isAction = true;
+                isBlock = true;
+                StartCoroutine(BlockRoutine());
+            }
+        }
     }
     private IEnumerator SelectAction()
     {
+        if(!isAction&&!isBlock)
+        {
+        isAction = true;
         int waitSecond;
         if (lastPattern == LUNGE)
         {
@@ -65,7 +114,6 @@ public class Kissyface_manager : MonoBehaviour
         {
             waitSecond = 1;
         }
-        isAction = true;
         while(lastPattern==pattern)
         {
         pattern = Random.Range(1, 4);
@@ -76,6 +124,10 @@ public class Kissyface_manager : MonoBehaviour
         lastPattern = pattern;
        
         yield return new WaitForSeconds(waitSecond);
+            if(isBlock)
+            {
+                yield break;
+            }
         if(pattern==JUMP_ATTACK)
         {
             jumpAttack.enabled = true;
@@ -88,5 +140,21 @@ public class Kissyface_manager : MonoBehaviour
         {
             throwAttack.enabled = true;
         }
+        }
+    }
+    private IEnumerator RecoverRoutine()
+    {
+        yield return new WaitForSeconds(1);
+        anim.Play("Kissyface_recover");
+        isAction = false;
+        isHit = false;
+
+    }
+    private IEnumerator BlockRoutine()
+    {
+        yield return new WaitForSeconds(1);
+        StopAllCoroutines();
+        isAction = false;
+        isBlock = false;
     }
 }

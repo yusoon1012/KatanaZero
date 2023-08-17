@@ -39,6 +39,7 @@ public class Kissyface_Throw : MonoBehaviour
     private IEnumerator ThrowRoutine()
     {
         yield return new WaitForSeconds(0.3f);
+        manager.isAttackable = true;
         anim.Play("Kissyface_tug");
         GameObject axe = Instantiate(throwAxePrefab, transform.position, transform.rotation);
 

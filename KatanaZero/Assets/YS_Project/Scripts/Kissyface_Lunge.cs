@@ -31,6 +31,7 @@ public class Kissyface_Lunge : MonoBehaviour
         rb.gravityScale = 1f;
         isjump = false;
         isAttack = false;
+        manager.isAttackable = true;
         initPosition = transform.position;
         targetPosition = target.position;
         initDistance = Vector2.Distance(targetPosition, transform.position);
@@ -43,7 +44,7 @@ public class Kissyface_Lunge : MonoBehaviour
     {
 
         distance = Vector2.Distance(target.position, transform.position);
-        Debug.Log(distance);
+        //Debug.Log(distance);
         
         if (distance < 1.8f&& isAttack)
         {
@@ -52,7 +53,7 @@ public class Kissyface_Lunge : MonoBehaviour
             Vector2 stopx = new Vector2(0, rb.velocity.y);
             anim.Play("Kissyface_lungeAttack");
             rb.velocity = stopx;
-           
+            
             manager.isAction = false;
             return;
         }
