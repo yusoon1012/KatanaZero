@@ -24,17 +24,7 @@ public class Kissyface_Lunge : MonoBehaviour
     }
     private void OnEnable()
     {
-        if (target.position.x < transform.position.x)
-        {
-            Vector3 leftScale = new Vector3(-1, 1, 1);
-            transform.localScale = leftScale;
-
-        }
-        else
-        {
-            Vector3 rightScale = new Vector3(1, 1, 1);
-            transform.localScale = rightScale;
-        }
+        
         manager = GetComponent<Kissyface_manager>();
         anim = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
@@ -62,6 +52,7 @@ public class Kissyface_Lunge : MonoBehaviour
             Vector2 stopx = new Vector2(0, rb.velocity.y);
             anim.Play("Kissyface_lungeAttack");
             rb.velocity = stopx;
+           
             manager.isAction = false;
             return;
         }

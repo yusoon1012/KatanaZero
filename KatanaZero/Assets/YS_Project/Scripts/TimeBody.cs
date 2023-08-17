@@ -101,7 +101,7 @@ public class TimeBody : MonoBehaviour
     }
     void Record()
     {
-        positions.Insert(0,transform.position);
+        positions.Insert(0 ,transform.position);
         scales.Insert(0, transform.localScale);
         animations.Insert(0, animator.GetCurrentAnimatorClipInfo(0));
         

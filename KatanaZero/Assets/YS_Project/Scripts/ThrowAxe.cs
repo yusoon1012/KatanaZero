@@ -8,6 +8,7 @@ public class ThrowAxe : MonoBehaviour
     Rotate rotateClass;
     Rigidbody2D rb;
     private Vector3 rotate;
+    private bool isWall=false;
     // Start is called before the first frame update
     void Start()
     {
@@ -25,8 +26,30 @@ public class ThrowAxe : MonoBehaviour
     {
         if(collision.tag.Equals("Wall"))
         {
+            isWall = true;
             rb.velocity = Vector2.zero;
             rotateClass.isStop = true;
+            StartCoroutine(Reverse());
         }
+        if(collision.tag.Equals("Boss"))
+        {
+            Kissyface_Throw throwClass = collision.GetComponent<Kissyface_Throw>();
+            if(throwClass!=null)
+            {
+                if(isWall==true)
+                {
+                StartCoroutine(throwClass.ReturnRoutine());
+                    Destroy(gameObject);
+                }
+            }
+        }
+    }
+    private IEnumerator Reverse()
+    {
+        yield return new WaitForSeconds(1f);
+        rotateClass.isWall = true;
+        rotateClass.isStop = false;
+        rb.velocity = transform.right * -speed;
+
     }
 }

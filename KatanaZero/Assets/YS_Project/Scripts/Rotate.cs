@@ -6,6 +6,7 @@ public class Rotate : MonoBehaviour
 {
     public float spinSpeed = 1000f;
     public bool isStop = false;
+    public bool isWall = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -15,11 +16,16 @@ public class Rotate : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(!isStop)
+        if(!isStop&&!isWall)
         {
         float rotationAmount = spinSpeed * Time.deltaTime;
         transform.Rotate(Vector3.back, rotationAmount);
 
+        }
+        if(!isStop&&isWall)
+        {
+            float rotationAmount = spinSpeed * Time.deltaTime;
+            transform.Rotate(Vector3.back, -rotationAmount);
         }
     }
     public void StopRotate()

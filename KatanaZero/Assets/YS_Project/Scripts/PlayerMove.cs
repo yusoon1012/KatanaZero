@@ -97,11 +97,11 @@ public class PlayerMove : MonoBehaviour
         }
         if (player.GetButton("MoveLeft"))
         {
-            if(isWallJump)
+            if (isWallJump)
             {
                 return;
             }
-            if(isWall&&transform.localScale.x==-1)
+            if (isWall && transform.localScale.x == -1)
             {
                 isRun = false;
                 return;
@@ -154,6 +154,11 @@ public class PlayerMove : MonoBehaviour
 
 
 
+        }
+        if(player.GetButtonUp("MoveRight")&& isGrounded||player.GetButtonUp("MoveLeft")&&isGrounded)
+        {
+            Vector2 stopVelocity = new Vector2(0, playerRigid.velocity.y);
+            playerRigid.velocity = stopVelocity;
         }
         playerAni.SetBool("Run", isRun);
         if (player.GetButtonDown("Jump"))
