@@ -13,7 +13,7 @@ public class JumpAxe : MonoBehaviour
     private void Start()
     {
         radius = 0.1f;
-        Destroy(gameObject, 1f);
+        Destroy(gameObject, 0.8f);
         initialCenterPosition = transform.position;
     }
     void Update()
@@ -30,12 +30,12 @@ public class JumpAxe : MonoBehaviour
         
         if(!isMaxSize)
         {
-            radius += 5f*Time.deltaTime;
+            radius += 7f*Time.deltaTime;
 
         }
         else
         {
-            radius -= 5f * Time.deltaTime;
+            radius -= 7f * Time.deltaTime;
 
         }
         angle += speed * Time.deltaTime;
