@@ -93,35 +93,35 @@ public class PlayerMove : MonoBehaviour
             }
             return;
         }
-        //if ((player.GetButton("Down") && player.GetButtonDown("MoveLeft") && isGrounded)
-        //    || (player.GetButtonDown("Down") && player.GetButton("MoveLeft") && isGrounded))
-        //{
-        //    if(isDodge==false)
-        //    {
-        //        playerRigid.velocity = Vector2.zero;
-        //        transform.localScale = leftScale;
-        //        direction = -1;
-        //        isDodge = true;
-        //        Vector2 rollMoveLeft = new Vector2(direction * 10, playerRigid.velocity.y);
-        //        playerRigid.AddForce(rollMoveLeft, ForceMode2D.Impulse);
-        //        playerAni.Play("PlayerRoll");
-        //    }
-        //}
-        //else if ((player.GetButton("Down") && player.GetButtonDown("MoveRight") && isGrounded)
-        //    || (player.GetButtonDown("Down") && player.GetButton("MoveRight") && isGrounded))
-        //{
+        if ((player.GetButton("Down") && player.GetButtonDown("MoveLeft") && isGrounded)
+            || (player.GetButtonDown("Down") && player.GetButton("MoveLeft") && isGrounded))
+        {
+            if (isDodge == false)
+            {
+                playerRigid.velocity = Vector2.zero;
+                transform.localScale = leftScale;
+                direction = -1;
+                isDodge = true;
+                Vector2 rollMoveLeft = new Vector2(direction * 10, playerRigid.velocity.y);
+                playerRigid.AddForce(rollMoveLeft, ForceMode2D.Impulse);
+                playerAni.Play("PlayerRoll");
+            }
+        }
+        else if ((player.GetButton("Down") && player.GetButtonDown("MoveRight") && isGrounded)
+            || (player.GetButtonDown("Down") && player.GetButton("MoveRight") && isGrounded))
+        {
 
-        //    if(isDodge==false)
-        //    {
-        //        playerRigid.velocity = Vector2.zero;
-        //        transform.localScale = rightScale;
-        //        direction = 1;
-        //    isDodge = true;
-        //        Vector2 rollMoveRight = new Vector2(direction * 10, playerRigid.velocity.y);
-        //        playerRigid.AddForce(rollMoveRight, ForceMode2D.Impulse);
-        //    playerAni.Play("PlayerRoll");
-        //    }
-        //}
+            if (isDodge == false)
+            {
+                playerRigid.velocity = Vector2.zero;
+                transform.localScale = rightScale;
+                direction = 1;
+                isDodge = true;
+                Vector2 rollMoveRight = new Vector2(direction * 10, playerRigid.velocity.y);
+                playerRigid.AddForce(rollMoveRight, ForceMode2D.Impulse);
+                playerAni.Play("PlayerRoll");
+            }
+        }
 
         if (state == PlayerState.Idle)
         {
@@ -133,28 +133,28 @@ public class PlayerMove : MonoBehaviour
             ghost.isGhostMake = true;
 
         }
-        //if (isDodge ==true)
-        //{
-        //    ghost.isGhostMake = true;
+        if (isDodge == true)
+        {
+            ghost.isGhostMake = true;
 
-        //    playerRigid.gravityScale = 3f;
-        //    rollTimer += Time.deltaTime;
-        //    if(rollTimer>=rollRate)
-        //    {
-        //        rollTimer = 0;
-        //        isDodge = false;
-        //        // playerRigid.velocity = Vector2.zero;
-        //        rollDust.SetActive(false);
-        //        playerRigid.gravityScale = 1f;
-        //    }
-        //    else
-        //    {
-        //        rollDust.SetActive(true);
+            playerRigid.gravityScale = 3f;
+            rollTimer += Time.deltaTime;
+            if (rollTimer >= rollRate)
+            {
+                rollTimer = 0;
+                isDodge = false;
+                // playerRigid.velocity = Vector2.zero;
+                rollDust.SetActive(false);
+                playerRigid.gravityScale = 1f;
+            }
+            else
+            {
+                rollDust.SetActive(true);
 
-        //    }
-        //    return;
-        //}
-       
+            }
+            return;
+        }
+
 
         if (player.GetButtonDown("MoveLeft"))
         {
@@ -253,9 +253,12 @@ public class PlayerMove : MonoBehaviour
         }
         if (player.GetButtonUp("moveright") && isGrounded || player.GetButtonUp("moveleft") && isGrounded)
         {
+            if(isWall==false)
+            {
 
             Vector2 stopvelocity = new Vector2(0, playerRigid.velocity.y);
             playerRigid.velocity = stopvelocity;
+            }
            
         }
        
@@ -282,7 +285,7 @@ public class PlayerMove : MonoBehaviour
             {
                
                 playerAni.Play("PlayerFall");
-                playerRigid.gravityScale = 2f;
+               // playerRigid.gravityScale = 2f;
                 
             }
         }
@@ -297,10 +300,7 @@ public class PlayerMove : MonoBehaviour
 
             
         }
-        if (isJump && moveDirection != 0 && Mathf.Sign(moveDirection) != Mathf.Sign(transform.localScale.x))
-        {
-            playerRigid.velocity = new Vector2(playerRigid.velocity.x * 0.01f, playerRigid.velocity.y);
-        }
+
 
 
         if (!isAttacking)
@@ -480,7 +480,7 @@ public class PlayerMove : MonoBehaviour
             isStair = false;
             if(isGrounded==false)
             {
-            playerRigid.gravityScale = 3f;
+            //playerRigid.gravityScale = 3f;
 
             }
         }
