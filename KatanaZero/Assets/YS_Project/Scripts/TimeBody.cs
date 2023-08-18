@@ -103,7 +103,7 @@ public class TimeBody : MonoBehaviour
     {
         positions.Insert(0 ,transform.position);
         scales.Insert(0, transform.localScale);
-        animations.Insert(0, animator.GetCurrentAnimatorClipInfo(0));
+        //animations.Insert(0, animator.GetCurrentAnimatorClipInfo(0));
         
     }
     void StartReplay()

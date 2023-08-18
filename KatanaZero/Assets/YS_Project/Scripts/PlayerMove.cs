@@ -14,14 +14,20 @@ public class PlayerMove : MonoBehaviour
     {
         Intro, Idle, Run, Jump, Attack
     }
+    #region Public 변수
     public GameObject slash;
     public Transform wallCheck;
     public float wallCheckDis;
     public LayerMask wall_mask;
     public PlayerState state;
-    Player player;
-    int playerId = 0;
+    public IntroCanvas introCan;
+    public GameObject rollDust;
     public float moveSpeed = 3f;
+    public float attackDuration = 0.2f; // ���� ���� �ð�
+    public float attackSpeed = 5f; // ���� �� ������ �ӵ�
+    public float attackCooldown = 1f; // ���� ��ٿ�
+    public bool isDodge = false;
+    #endregion
     private float jumpForce = 7f;
     private bool isRun;
     private bool isJump;
@@ -35,20 +41,21 @@ public class PlayerMove : MonoBehaviour
     private float wallJumpRate = 0.2f;
     private bool isGrounded;
     private float moveDirection;
+    private float jumpTimer = 0;
+    private float jumpRate = 0.2f;
+    private BoxCollider2D playerCollider;
+    private float rollTimer = 0;
+    private float rollRate = 0.3f;
+    private int attackCount = 0;
+    private float lastAttackTime;
     Rigidbody2D playerRigid;
     Animator playerAni;
     Ghost ghost;
-    public IntroCanvas introCan;
-    private BoxCollider2D playerCollider;
-
-    public float attackDuration = 0.2f; // ���� ���� �ð�
-    public float attackSpeed = 5f; // ���� �� ������ �ӵ�
-
-    public float attackCooldown = 1f; // ���� ��ٿ�
-    private int attackCount = 0;
-    private float lastAttackTime;
+    Player player;
+    int playerId = 0;
     Vector2 targetPosition;
-
+    Vector3 leftScale=new Vector3(-1f, 1f, 1f);
+    Vector3 rightScale= new Vector3(1f, 1f, 1f);
     // Start is called before the first frame update
     void Start()
     {
@@ -86,6 +93,35 @@ public class PlayerMove : MonoBehaviour
             }
             return;
         }
+        //if ((player.GetButton("Down") && player.GetButtonDown("MoveLeft") && isGrounded)
+        //    || (player.GetButtonDown("Down") && player.GetButton("MoveLeft") && isGrounded))
+        //{
+        //    if(isDodge==false)
+        //    {
+        //        playerRigid.velocity = Vector2.zero;
+        //        transform.localScale = leftScale;
+        //        direction = -1;
+        //        isDodge = true;
+        //        Vector2 rollMoveLeft = new Vector2(direction * 10, playerRigid.velocity.y);
+        //        playerRigid.AddForce(rollMoveLeft, ForceMode2D.Impulse);
+        //        playerAni.Play("PlayerRoll");
+        //    }
+        //}
+        //else if ((player.GetButton("Down") && player.GetButtonDown("MoveRight") && isGrounded)
+        //    || (player.GetButtonDown("Down") && player.GetButton("MoveRight") && isGrounded))
+        //{
+
+        //    if(isDodge==false)
+        //    {
+        //        playerRigid.velocity = Vector2.zero;
+        //        transform.localScale = rightScale;
+        //        direction = 1;
+        //    isDodge = true;
+        //        Vector2 rollMoveRight = new Vector2(direction * 10, playerRigid.velocity.y);
+        //        playerRigid.AddForce(rollMoveRight, ForceMode2D.Impulse);
+        //    playerAni.Play("PlayerRoll");
+        //    }
+        //}
 
         if (state == PlayerState.Idle)
         {
@@ -97,16 +133,52 @@ public class PlayerMove : MonoBehaviour
             ghost.isGhostMake = true;
 
         }
+        //if (isDodge ==true)
+        //{
+        //    ghost.isGhostMake = true;
+
+        //    playerRigid.gravityScale = 3f;
+        //    rollTimer += Time.deltaTime;
+        //    if(rollTimer>=rollRate)
+        //    {
+        //        rollTimer = 0;
+        //        isDodge = false;
+        //        // playerRigid.velocity = Vector2.zero;
+        //        rollDust.SetActive(false);
+        //        playerRigid.gravityScale = 1f;
+        //    }
+        //    else
+        //    {
+        //        rollDust.SetActive(true);
+
+        //    }
+        //    return;
+        //}
+       
+
         if (player.GetButtonDown("MoveLeft"))
         {
             moveDirection = -1;
+           
 
         }
         else if (player.GetButtonDown("MoveRight"))
         {
             moveDirection = 1;
+           
+
 
         }
+        else if(player.GetButtonDown("Down") && isGrounded)
+        {
+            playerAni.Play("PlayerCrouch");
+        }
+
+        if (player.GetButtonUp("Down") && isGrounded)
+        {
+            playerAni.Play("PlayerPostCrouch");
+        }
+        
         if (player.GetButton("MoveLeft"))
         {
             if (isWallJump)
@@ -121,11 +193,15 @@ public class PlayerMove : MonoBehaviour
             isRun = true;
             ghost.isGhostMake = true;
             Vector3 movement = new Vector3(-moveSpeed, playerRigid.velocity.y, 0f);
-            transform.localScale = new Vector3(-1f, 1f, 1f);
+            transform.localScale = leftScale;
             state = PlayerState.Run;
             playerRigid.velocity = movement;
+            if(isGrounded && isJump == false)
+            {
 
-
+            playerAni.Play("PlayerRun");
+            }
+            
 
         }
         else if (player.GetButton("MoveRight"))
@@ -144,11 +220,20 @@ public class PlayerMove : MonoBehaviour
 
             isRun = true;
             Vector3 movement = new Vector3(moveSpeed, playerRigid.velocity.y, 0f);
-            transform.localScale = new Vector3(1f, 1f, 1f);
+            transform.localScale = rightScale;
             state = PlayerState.Run;
 
             playerRigid.velocity = movement;
+            if (isGrounded && isJump == false)
+            {
 
+            playerAni.Play("PlayerRun");
+            }
+
+        }
+        else if (player.GetButton("Down")&&isGrounded)
+        {
+            playerAni.Play("PlayerCrouchHold");
 
         }
         else
@@ -166,19 +251,22 @@ public class PlayerMove : MonoBehaviour
 
 
         }
-        if(player.GetButtonUp("MoveRight")&& isGrounded||player.GetButtonUp("MoveLeft")&&isGrounded)
+        if (player.GetButtonUp("moveright") && isGrounded || player.GetButtonUp("moveleft") && isGrounded)
         {
-            Vector2 stopVelocity = new Vector2(0, playerRigid.velocity.y);
-            playerRigid.velocity = stopVelocity;
+
+            Vector2 stopvelocity = new Vector2(0, playerRigid.velocity.y);
+            playerRigid.velocity = stopvelocity;
+           
         }
        
-        playerAni.SetBool("Run", isRun);
-        if (player.GetButtonDown("Jump"))
+
+        if (player.GetButtonDown("Jump")&&!isWall)
         {
             if (isJump == false)
             {
 
                 isJump = true;
+                playerAni.Play("PlayerJump");
             }
             else
             {
@@ -187,10 +275,33 @@ public class PlayerMove : MonoBehaviour
             playerRigid.AddForce(new Vector2(0f, jumpForce), ForceMode2D.Impulse);
 
         }
+        if(isJump==true&& isWall==false)
+        {
+            jumpTimer += Time.deltaTime;
+            if(jumpTimer>=0.5f)
+            {
+               
+                playerAni.Play("PlayerFall");
+                playerRigid.gravityScale = 2f;
+                
+            }
+        }
+        if (isJump == false && isGrounded == false && isWall == false)
+        {
+            playerAni.Play("PlayerFall");
+
+        }
+        else if (isGrounded)
+        {
+            jumpTimer = 0;
+
+            
+        }
         if (isJump && moveDirection != 0 && Mathf.Sign(moveDirection) != Mathf.Sign(transform.localScale.x))
         {
             playerRigid.velocity = new Vector2(playerRigid.velocity.x * 0.01f, playerRigid.velocity.y);
         }
+
 
         if (!isAttacking)
         {
@@ -279,6 +390,7 @@ public class PlayerMove : MonoBehaviour
                     playerAni.Play("Player_Flip");
                     isWallJump = true;
                     Invoke("FreezeX", 0.3f);
+                    
                     playerRigid.velocity = new Vector2(-playerScale * 10f, 0.9f * 8f);
                     if (transform.localScale.x == 1)
                     {
@@ -306,6 +418,8 @@ public class PlayerMove : MonoBehaviour
     {
         if (collision.collider.tag.Equals("Floor") || collision.collider.tag.Equals("Platform"))
         {
+            playerRigid.gravityScale = 1f;
+            playerAni.Play("PlayerAnimation");
             isGrounded = true;
             attackCount = 0;
             isJump = false;
@@ -314,6 +428,8 @@ public class PlayerMove : MonoBehaviour
         {
             attackCount = 0;
             isJump = false;
+            playerAni.Play("PlayerAnimation");
+            isGrounded = true;
             isStair = true;
         }
         if (collision.collider.tag.Equals("Wall"))
@@ -362,6 +478,11 @@ public class PlayerMove : MonoBehaviour
         {
 
             isStair = false;
+            if(isGrounded==false)
+            {
+            playerRigid.gravityScale = 3f;
+
+            }
         }
         if (collision.collider.tag.Equals("Floor") || collision.collider.tag.Equals("Platform"))
         {
@@ -388,5 +509,6 @@ public class PlayerMove : MonoBehaviour
         yield return new WaitForSeconds(0.3f);
         isAttacking = false;
     }
+   
 
 }

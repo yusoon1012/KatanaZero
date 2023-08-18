@@ -51,6 +51,16 @@ public class ThrowAxe : MonoBehaviour
                 }
             }
         }
+        if(collision.tag.Equals("PlayerAttack"))
+        {
+            Kissyface_Throw throwClass = FindAnyObjectByType<Kissyface_Throw>();
+            if (throwClass != null)
+            {
+                isWall = true;
+                rb.velocity = Vector2.zero;
+                FastReverse();
+            }
+        }
     }
     private IEnumerator Reverse()
     {
@@ -59,5 +69,11 @@ public class ThrowAxe : MonoBehaviour
         rotateClass.isStop = false;
         rb.velocity = transform.right * -speed;
 
+    }
+    private void FastReverse()
+    {
+        rotateClass.isWall = true;
+        rotateClass.isStop = false;
+        rb.velocity = transform.right * (-speed*2);
     }
 }

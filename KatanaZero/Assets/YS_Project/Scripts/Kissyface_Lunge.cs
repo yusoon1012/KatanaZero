@@ -19,13 +19,15 @@ public class Kissyface_Lunge : MonoBehaviour
     float initDistance;
     float distance;
     Kissyface_manager manager;
+    Vector3 leftAngle = new Vector3(0, 180, 0);
+    Vector3 rightAngle = new Vector3(0, 0, 0);
     // Start is called before the first frame update
     void Start()
     {
     }
     private void OnEnable()
     {
-        
+       
         manager = GetComponent<Kissyface_manager>();
         anim = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();

@@ -860,10 +860,6 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8981571697883857509, guid: ca177a7a83823704992f2ca2f42e6a75, type: 3}
-      propertyPath: m_LocalScale.x
-      value: -1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8981571697883857509, guid: ca177a7a83823704992f2ca2f42e6a75, type: 3}
       propertyPath: m_LocalPosition.x
       value: 4.94
       objectReference: {fileID: 0}
@@ -1534,6 +1530,8 @@ MonoBehaviour:
   lastPattern: 0
   playerCollider: {fileID: 966387488}
   playerTransform: {fileID: 966387492}
+  isAttackable: 0
+  isHit: 0
 --- !u!114 &1128837298
 MonoBehaviour:
   m_ObjectHideFlags: 0

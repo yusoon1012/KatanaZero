@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 public class Kissyface_manager : MonoBehaviour
 {
@@ -24,6 +26,7 @@ public class Kissyface_manager : MonoBehaviour
     Vector3 leftAngle = new Vector3(0, 180, 0);
     Vector3 rightAngle = new Vector3(0, 0, 0);
     Rigidbody2D rb;
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -84,6 +87,7 @@ public class Kissyface_manager : MonoBehaviour
                 anim.Play("Kissyface_hurt");
                 isHit = true;
                 isAction = true;
+                rb.velocity = Vector2.zero;
                 rb.gravityScale = 2;
                 StartCoroutine(RecoverRoutine());
 
