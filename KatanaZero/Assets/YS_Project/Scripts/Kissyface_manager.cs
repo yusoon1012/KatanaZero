@@ -2,10 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using UnityEngine;
+using Rewired;
+using UnityEngine.UI;
 using UnityEngine.Rendering.Universal;
 
 public class Kissyface_manager : MonoBehaviour
 {
+    public GameObject headPrefab;
+    public GameObject playerObj;
+    public GameObject sliderObj;
     public bool isAction = false;
     public int pattern=0;
     public int lastPattern=0;
@@ -13,30 +18,46 @@ public class Kissyface_manager : MonoBehaviour
     public Transform playerTransform;
     public bool isAttackable = false;
     public bool isHit = false;
+    public Slider gageSlider;
+    private float maxGage = 100;
+    public float fillSpeed = 0.1133f; // 11.33...% / 초
+    private float currentFill = 0f;
+    private float struggleTimer = 0;
+    private float struggleRate = 3;
+
+    private bool isHeadSpawn=false;
+    private bool isDie = false;
+    private bool isStruggle = false;
     private bool isBlock = false;  
     private KissyFace_JumpAttack jumpAttack;
     private Kissyface_Lunge lunge;
     private Kissyface_Throw throwAttack;
     private BoxCollider2D kissyfaceCollider;
+
     const int IDLE = 0;
     const int JUMP_ATTACK = 1;
     const int LUNGE = 2;
     const int THROW = 3;
     Animator anim;
+    Player player;
     Vector3 leftAngle = new Vector3(0, 180, 0);
     Vector3 rightAngle = new Vector3(0, 0, 0);
+    Vector3 playerAttackPosition;
+    Vector3 jailPosition = new Vector3(-20, -3.8f, 0);
     Rigidbody2D rb;
     
     // Start is called before the first frame update
     void Start()
     {
+        gageSlider.value = 0;
+        player = ReInput.players.GetPlayer(0);
+        rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         kissyfaceCollider = GetComponent<BoxCollider2D>();
         throwAttack = GetComponent<Kissyface_Throw>();
         jumpAttack = GetComponent<KissyFace_JumpAttack>();
         lunge = GetComponent<Kissyface_Lunge>();
         StartCoroutine(SelectAction());
-        rb = GetComponent<Rigidbody2D>();
         Physics2D.IgnoreCollision(kissyfaceCollider, playerCollider);
 
     }
@@ -44,6 +65,40 @@ public class Kissyface_manager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(isStruggle)
+        {
+            if(player.GetButton("Attack"))
+            {
+                sliderObj.SetActive(true);
+                struggleTimer += Time.deltaTime;
+                if(struggleTimer>=struggleRate)
+                {
+                    isStruggle = false;
+                   
+                    struggleTimer = 0;
+                    sliderObj.SetActive(false);
+                    StartCoroutine(PlayerPositionReset());
+                    StartCoroutine(RecoverRoutine());
+                }
+                currentFill += fillSpeed * Time.deltaTime;
+                gageSlider.value = currentFill;
+            }
+        }
+        
+        //Debug.Log(currentFill);
+        if(currentFill>=1)
+        {
+            if(isDie==false)
+            {
+
+                 StopAllCoroutines();
+                anim.Play("Kissyface_die");
+                isDie = true;
+                StartCoroutine(DieRoutine());
+
+            }
+            return;
+        }
         if(!isAction)
         {
             rb.gravityScale = 1;
@@ -82,14 +137,37 @@ public class Kissyface_manager : MonoBehaviour
         if (collision.CompareTag("PlayerAttack"))
         {
             Debug.Log("공격에 맞았다.");
+            if(isDie)
+            {
+                anim.Play("Kissyface_nohead");
+                if(isHeadSpawn==false)
+                {
+                    isHeadSpawn = true;
+                GameObject head = Instantiate(headPrefab, transform.position, transform.rotation);
+                }
+                return;
+            }
             if (isAttackable)
             {
+                if (isHit&&isDie==false)
+                {
+                    StopAllCoroutines();
+                    anim.Play("Kissyface_struggle");
+                    playerAttackPosition = playerObj.transform.position;
+                    playerObj.transform.position = jailPosition;
+                     isStruggle = true;
+                    isAction = true;
+                }
                 anim.Play("Kissyface_hurt");
                 isHit = true;
                 isAction = true;
                 rb.velocity = Vector2.zero;
                 rb.gravityScale = 2;
-                StartCoroutine(RecoverRoutine());
+                if (!isHit && isDie == false)
+                {
+                    StartCoroutine(RecoverRoutine());
+
+                }
 
             }
             else
@@ -99,6 +177,7 @@ public class Kissyface_manager : MonoBehaviour
                 isBlock = true;
                 StartCoroutine(BlockRoutine());
             }
+           
         }
     }
     private IEnumerator SelectAction()
@@ -106,15 +185,7 @@ public class Kissyface_manager : MonoBehaviour
         if(!isAction&&!isBlock)
         {
         isAction = true;
-        int waitSecond;
-        if (lastPattern == LUNGE)
-        {
-            waitSecond = 2;
-        }
-        else
-        {
-            waitSecond = 1;
-        }
+        
         while(lastPattern==pattern)
         {
         pattern = Random.Range(1, 4);
@@ -124,7 +195,7 @@ public class Kissyface_manager : MonoBehaviour
         
         lastPattern = pattern;
        
-        yield return new WaitForSeconds(waitSecond);
+        yield return new WaitForSeconds(1);
             if(isBlock)
             {
                 yield break;
@@ -146,6 +217,8 @@ public class Kissyface_manager : MonoBehaviour
     private IEnumerator RecoverRoutine()
     {
         yield return new WaitForSeconds(1);
+        if(isDie)
+        { yield break; }
         anim.Play("Kissyface_recover");
         isAction = false;
         isHit = false;
@@ -157,5 +230,21 @@ public class Kissyface_manager : MonoBehaviour
         StopAllCoroutines();
         isAction = false;
         isBlock = false;
+    }
+    private IEnumerator PlayerPositionReset()
+    {
+        yield return new WaitForSeconds(1);
+        playerObj.transform.position = playerAttackPosition;
+
+    }
+    private IEnumerator DieRoutine()
+    {
+       
+
+        StartCoroutine(PlayerPositionReset());
+        yield return new WaitForSeconds(1f);
+       
+        anim.Play("Kissyface_dead");
+        
     }
 }

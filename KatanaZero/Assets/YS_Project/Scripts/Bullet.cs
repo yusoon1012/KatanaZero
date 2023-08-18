@@ -22,6 +22,9 @@ public class Bullet : MonoBehaviour
     }
     private void Update()
     {
+        if (timeManager != null)
+        {
+
         if(timeManager.isTimeSlow)
         {
             trail.enabled = false;
@@ -29,6 +32,7 @@ public class Bullet : MonoBehaviour
         else
         {
             trail.enabled = true;
+        }
         }
     }
 

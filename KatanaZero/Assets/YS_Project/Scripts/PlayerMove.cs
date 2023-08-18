@@ -102,7 +102,7 @@ public class PlayerMove : MonoBehaviour
                 transform.localScale = leftScale;
                 direction = -1;
                 isDodge = true;
-                Vector2 rollMoveLeft = new Vector2(direction * 10, playerRigid.velocity.y);
+                Vector2 rollMoveLeft = new Vector2(direction * 12, playerRigid.velocity.y);
                 playerRigid.AddForce(rollMoveLeft, ForceMode2D.Impulse);
                 playerAni.Play("PlayerRoll");
             }
@@ -117,7 +117,7 @@ public class PlayerMove : MonoBehaviour
                 transform.localScale = rightScale;
                 direction = 1;
                 isDodge = true;
-                Vector2 rollMoveRight = new Vector2(direction * 10, playerRigid.velocity.y);
+                Vector2 rollMoveRight = new Vector2(direction * 12, playerRigid.velocity.y);
                 playerRigid.AddForce(rollMoveRight, ForceMode2D.Impulse);
                 playerAni.Play("PlayerRoll");
             }
@@ -145,6 +145,7 @@ public class PlayerMove : MonoBehaviour
                 isDodge = false;
                 // playerRigid.velocity = Vector2.zero;
                 rollDust.SetActive(false);
+                playerRigid.velocity = Vector2.zero;
                 playerRigid.gravityScale = 1f;
             }
             else
@@ -255,7 +256,7 @@ public class PlayerMove : MonoBehaviour
         {
             if(isWall==false)
             {
-
+                playerAni.Play("PlayerRuntoIdle");
             Vector2 stopvelocity = new Vector2(0, playerRigid.velocity.y);
             playerRigid.velocity = stopvelocity;
             }
