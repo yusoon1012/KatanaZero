@@ -1113,6 +1113,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Slash
       objectReference: {fileID: 0}
+    - target: {fileID: 469124027185455296, guid: abe80ff8f45c24e46a3f3adc94b8beea, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 469124027185455300, guid: abe80ff8f45c24e46a3f3adc94b8beea, type: 3}
       propertyPath: m_RootOrder
       value: 8
