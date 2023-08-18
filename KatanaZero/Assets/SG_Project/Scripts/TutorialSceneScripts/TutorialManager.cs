@@ -2,12 +2,24 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.TextCore.Text;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 public class TutorialManager : MonoBehaviour
 {
     TutorialPlayerFirstControlScript tutorialPlayer;
 
     TutorialGunEnemyScript tutorialEnemy;
+
+    // { LEGACY : 뒷배경
+    public GameObject timeBackGround;
+    SpriteRenderer timeBackGroundRenderer;
+    Color timeBackGroundColor;
+    // } LEGACY : 뒷배경
+
+    public GameObject backGroundLight;
+    public GameObject playerLight;
+    public GameObject enemyLight;
+    public Light2D globalLight;
 
     Coroutine coroutineBoxing;
     WaitForFixedUpdate waitForFixed;
@@ -16,11 +28,16 @@ public class TutorialManager : MonoBehaviour
     bool enemyShotEventTime = false;
     bool didTimeScaleEvent = false;
 
-    // Start is called before the first frame update
+
+    float backGroundRgb_A = 4;
+
+    
     void Start()
     {
         FirstInIt();
         tutorialEnemy.enemyShotEvent += EnemyShotBoolEvent;
+        //globalLight = GetComponent<Light2D>();
+        globalLight = backGroundLight.GetComponent<Light2D>();
 
     }
 
@@ -48,6 +65,8 @@ public class TutorialManager : MonoBehaviour
         {
             waitForSeconds = new WaitForSeconds(0.1f);
         }
+
+        timeBackGroundRenderer = timeBackGround.GetComponent<SpriteRenderer>();
     }
 
     public void EnemyShotBoolEvent(bool enemyShot)
@@ -67,15 +86,45 @@ public class TutorialManager : MonoBehaviour
 
     }
 
+
+
     public IEnumerator TimeCoroutine()
     {
+        enemyLight.SetActive(true);
+        playerLight.SetActive(true);
+        
         for(int i = 0; i <= 5; i++)
         {
             Time.timeScale -= 0.19f;
+
+            for(int j =0; j <= 10; j++)
+            {
+                timeBackGroundColor = globalLight.color;
+
+                timeBackGroundColor.r = timeBackGroundColor.r - backGroundRgb_A;
+                timeBackGroundColor.g = timeBackGroundColor.r - backGroundRgb_A;
+                timeBackGroundColor.b = timeBackGroundColor.r - backGroundRgb_A;
+
+                globalLight.color = timeBackGroundColor;
+
+            }
+            #region LEGACY : 뒷배경 SpareObj 조정
+            //for (int j = 0; j <= 10; j++)
+            //{
+            //    timeBackGroundColor = timeBackGroundRenderer.color;
+            //    //Debug.LogFormat("{0}", timeBackGroundRenderer.color);
+            //    timeBackGroundColor.a += backGroundRgb_A;
+            //    timeBackGroundRenderer.color = timeBackGroundColor;
+            //}
+            #endregion LEGACY : 뒷배경 SpareObj 조정
             yield return waitForSeconds;
-            //Debug.LogFormat("줄어드는 중의 타임 스케일 -> {0}", Time.timeScale);
+            
         }
-        //Debug.LogFormat("다 줄어든후 타임 스케일 -> {0}", Time.timeScale);
+
+
         Time.timeScale = 0f;
+
+
     }
+
 }

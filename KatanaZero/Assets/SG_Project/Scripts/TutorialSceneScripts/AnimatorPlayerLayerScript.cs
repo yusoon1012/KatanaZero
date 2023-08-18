@@ -22,7 +22,7 @@ public class AnimatorPlayerLayerScript : StateMachineBehaviour
 
         if (stateInfo.fullPathHash == runStateHash)
         {
-            Debug.Log("뛰는게 끝날때 들어오긴하나?");
+            //Debug.Log("뛰는게 끝날때 들어오긴하나?");
             animator.SetTrigger("ExitRun");
         }
     }

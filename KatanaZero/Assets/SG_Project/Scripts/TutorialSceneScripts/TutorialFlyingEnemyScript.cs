@@ -5,6 +5,9 @@ using UnityEngine;
 
 public class TutorialFlyingEnemyScript : MonoBehaviour
 {
+    public GameObject bloodPrefab;
+    private GameObject bloodClone;
+
 
     Coroutine enemyStart;
     WaitForSeconds waitForSecond;
@@ -12,11 +15,14 @@ public class TutorialFlyingEnemyScript : MonoBehaviour
     Rigidbody2D rigid;
     BoxCollider2D boxCollider;
 
+    Animator animator;
+
     void Start()
     {
         waitForSecond = new WaitForSeconds(0.25f);
         rigid = GetComponent<Rigidbody2D>();
         boxCollider = GetComponent<BoxCollider2D>();
+        animator = GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -29,6 +35,7 @@ public class TutorialFlyingEnemyScript : MonoBehaviour
     {
         if(collision.gameObject.CompareTag("Floor"))
         {
+            animator.SetTrigger("DropDieTrigger");
             Destroy(rigid);
             boxCollider.isTrigger = true;
         }
@@ -59,6 +66,11 @@ public class TutorialFlyingEnemyScript : MonoBehaviour
 
         this.rigid.AddForce(new Vector2(6f, 2f),ForceMode2D.Impulse);
 
+        for(int j = 0; j <= 10; j++)
+        {
+            bloodClone = Instantiate(bloodPrefab,this.transform);
+            yield return waitForSecond;
+        }
 
     }
 }
