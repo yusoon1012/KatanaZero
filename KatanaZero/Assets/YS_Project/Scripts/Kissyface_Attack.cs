@@ -20,6 +20,15 @@ public class Kissyface_Attack : MonoBehaviour
         if(collision.tag.Equals("Player"))
         {
             Debug.Log("Player≈∏∞›");
+            PlayerMove playerMove = collision.GetComponent<PlayerMove>();
+            if(playerMove!=null)
+            {
+                if(playerMove.isDodge==false)
+                {
+                playerMove.Die();
+
+                }
+            }
         }
     }
 }

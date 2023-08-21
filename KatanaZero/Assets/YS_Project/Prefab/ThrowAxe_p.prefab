@@ -148,6 +148,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 20
+  reflectSound: {fileID: 8300000, guid: 08788c0410cbdc84cb4abf49bd76c352, type: 3}
 --- !u!50 &6382811888695916740
 Rigidbody2D:
   serializedVersion: 4

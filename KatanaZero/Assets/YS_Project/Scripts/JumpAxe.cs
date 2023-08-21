@@ -53,4 +53,19 @@ public class JumpAxe : MonoBehaviour
         transform.rotation = Quaternion.Euler(0, 0, rotationAngle+90f);
 
     }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(collision.tag.Equals("Player"))
+        {
+            PlayerMove playerMove = collision.GetComponent<PlayerMove>();
+            if (playerMove != null)
+            {
+                if(playerMove.isDodge==false)
+                {
+                playerMove.Die();
+
+                }
+            }
+        }
+    }
 }

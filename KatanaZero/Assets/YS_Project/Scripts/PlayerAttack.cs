@@ -7,10 +7,20 @@ public class PlayerAttack : MonoBehaviour
 {
     public GameObject playerObj;
     public GameObject slashEffect;
+    public AudioClip[] slashClip;
+    public AudioClip killClip;
     float direction;
     Animator slashAni;
     Player player;
+    AudioSource slashSound;
     // Start is called before the first frame update
+    private void OnEnable()
+    {
+        slashSound = GetComponent<AudioSource>();
+        int randomIdx = Random.Range(0, 4);
+        slashSound.clip = slashClip[randomIdx];
+        slashSound.Play();
+    }
     void Start()
     {
         player = ReInput.players.GetPlayer(0);
@@ -50,11 +60,16 @@ public class PlayerAttack : MonoBehaviour
             EnemyRay enemyCollision = collision.GetComponent<EnemyRay>();
             if(enemyCollision!=null)
             {
+                slashSound.clip = killClip;
+                slashSound.Play();
                 enemyCollision.Die();
             }
             Enemy_Gunner gunnerCollision = collision.GetComponent<Enemy_Gunner>();
             if(gunnerCollision!=null)
             {
+                slashSound.clip = killClip;
+                slashSound.Play();
+
                 gunnerCollision.Die();
             }
            

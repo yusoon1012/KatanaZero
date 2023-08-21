@@ -31,5 +31,11 @@ public class Door : MonoBehaviour
             doorAni.SetTrigger("DoorOpen");
             Instantiate(doorAttackPrefab, transform.position, transform.rotation);
         }
+        if (collision.collider.tag.Equals("PlayerAttack"))
+        {
+            doorAni.SetTrigger("DoorOpen");
+            Instantiate(doorAttackPrefab, transform.position, transform.rotation);
+        }
     }
+    
 }

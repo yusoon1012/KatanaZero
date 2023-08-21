@@ -27,11 +27,14 @@ public class PlayerMove : MonoBehaviour
     public float attackSpeed = 5f; // ���� �� ������ �ӵ�
     public float attackCooldown = 1f; // ���� ��ٿ�
     public bool isDodge = false;
+    public bool isDie = false;
     #endregion
     private float jumpForce = 7f;
     private bool isRun;
     private bool isJump;
     private bool isStair;
+
+    private AudioSource deathSound;
     private bool isWallJump;
     private bool isWall;
     private bool isAttacking;
@@ -65,8 +68,8 @@ public class PlayerMove : MonoBehaviour
         playerAni = GetComponent<Animator>();
         ghost = FindAnyObjectByType<Ghost>();
         playerCollider = GetComponent<BoxCollider2D>();
-
-
+        introCan = FindAnyObjectByType<IntroCanvas>();
+        deathSound = GetComponent<AudioSource>();
         if (state == PlayerState.Intro)
         {
             StartCoroutine(Intro());
@@ -80,19 +83,25 @@ public class PlayerMove : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(isDie)
+        {
+            playerAni.Play("PlayerDie");
+
+            return;
+        }
         playerScale = transform.localScale.x;
         isWall = Physics2D.Raycast(wallCheck.position, Vector2.right * playerScale, wallCheckDis, wall_mask);
 
 
-        if (introCan.isIntroOver == false)
-        {
+       
             if (state == PlayerState.Intro)
             {
                 ghost.isGhostMake = false;
 
-            }
             return;
-        }
+            }
+          
+        
         if ((player.GetButton("Down") && player.GetButtonDown("MoveLeft") && isGrounded)
             || (player.GetButtonDown("Down") && player.GetButton("MoveLeft") && isGrounded))
         {
@@ -264,7 +273,7 @@ public class PlayerMove : MonoBehaviour
         }
        
 
-        if (player.GetButtonDown("Jump")&&!isWall)
+        if (player.GetButtonDown("Jump")&&!isWall&&!isWallJump)
         {
             if (isJump == false)
             {
@@ -279,7 +288,7 @@ public class PlayerMove : MonoBehaviour
             playerRigid.AddForce(new Vector2(0f, jumpForce), ForceMode2D.Impulse);
 
         }
-        if(isJump==true&& isWall==false)
+        if(isJump==true&& isWall==false&&isWallJump==false)
         {
             jumpTimer += Time.deltaTime;
             if(jumpTimer>=0.5f)
@@ -290,7 +299,7 @@ public class PlayerMove : MonoBehaviour
                 
             }
         }
-        if (isJump == false && isGrounded == false && isWall == false)
+        if (isJump == false && isGrounded == false && isWall == false&&isWallJump==false&&isAttacking==false)
         {
             playerAni.Play("PlayerFall");
 
@@ -415,6 +424,11 @@ public class PlayerMove : MonoBehaviour
     {
         isWallJump = false;
     }
+    public void Die()
+    {
+        deathSound.Play();
+        isDie = true;
+    }
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.collider.tag.Equals("Floor") || collision.collider.tag.Equals("Platform"))
@@ -495,7 +509,8 @@ public class PlayerMove : MonoBehaviour
     {
         GameManager manager = FindAnyObjectByType<GameManager>();
         manager.IntroAction();
-        playerAni.SetTrigger("PlaySong");
+        Debug.Log("intro재생되는가");
+        playerAni.Play("PlayerMusicPlay");
         yield return new WaitForSeconds(3);
         state = PlayerState.Idle;
     }

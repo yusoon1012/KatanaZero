@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SocialPlatforms;
 
 public class Kissyface_Lunge : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class Kissyface_Lunge : MonoBehaviour
     bool isjump = false;
     bool isAttack = false;
     bool isGrounded = false;
+    bool isClose = false;
     float jumpForce;
     Animator anim;
     Rigidbody2D rb;
@@ -33,6 +35,7 @@ public class Kissyface_Lunge : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         rb.gravityScale = 1f;
         isjump = false;
+        isClose = false;
         isAttack = false;
         manager.isAttackable = true;
         initPosition = transform.position;
@@ -46,21 +49,24 @@ public class Kissyface_Lunge : MonoBehaviour
     void Update()
     {
 
-        distance = Vector2.Distance(target.position, transform.position);
         //Debug.Log(distance);
+        distance = Vector2.Distance(targetPosition, transform.position);
         
         if (distance < 1.8f&& isAttack)
         {
             // ´ë»ó°úÀÇ °Å¸®°¡ ¸ØÃã °Å¸® ÀÌÇÏ¸é ¸ØÃã
             rb.gravityScale = 2f;
             Vector2 stopx = new Vector2(0, rb.velocity.y);
-            anim.Play("Kissyface_lungeAttack");
             rb.velocity = stopx;
-            if(isGrounded)
+            if (!isClose)
             {
+                 anim.Play("Kissyface_lungeAttack");
+                isClose = true;
+                manager.isAction = false;
 
-            manager.isAction = false;
             }
+
+            
             return;
         }
 
@@ -92,7 +98,7 @@ public class Kissyface_Lunge : MonoBehaviour
 
         }
         
-            if (!isAttack)
+            if (!isAttack&& distance < 1.8f)
             {
                 isAttack = true;
                 //Vector2 direction = (targetPosition - initPosition).normalized;
@@ -118,4 +124,5 @@ public class Kissyface_Lunge : MonoBehaviour
             isGrounded = false;
         }
     }
+   
 }

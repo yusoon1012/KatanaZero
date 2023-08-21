@@ -11,6 +11,7 @@ public class Bullet : MonoBehaviour
     public bool dieTrigger = false;
     TimeManager timeManager;
     TrailRenderer trail;
+    AudioSource reflectSound;
     // Start is called before the first frame update
     void Start()
     {
@@ -19,6 +20,7 @@ public class Bullet : MonoBehaviour
         timeManager = FindAnyObjectByType<TimeManager>();
         trail = GetComponent<TrailRenderer>();
         initialPosition = transform.position;
+        reflectSound = GetComponent<AudioSource>();
     }
     private void Update()
     {
@@ -27,11 +29,19 @@ public class Bullet : MonoBehaviour
 
         if(timeManager.isTimeSlow)
         {
+                if(trail!=null)
+                {
             trail.enabled = false;
+
+                }
         }
         else
         {
-            trail.enabled = true;
+                if (trail != null)
+                {
+                    trail.enabled = true;
+
+                }
         }
         }
     }
@@ -44,6 +54,7 @@ public class Bullet : MonoBehaviour
         }
         else if (collision.tag.Equals("Reflect") && !isReflected)
         {
+            reflectSound.Play();
             dieTrigger = true;
             ReflectBullet();
         }
@@ -59,6 +70,14 @@ public class Bullet : MonoBehaviour
             if (enemyGunner != null)
             {
                 enemyGunner.Die();
+            }
+        }
+        if(collision.tag.Equals("Player"))
+        {
+            PlayerMove playerMove = collision.GetComponent<PlayerMove>();
+            if(playerMove!=null)
+            {
+                playerMove.Die();
             }
         }
     }

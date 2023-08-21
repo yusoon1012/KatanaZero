@@ -5,6 +5,7 @@ using Rewired;
 
 public class IntroCanvas : MonoBehaviour
 {
+    public static IntroCanvas instance;
     Player player;
     public bool isIntroOver = false;
     public GameObject musicUi;
@@ -12,6 +13,16 @@ public class IntroCanvas : MonoBehaviour
     public GameObject timeManager;
     WaitForSeconds introTime = new WaitForSeconds(3);
 
+    private void Awake()
+    {
+        if (instance != null)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        instance = this;
+        DontDestroyOnLoad(gameObject);
+    }
     // Start is called before the first frame update
     void Start()
     {

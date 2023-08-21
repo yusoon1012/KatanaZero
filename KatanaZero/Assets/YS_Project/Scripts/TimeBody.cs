@@ -11,6 +11,7 @@ public class TimeBody : MonoBehaviour
     List<Vector3> scales;
     List<AnimatorClipInfo[]> animations;
     public Animator animator;
+    public bool isRewindOver = false;
     private bool isReplay = false;
     int positionIdx=0;
     // Start is called before the first frame update
@@ -27,7 +28,7 @@ public class TimeBody : MonoBehaviour
     void Update()
     {
         positionIdx=positions.Count;
-        if (Input.GetKeyDown(KeyCode.R))
+        if (Input.GetKey(KeyCode.R))
         {
             StartRewind();
             
@@ -38,7 +39,7 @@ public class TimeBody : MonoBehaviour
         }
         if (isRewindin)
         {
-            Rewind();
+           StartCoroutine( RewindRoutine());
         }
         if (Input.GetKeyDown(KeyCode.Q))
         {
@@ -56,24 +57,24 @@ public class TimeBody : MonoBehaviour
             Time.timeScale = 0.5f;
         }
 
+       
 
     }
     private void FixedUpdate()
     {
-       
-        if(isRewindin==false&&isReplay==false)
+
+        if (isRewindin == false && isReplay == false)
         {
             Record();
         }
-        
-       
+
     }
     void Rewind()
     {
+        Time.timeScale = 3f;
         if(positions.Count > 0)
         {
-            Time.timeScale = 0.5f;
-
+            Debug.Log("리와인드 카운트중");
             transform.position = positions[0];
             transform.localScale = scales[0];
             positions.RemoveAt(0);
@@ -91,11 +92,13 @@ public class TimeBody : MonoBehaviour
                 // Play the animation in reverse
                 animator.Play(animClip.name, 0, reversedTime);
             }
-        }
-        else
-        {
-           
 
+        }
+        else if(positions.Count<=1)
+        {
+            Debug.Log("리와인드 카운트끝");
+
+            isRewindOver = true;
             StopRewind();
         }
     }
@@ -103,7 +106,7 @@ public class TimeBody : MonoBehaviour
     {
         positions.Insert(0 ,transform.position);
         scales.Insert(0, transform.localScale);
-        //animations.Insert(0, animator.GetCurrentAnimatorClipInfo(0));
+        animations.Insert(0, animator.GetCurrentAnimatorClipInfo(0));
         
     }
     void StartReplay()
@@ -130,6 +133,16 @@ public class TimeBody : MonoBehaviour
     void StopRewind()
     {
         isRewindin = false;
+        Time.timeScale = 1f;
+
+
+    }
+    private IEnumerator RewindRoutine()
+    {
+        Time.timeScale = 3f;
+        yield return new WaitForSeconds(0.00001f);
+        Rewind();
+        //Time.timeScale = 1f;
 
     }
     private IEnumerator RePlay_IEnum()
@@ -139,7 +152,7 @@ public class TimeBody : MonoBehaviour
         {
             rigidBody.gravityScale = 0f;
         }
-        Time.timeScale = 0.5f;
+        
         for (int i = positions.Count - 1; i >= 0; i--)
         {
             transform.position = positions[i];

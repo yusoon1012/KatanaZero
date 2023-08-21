@@ -31,13 +31,15 @@ public class Enemy_Gunner : MonoBehaviour
     private bool isDie = false;
     private bool isGrounded;
     private Rigidbody2D enemyRigid;
+    AudioSource deathSound;
     // Start is called before the first frame update
     void Start()
     {
         anim = GetComponent<Animator>();
         enemyRigid = GetComponent<Rigidbody2D>();
         currentState = startingState;
-        if(currentState==EnemyState.Patrol)
+        deathSound = GetComponent<AudioSource>();
+        if (currentState==EnemyState.Patrol)
         {
         SelecTarget();
 
@@ -171,6 +173,7 @@ public class Enemy_Gunner : MonoBehaviour
         }
         public void Die()
         {
+        deathSound.Play();
         anim.Play("Gangster_Die");
         isDie = true;
         }
