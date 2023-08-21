@@ -98,7 +98,7 @@ public class Kissyface_Lunge : MonoBehaviour
 
         }
         
-            if (!isAttack&& distance < 1.8f)
+            if (!isAttack&& distance > 1.8f)
             {
                 isAttack = true;
                 //Vector2 direction = (targetPosition - initPosition).normalized;
