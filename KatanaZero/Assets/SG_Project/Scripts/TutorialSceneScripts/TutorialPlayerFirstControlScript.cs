@@ -32,6 +32,13 @@ public class TutorialPlayerFirstControlScript : MonoBehaviour
     private Rigidbody2D rigid;
 
     private StateMachineBehaviour stateMachine;
+
+    AudioSource audioSource;
+
+    // [0] = 점프소리(가끔 사용)    [1] = 점프소리(자주사용)    [2] = 구르는소리
+    // [3] = 뛰는소리1             [4] = 뛰는소리2            [5] = 뛰는소리3
+    // 뛰는소리는 3,4,5랜덤하게 재생하면될듯 (Loop 걸어줘야 할수도 있음)
+    [SerializeField] private AudioClip[] audioClip;
     
 
 
@@ -59,7 +66,7 @@ public class TutorialPlayerFirstControlScript : MonoBehaviour
         //stateMachine = GetComponent<StateMachineBehaviour>();
         animator = GetComponent<Animator>();
         rigid = GetComponent<Rigidbody2D>();
-
+        audioSource = GetComponent<AudioSource>();
         stateMachine = animator.GetBehaviour<AnimatorPlayerLayerScript>();
 
         waitForSecond = new WaitForSeconds(0.25f);
@@ -115,6 +122,10 @@ public class TutorialPlayerFirstControlScript : MonoBehaviour
             nowCutin = 1;
 
             rigid.velocity = Vector3.zero;
+
+            // TODO : 여기 구르는 소리
+            audioSource.clip = audioClip[2];
+            audioSource.Play();
             this.rigid.AddForce(new Vector2(8f, 0f), ForceMode2D.Impulse);
             animator.Play("IsRoll");
 
@@ -142,8 +153,8 @@ public class TutorialPlayerFirstControlScript : MonoBehaviour
             animator.SetTrigger("BendDownTrigger");
             jumpState = 0;
             userGameStart = true;
-
             rigid.gravityScale = 1f;
+            cmVCAM.SetActive(false);
 
             //this.transform.localScale = Vector3.one;
         }
@@ -223,6 +234,9 @@ public class TutorialPlayerFirstControlScript : MonoBehaviour
         {
             yield return waitForSecond;
         }
+        // TODO : 여기 점프소리
+        audioSource.clip = audioClip[0];
+        audioSource.Play();
 
         rigid.AddForce(new Vector2(6f, 7f), ForceMode2D.Impulse);
         animator.Play("Fall002");
@@ -244,7 +258,10 @@ public class TutorialPlayerFirstControlScript : MonoBehaviour
 
         yield return waitForFixedUpdate;
 
-        rigid.AddForce(new Vector2(-4f, 5f), ForceMode2D.Impulse);
+        rigid.AddForce(new Vector2(-4f, 4f), ForceMode2D.Impulse);
+
+        audioSource.clip = audioClip[1];
+        audioSource.Play();
 
         animator.Play("Fall002");
 
@@ -264,11 +281,11 @@ public class TutorialPlayerFirstControlScript : MonoBehaviour
     {
         if (userGameStart == true && giveScripts == false)
         {
-            Debug.Log("이제 돌려주어도 되나?");
+            //Debug.Log("이제 돌려주어도 되나?");
             // 애니메이터와 스크립트 돌려줘야함
+            audioSource = null;
             ChangeController(newController);
             movement.enabled = true;
-
             // 스크립트와 애니메이터 돌려주고 연속적으로 주지 않기위한 변수
             giveScripts = true;
 

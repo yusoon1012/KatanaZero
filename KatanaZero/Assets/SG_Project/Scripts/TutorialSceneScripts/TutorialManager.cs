@@ -25,6 +25,10 @@ public class TutorialManager : MonoBehaviour
     WaitForFixedUpdate waitForFixed;
     WaitForSeconds waitForSeconds;
 
+    private AudioSource audioSource;
+    //  0번째 배열 = 느려지는 소리    1번째 배열 = 띠링 소리
+    [SerializeField] AudioClip[] audioClip;
+
     bool enemyShotEventTime = false;
     bool didTimeScaleEvent = false;
 
@@ -38,6 +42,9 @@ public class TutorialManager : MonoBehaviour
         tutorialEnemy.enemyShotEvent += EnemyShotBoolEvent;
         //globalLight = GetComponent<Light2D>();
         globalLight = backGroundLight.GetComponent<Light2D>();
+        audioSource = GetComponent<AudioSource>();
+
+        audioSource.volume = 0.3f;
 
     }
 
@@ -92,7 +99,9 @@ public class TutorialManager : MonoBehaviour
     {
         enemyLight.SetActive(true);
         playerLight.SetActive(true);
-        
+
+        audioSource.clip = audioClip[0];
+        audioSource.Play();
         for(int i = 0; i <= 5; i++)
         {
             Time.timeScale -= 0.19f;
@@ -122,6 +131,8 @@ public class TutorialManager : MonoBehaviour
         }
 
 
+        audioSource.clip = audioClip[1];
+        audioSource.Play();
         Time.timeScale = 0f;
 
 

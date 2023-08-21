@@ -37,6 +37,10 @@ public class TutorialGunEnemyScript : MonoBehaviour
     BoxCollider2D boxCollider;
 
     Animator animator;
+    AudioSource audioSource;
+
+    // [0] = 쓰러지는 소리    [1] = 총 맞았을때 날 소리
+    [SerializeField]AudioClip []audioClip;
 
     private GameObject bloodClone;
 
@@ -73,6 +77,8 @@ public class TutorialGunEnemyScript : MonoBehaviour
         {
             waitForSeconds = new WaitForSeconds(0.1f);
         }
+
+        audioSource = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -106,6 +112,9 @@ public class TutorialGunEnemyScript : MonoBehaviour
             // 동작은 뒤로 날아가는게 맞음
             if(this.gameObject.transform.position.x < collision.gameObject.transform.position.x)
             {
+                audioSource.clip = audioClip[1];
+                audioSource.Play();
+
                 isDead = true;
                 // 뒤로 날아감
                 rigid.AddForce(new Vector2(-13f, 5f),ForceMode2D.Impulse);
@@ -116,12 +125,20 @@ public class TutorialGunEnemyScript : MonoBehaviour
             }
             else if (this.gameObject.transform.position.x > collision.gameObject.transform.position.x)
             {
+                audioSource.clip = audioClip[1];
+                audioSource.Play();
+
                 isDead = true;
                 // 앞로 날아감
                 rigid.AddForce(new Vector2(13f, 5f),ForceMode2D.Impulse);
                 rigid.gravityScale = 1f;
                 boxCollider.isTrigger = false;
                 animator.SetTrigger("EnemyDieTrigger");
+            }
+            if(isDead == true)
+            {                
+                    audioSource.clip = audioClip[0];
+                    audioSource.Play();                
             }
         }
     }
