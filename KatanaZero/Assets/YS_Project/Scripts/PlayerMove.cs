@@ -437,7 +437,11 @@ public class PlayerMove : MonoBehaviour
     {
         if (collision.CompareTag("Dead"))
         {
+            if(isDie==false)
+            {
             Die();
+
+            }
         }
     }
     private void OnCollisionEnter2D(Collision2D collision)

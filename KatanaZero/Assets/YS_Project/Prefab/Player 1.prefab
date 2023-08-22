@@ -4936,7 +4936,7 @@ Transform:
   m_GameObject: {fileID: 8981571697883857819}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: -1, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8981571696202472714}
@@ -5076,13 +5076,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56cb8f8d6f453dd408fc40500c8a0494, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameOverUi: {fileID: 0}
   slash: {fileID: 0}
   wallCheck: {fileID: 8981571696202472714}
   wallCheckDis: 0.5
   wall_mask:
     serializedVersion: 2
     m_Bits: 64
-  state: 1
+  state: 0
   introCan: {fileID: 0}
   rollDust: {fileID: 587758967}
   moveSpeed: 6
@@ -5133,6 +5134,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isRewindin: 0
   animator: {fileID: 0}
+  isRewindOver: 0
 --- !u!82 &1078093829
 AudioSource:
   m_ObjectHideFlags: 0

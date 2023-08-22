@@ -8,11 +8,21 @@ public class SoundManager : MonoBehaviour
     
     [SerializeField] private AudioClip slowMotionClip;
     [SerializeField] private AudioClip[] slashClip;
+    private static SoundManager instance;
     AudioSource soundEffect;
     Player player;
 
     private void Awake()
     {
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
         DontDestroyOnLoad(gameObject);
     }
     // Start is called before the first frame update

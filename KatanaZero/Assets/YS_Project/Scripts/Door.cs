@@ -37,5 +37,6 @@ public class Door : MonoBehaviour
             Instantiate(doorAttackPrefab, transform.position, transform.rotation);
         }
     }
+
     
 }

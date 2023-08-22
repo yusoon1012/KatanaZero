@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class IntroManager : MonoBehaviour
 {
@@ -14,14 +15,15 @@ public class IntroManager : MonoBehaviour
     private bool isSlow = false;
     public IntroCanvas introCanvas;
     public bool introOver = false;
-   
-    
+
+    int sceneIdx;
     private static IntroManager _instance;
 
     // ...
 
     private void Awake()
     {
+       
         if (_instance != null && _instance != this)
         {
             // 이미 다른 씬에서 생성된 인스턴스가 있을 경우 이 인스턴스를 파괴합니다.
@@ -31,6 +33,7 @@ public class IntroManager : MonoBehaviour
 
         DontDestroyOnLoad(gameObject);
         _instance = this;
+        
     }
     // Start is called before the first frame update
     void Start()
@@ -42,7 +45,13 @@ public class IntroManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(introOver==false)
+        string currentSceneName = SceneManager.GetActiveScene().name;
+
+        if (currentSceneName == "BossScene")
+        {
+            Destroy(gameObject);
+        }
+        if (introOver==false)
         {
             timeManager.SetActive(false);
         }
