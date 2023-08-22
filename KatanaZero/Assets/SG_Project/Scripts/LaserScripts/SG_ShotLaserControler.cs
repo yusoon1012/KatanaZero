@@ -34,6 +34,9 @@ public class SG_ShotLaserControler : MonoBehaviour
 
     private bool shotLaserIsbuttonOn = true;
 
+    private AudioSource audioSource;
+    public AudioClip[] audioclip;
+
     // Start is called before the first frame update
     public void Awake()
     {
@@ -61,6 +64,7 @@ public class SG_ShotLaserControler : MonoBehaviour
         if (shotLaserIsbuttonOn == true)
         {
             Initialization();
+            audioSource.Play();
             changeColor = StartCoroutine(ColorChange());
         }
     }
@@ -142,6 +146,19 @@ public class SG_ShotLaserControler : MonoBehaviour
         {
             defaultScale = new Vector3(0.25f, 4.93f, 1f);
         }
+        else { /*PASS*/ }
+
+        // 오디오 소스가 비어있을떄에 할당
+        if (audioSource == default || audioSource == null)
+        {
+            audioSource = GetComponent<AudioSource>();
+        }
+        else { /*PASS*/ }
+        if (audioSource != null || audioSource != default)
+        {
+            audioSource.clip = audioclip[0];
+        }
+        else { /*PASS*/ }
     }
 
     private void ShotLaserControlerIsButtonOn(bool buttonSwitch)

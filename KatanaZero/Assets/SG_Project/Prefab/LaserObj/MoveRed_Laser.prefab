@@ -1208,8 +1208,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f01b0e600ee0734390eb61441e49b10, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 0}
+  player: {fileID: 9098782405950725827, guid: 29f33aba0db44b646b1742ea56e480bd, type: 3}
   dottedLine: {fileID: 6180250113456023326}
+  audioclip:
+  - {fileID: 8300000, guid: c8be6cba785937541ba8b056454a85d1, type: 3}
 --- !u!1 &6180250113920563902
 GameObject:
   m_ObjectHideFlags: 0
