@@ -15,6 +15,7 @@ public class PlayerMove : MonoBehaviour
         Intro, Idle, Run, Jump, Attack
     }
     #region Public 변수
+    public GameObject gameOverUi;
     public GameObject slash;
     public Transform wallCheck;
     public float wallCheckDis;
@@ -56,13 +57,14 @@ public class PlayerMove : MonoBehaviour
     Ghost ghost;
     Player player;
     int playerId = 0;
+    SoundManager soundManager;
     Vector2 targetPosition;
     Vector3 leftScale=new Vector3(-1f, 1f, 1f);
     Vector3 rightScale= new Vector3(1f, 1f, 1f);
     // Start is called before the first frame update
     void Start()
     {
-
+        soundManager = FindAnyObjectByType<SoundManager>();
         player = ReInput.players.GetPlayer(playerId);
         playerRigid = GetComponent<Rigidbody2D>();
         playerAni = GetComponent<Animator>();
@@ -97,7 +99,7 @@ public class PlayerMove : MonoBehaviour
             if (state == PlayerState.Intro)
             {
                 ghost.isGhostMake = false;
-
+                
             return;
             }
           
@@ -299,7 +301,7 @@ public class PlayerMove : MonoBehaviour
                 
             }
         }
-        if (isJump == false && isGrounded == false && isWall == false&&isWallJump==false&&isAttacking==false)
+        if (isJump == false && isGrounded == false && isWall == false&&isWallJump==false&&isAttacking==false&&isStair==false)
         {
             playerAni.Play("PlayerFall");
 
@@ -318,6 +320,7 @@ public class PlayerMove : MonoBehaviour
 
             if (player.GetButtonDown("Attack") && attackCount < 4)
             {
+                soundManager.AttackSound();
                 isAttacking = true;
                 attackCount += 1;
                 playerAni.Play("PlayerAttack");
@@ -426,11 +429,20 @@ public class PlayerMove : MonoBehaviour
     }
     public void Die()
     {
+        gameOverUi.SetActive(true);
         deathSound.Play();
         isDie = true;
     }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Dead"))
+        {
+            Die();
+        }
+    }
     private void OnCollisionEnter2D(Collision2D collision)
     {
+       
         if (collision.collider.tag.Equals("Floor") || collision.collider.tag.Equals("Platform"))
         {
             playerRigid.gravityScale = 1f;
@@ -469,11 +481,14 @@ public class PlayerMove : MonoBehaviour
     {
         if (collision.collider.tag.Equals("Floor") || collision.collider.tag.Equals("Platform"))
         {
+            isGrounded = true;
             attackCount = 0;
 
         }
         if (collision.collider.tag.Equals("Stair"))
         {
+            isGrounded = true;
+
             attackCount = 0;
 
         }
@@ -507,7 +522,7 @@ public class PlayerMove : MonoBehaviour
     }
     private IEnumerator Intro()
     {
-        GameManager manager = FindAnyObjectByType<GameManager>();
+        IntroManager manager = FindAnyObjectByType<IntroManager>();
         manager.IntroAction();
         Debug.Log("intro재생되는가");
         playerAni.Play("PlayerMusicPlay");

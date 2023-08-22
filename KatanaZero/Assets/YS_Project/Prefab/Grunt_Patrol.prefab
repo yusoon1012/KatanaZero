@@ -214,7 +214,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 127074611
-  m_SortingLayer: 10
+  m_SortingLayer: 12
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 4faa489d64c93024790ee556c5bc115b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -346,6 +346,7 @@ MonoBehaviour:
   inRange: 0
   hotZone: {fileID: 8788086651627664747}
   triggerArea: {fileID: 8788086651535884881}
+  state: 1
 --- !u!114 &8788086652011660058
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -360,6 +361,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isRewindin: 0
   animator: {fileID: 0}
+  isRewindOver: 0
 --- !u!1 &8788086652937983457
 GameObject:
   m_ObjectHideFlags: 0
@@ -372,7 +374,7 @@ GameObject:
   - component: {fileID: 8788086652937983459}
   m_Layer: 0
   m_Name: HitPoint
-  m_TagString: Untagged
+  m_TagString: Dead
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -402,7 +404,7 @@ BoxCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}

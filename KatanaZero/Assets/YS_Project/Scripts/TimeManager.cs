@@ -6,6 +6,33 @@ using Rewired;
 
 public class TimeManager : MonoBehaviour
 {
+    private static TimeManager _instance;
+
+    // 다른 스크립트에서 TimeManager에 접근할 때 사용할 정적 인스턴스
+    public static TimeManager Instance
+    {
+        get
+        {
+            if (_instance == null)
+            {
+                _instance = FindObjectOfType<TimeManager>();
+            }
+            return _instance;
+        }   
+    }
+    //private void Awake()
+    //{
+    //    if (_instance != null && _instance != this)
+    //    {
+    //        // 이미 다른 씬에서 생성된 인스턴스가 있을 경우 이 인스턴스를 파괴합니다.
+    //        Destroy(this.gameObject);
+    //        return;
+    //    }
+
+    //    DontDestroyOnLoad(gameObject);
+    //    _instance = this;
+    //}
+
     Player player;
     public Slider timerSlider;
     public GameObject slowLight;
@@ -20,9 +47,11 @@ public class TimeManager : MonoBehaviour
     private bool isBatteryCharge = false;
     WaitForSeconds oneSeconds = new WaitForSeconds(1);
     WaitForSeconds halfSeconds = new WaitForSeconds(0.25f);
+    SoundManager soundManager;
     // Start is called before the first frame update
     void Start()
     {
+        soundManager = FindAnyObjectByType<SoundManager>();
         player = ReInput.players.GetPlayer(0);
         
         
@@ -38,6 +67,10 @@ public class TimeManager : MonoBehaviour
     void Update()
     {
         timerSlider.value = currentTime / timeMax;
+        if(player.GetButtonDown("SlowTime"))
+        {
+            soundManager.SlowSound();
+        }
         if(player.GetButton("SlowTime"))
         {
             isTimeSlow = true;

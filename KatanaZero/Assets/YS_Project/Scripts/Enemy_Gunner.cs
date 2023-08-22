@@ -39,9 +39,9 @@ public class Enemy_Gunner : MonoBehaviour
         enemyRigid = GetComponent<Rigidbody2D>();
         currentState = startingState;
         deathSound = GetComponent<AudioSource>();
-        if (currentState==EnemyState.Patrol)
+        if (currentState == EnemyState.Patrol)
         {
-        SelecTarget();
+            SelecTarget();
 
         }
     }
@@ -49,19 +49,19 @@ public class Enemy_Gunner : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(isDie)
+        if (isDie)
         {
             gun.SetActive(false);
-            return; 
+            return;
         }
 
         if (inRange)
         {
-           
+
 
             anim.Play("Gangster_aim");
             gun.SetActive(true);
-           
+
         }
         else
         {
@@ -111,103 +111,107 @@ public class Enemy_Gunner : MonoBehaviour
         }
     }
 
-        private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Player") && isDie == false)
         {
-            if (collision.gameObject.CompareTag("Player")&&isDie==false)
-            {
-                inRange = true;
-            }
-
-
+            inRange = true;
         }
-        private void OnTriggerStay2D(Collider2D collision)
-        {
-            if (collision.tag == "Wall")
-            {
-                return;
-            }
-            if (collision.gameObject.tag == "Player")
-            {
-                if (isDie)
-                {
-                    target = null;
-                    return;
-                }
-                if (!onStair)
-                {
-                    target = collision.transform;
 
-                }
-                inRange = true;
-                //Debug.Log("player가 트리거에 들어옴");
-            }
-            Flip();
-        }
-        void Move()
-        {
-            if(target==null)
+
+    }
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.tag == "Wall")
         {
             return;
         }
-            if (!anim.GetCurrentAnimatorStateInfo(0).IsName("Gangster_aim") && target.gameObject.tag != "Player")
-            {
-                anim.SetBool("Run", false);
-
-                anim.SetBool("Walk", true);
-                Vector2 targetPosition = new Vector2(target.position.x, transform.position.y);
-                Vector2 moveDirection = (targetPosition - (Vector2)transform.position).normalized;
-                //transform.position = Vector2.MoveTowards(transform.position, targetPosition, moveSpeed * Time.deltaTime);
-                enemyRigid.velocity = new Vector2(moveDirection.x * moveSpeed, enemyRigid.velocity.y);
-            }
-            else if (!anim.GetCurrentAnimatorStateInfo(0).IsName("Gangster_aim") && target.gameObject.tag == "Player")
-            {
-                anim.SetBool("Walk", false);
-
-                anim.SetBool("Run", true);
-                Vector2 targetPosition = new Vector2(target.position.x, transform.position.y);
-                Vector2 moveDirection = (targetPosition - (Vector2)transform.position).normalized;
-                //transform.position = Vector2.MoveTowards(transform.position, targetPosition, moveSpeed * Time.deltaTime);
-                enemyRigid.velocity = new Vector2(moveDirection.x * (moveSpeed * 2), enemyRigid.velocity.y);
-            }
-
-        }
-        public void Die()
+        if (collision.gameObject.tag == "Player")
         {
+            if (isDie)
+            {
+                target = null;
+                return;
+            }
+            if (!onStair)
+            {
+                target = collision.transform;
+
+            }
+            inRange = true;
+            //Debug.Log("player가 트리거에 들어옴");
+        }
+        Flip();
+    }
+    void Move()
+    {
+        if (target == null)
+        {
+            return;
+        }
+        if (!anim.GetCurrentAnimatorStateInfo(0).IsName("Gangster_aim") && target.gameObject.tag != "Player")
+        {
+            anim.SetBool("Run", false);
+
+            anim.SetBool("Walk", true);
+            Vector2 targetPosition = new Vector2(target.position.x, transform.position.y);
+            Vector2 moveDirection = (targetPosition - (Vector2)transform.position).normalized;
+            //transform.position = Vector2.MoveTowards(transform.position, targetPosition, moveSpeed * Time.deltaTime);
+            enemyRigid.velocity = new Vector2(moveDirection.x * moveSpeed, enemyRigid.velocity.y);
+        }
+        else if (!anim.GetCurrentAnimatorStateInfo(0).IsName("Gangster_aim") && target.gameObject.tag == "Player")
+        {
+            anim.SetBool("Walk", false);
+
+            anim.SetBool("Run", true);
+            Vector2 targetPosition = new Vector2(target.position.x, transform.position.y);
+            Vector2 moveDirection = (targetPosition - (Vector2)transform.position).normalized;
+            //transform.position = Vector2.MoveTowards(transform.position, targetPosition, moveSpeed * Time.deltaTime);
+            enemyRigid.velocity = new Vector2(moveDirection.x * (moveSpeed * 2), enemyRigid.velocity.y);
+        }
+
+    }
+    public void Die()
+    {
         deathSound.Play();
         anim.Play("Gangster_Die");
         isDie = true;
-        }
-        public void Flip()
+    }
+    public void Flip()
+    {
+        if (target == null)
         {
-            if (target == null)
-            {
-                return;
-            }
-            Vector3 scale = transform.localScale;
-            if (transform.position.x > target.position.x)
-            {
-                scale.x = -1;
-            }
-            else
-            {
-                scale.x = 1;
-            }
-            transform.localScale = scale;
+            return;
         }
-        public void SelecTarget()
+        Vector3 scale = transform.localScale;
+        if (transform.position.x > target.position.x)
         {
-            float distanceToLeft = Vector2.Distance(transform.position, leftLimit.position);
-            float distanceToRight = Vector2.Distance(transform.position, rightLimit.position);
-            if (distanceToLeft > distanceToRight)
-            {
-                target = leftLimit;
-            }
-            else
-            {
-                target = rightLimit;
-            }
-            Flip();
+            scale.x = -1;
         }
+        else
+        {
+            scale.x = 1;
+        }
+        transform.localScale = scale;
+    }
+    public void SelecTarget()
+    {
+        if(startingState==EnemyState.Patrol)
+        {
+
+        float distanceToLeft = Vector2.Distance(transform.position, leftLimit.position);
+        float distanceToRight = Vector2.Distance(transform.position, rightLimit.position);
+        if (distanceToLeft > distanceToRight)
+        {
+            target = leftLimit;
+        }
+        else
+        {
+            target = rightLimit;
+        }
+        Flip();
+        }
+    }
     private bool InsideofLisits()
     {
         return transform.position.x > leftLimit.position.x && transform.position.x < rightLimit.position.x;

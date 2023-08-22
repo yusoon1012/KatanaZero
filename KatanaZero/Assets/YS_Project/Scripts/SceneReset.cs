@@ -5,11 +5,13 @@ using UnityEngine.SceneManagement;
 public class SceneReset : MonoBehaviour
 {
     public TimeBody timeBody;
+   
 
     // Start is called before the first frame update
     void Start()
     {
         timeBody = FindAnyObjectByType<TimeBody>();
+        
     }
 
     // Update is called once per frame
@@ -17,7 +19,13 @@ public class SceneReset : MonoBehaviour
     {
         if(timeBody.isRewindOver)
         {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            EnemyRay[] enemyRays = FindObjectsOfType<EnemyRay>();
+
+            foreach (EnemyRay enemy in enemyRays)
+            {
+                enemy.Init();
+            }
+            // SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
     }
 }

@@ -7,11 +7,13 @@ public class HotZoneCheck : MonoBehaviour
     private EnemyRay enemyParent;
     private bool inRange;
     private Animator anim;
+    TimeBody timeBody;
 
     private void Awake()
     {
         enemyParent = GetComponentInParent<EnemyRay>();
         anim = GetComponentInParent<Animator>();
+        timeBody = GetComponentInParent<TimeBody>();
     }
 
     private void Update()
@@ -19,6 +21,14 @@ public class HotZoneCheck : MonoBehaviour
         if (inRange && !anim.GetCurrentAnimatorStateInfo(0).IsName("Grunt_attack"))
             {
             enemyParent.Flip();
+        }
+        if(timeBody.isRewindOver)
+        {
+            inRange = false;
+            gameObject.SetActive(false);
+            enemyParent.triggerArea.SetActive(true);
+            enemyParent.inRange = false;
+            enemyParent.SelecTarget();
         }
     }
     private void OnTriggerEnter2D(Collider2D collision)

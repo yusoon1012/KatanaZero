@@ -19,6 +19,7 @@ TagManager:
   - Platform
   - Wall
   - Boss
+  - Dead
   layers:
   - Default
   - TransparentFX

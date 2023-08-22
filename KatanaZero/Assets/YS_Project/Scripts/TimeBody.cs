@@ -56,6 +56,10 @@ public class TimeBody : MonoBehaviour
         {
             Time.timeScale = 0.5f;
         }
+        if(isRewindOver)
+        {
+            StartCoroutine(RewindOverReset());
+        }
 
        
 
@@ -97,7 +101,7 @@ public class TimeBody : MonoBehaviour
         else if(positions.Count<=1)
         {
             Debug.Log("府客牢靛 墨款飘场");
-
+            Time.timeScale = 1;
             isRewindOver = true;
             StopRewind();
         }
@@ -144,6 +148,11 @@ public class TimeBody : MonoBehaviour
         Rewind();
         //Time.timeScale = 1f;
 
+    }
+    private IEnumerator RewindOverReset()
+    {
+        yield return new WaitForSeconds(1);
+        isRewindOver = false;
     }
     private IEnumerator RePlay_IEnum()
     {
