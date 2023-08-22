@@ -175,6 +175,7 @@ public class Enemy_Gunner : MonoBehaviour
     {
         deathSound.Play();
         anim.Play("Gangster_Die");
+        EnemyCountManager.Instance.currentCount += 1;
         isDie = true;
     }
     public void Flip()

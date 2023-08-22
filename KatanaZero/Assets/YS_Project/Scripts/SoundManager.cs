@@ -10,7 +10,11 @@ public class SoundManager : MonoBehaviour
     [SerializeField] private AudioClip[] slashClip;
     AudioSource soundEffect;
     Player player;
-    
+
+    private void Awake()
+    {
+        DontDestroyOnLoad(gameObject);
+    }
     // Start is called before the first frame update
     void Start()
     {

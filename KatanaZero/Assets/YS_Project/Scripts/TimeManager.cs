@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Rewired;
+using Rewired.Components;
 
 public class TimeManager : MonoBehaviour
 {
@@ -47,11 +48,13 @@ public class TimeManager : MonoBehaviour
     private bool isBatteryCharge = false;
     WaitForSeconds oneSeconds = new WaitForSeconds(1);
     WaitForSeconds halfSeconds = new WaitForSeconds(0.25f);
+    PlayerMove playerMove;
     SoundManager soundManager;
     // Start is called before the first frame update
     void Start()
     {
         soundManager = FindAnyObjectByType<SoundManager>();
+        playerMove = FindAnyObjectByType<PlayerMove>();
         player = ReInput.players.GetPlayer(0);
         
         
@@ -67,6 +70,10 @@ public class TimeManager : MonoBehaviour
     void Update()
     {
         timerSlider.value = currentTime / timeMax;
+        if(currentTime/timeMax<=0)
+        {
+            playerMove.Die();
+        }
         if(player.GetButtonDown("SlowTime"))
         {
             soundManager.SlowSound();

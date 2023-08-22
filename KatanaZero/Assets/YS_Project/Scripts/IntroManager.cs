@@ -10,10 +10,12 @@ public class IntroManager : MonoBehaviour
     public AudioSource bgm;
     public TMP_Text songName;
     public GameObject introUi;
+    public GameObject timeManager;
     private bool isSlow = false;
     public IntroCanvas introCanvas;
     public bool introOver = false;
-    GameObject targetObject ;
+   
+    
     private static IntroManager _instance;
 
     // ...
@@ -34,22 +36,21 @@ public class IntroManager : MonoBehaviour
     void Start()
     {
         bgm.clip = backgroundClip;
-        targetObject = GameObject.Find("TimeManager");
+      
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        if(introOver==false)
+        {
+            timeManager.SetActive(false);
+        }
 
         if (introCanvas.isIntroOver == false)
         {
             return;
         }
-        //if(introOver)
-        //{
-        //    targetObject.SetActive(true);
-        //}
 
 
         

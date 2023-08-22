@@ -4,9 +4,22 @@ using UnityEngine;
 
 public class EnemyCountManager : MonoBehaviour
 {
-    public static EnemyCountManager instance;
+    private static EnemyCountManager _instance;
 
-
+    public static EnemyCountManager Instance
+    {
+        get
+        {
+            if (_instance == null)
+            {
+                _instance = FindObjectOfType<EnemyCountManager>();
+            }
+            return _instance;
+        }
+    }
+    public int maxCount;
+    public int currentCount;
+    public bool isAllClear=false;
     // Start is called before the first frame update
     void Start()
     {
@@ -16,6 +29,11 @@ public class EnemyCountManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if(currentCount==maxCount)
+        {
+            isAllClear = true;
+        }
     }
+
+   
 }

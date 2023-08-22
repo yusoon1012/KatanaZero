@@ -6,11 +6,13 @@ public class GameOverUI : MonoBehaviour
 {
     Player player;
     TimeBody timeBody;
+   
     // Start is called before the first frame update
     void Start()
     {
         player = ReInput.players.GetPlayer(0);
         timeBody = FindAnyObjectByType<TimeBody>();
+
     }
 
     // Update is called once per frame
@@ -19,6 +21,7 @@ public class GameOverUI : MonoBehaviour
         if(player.GetButtonDown("Attack"))
         {
             Rewind();
+            
         }
     }
     void Rewind()
@@ -28,5 +31,6 @@ public class GameOverUI : MonoBehaviour
         {
             timeBody.isRewindin = true;
         }
+        gameObject.SetActive(false);
     }
 }

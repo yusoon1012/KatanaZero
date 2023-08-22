@@ -19,13 +19,13 @@ public class SceneReset : MonoBehaviour
     {
         if(timeBody.isRewindOver)
         {
-            EnemyRay[] enemyRays = FindObjectsOfType<EnemyRay>();
+            //EnemyRay[] enemyRays = FindObjectsOfType<EnemyRay>();
 
-            foreach (EnemyRay enemy in enemyRays)
-            {
-                enemy.Init();
-            }
-            // SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            //foreach (EnemyRay enemy in enemyRays)
+            //{
+            //    enemy.Init();
+            //}
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
     }
 }

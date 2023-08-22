@@ -76,7 +76,7 @@ public class ThrowAxe : MonoBehaviour
                 {
                     return;
                 }
-                if (playerMove.isDodge == false)
+                if (playerMove.isDodge == false&&playerMove.isDie==false)
                 {
                     
                 playerMove.Die();

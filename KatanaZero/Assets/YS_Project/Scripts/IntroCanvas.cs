@@ -11,6 +11,7 @@ public class IntroCanvas : MonoBehaviour
     public GameObject musicUi;
     public GameObject stageUi;
     public GameObject timeManager;
+    IntroManager introManager;
     WaitForSeconds introTime = new WaitForSeconds(3);
 
     private void Awake()
@@ -19,6 +20,11 @@ public class IntroCanvas : MonoBehaviour
         {
             Destroy(gameObject);
             return;
+        }
+        introManager = FindAnyObjectByType<IntroManager>();
+        if (introManager.introOver)
+        {
+            gameObject.SetActive(true);
         }
         instance = this;
         DontDestroyOnLoad(gameObject);

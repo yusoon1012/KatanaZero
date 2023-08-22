@@ -23,7 +23,7 @@ public class Kissyface_Attack : MonoBehaviour
             PlayerMove playerMove = collision.GetComponent<PlayerMove>();
             if(playerMove!=null)
             {
-                if(playerMove.isDodge==false)
+                if(playerMove.isDodge==false&&playerMove.isDie==false)
                 {
                 playerMove.Die();
 

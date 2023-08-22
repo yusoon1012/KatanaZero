@@ -305,7 +305,9 @@ public class EnemyRay : MonoBehaviour
     {
         anim.Play("Grunt_Die_Ground");
         isDie = true;
-        if(isGrounded)
+        EnemyCountManager.Instance.currentCount += 1;
+
+        if (isGrounded)
         {
         StartCoroutine(DieRoutine());
 
