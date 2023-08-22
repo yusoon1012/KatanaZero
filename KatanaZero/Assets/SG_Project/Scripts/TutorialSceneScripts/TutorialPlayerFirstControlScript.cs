@@ -1,4 +1,5 @@
 using Cinemachine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -9,20 +10,22 @@ using UnityEngine.PlayerLoop;
 public class TutorialPlayerFirstControlScript : MonoBehaviour
 {
     public SG_PlayerMovement movement;
-   
+
     public GameObject leftClickAttack;
     public GameObject playerLight;
     public GameObject enemyLight;
     public GameObject globalLight;
     public GameObject cmVCAM;
-    
+    public GameObject leftClickimg;
+    public GameObject nextStageLight;
+
     public CinemachineVirtualCamera virtualCamera;
 
     public RuntimeAnimatorController newController;
 
     private Animator animator;
 
-    private Coroutine playerStart;   
+    private Coroutine playerStart;
 
     // waitForSecond = 0.25초
     private WaitForSeconds waitForSecond;
@@ -39,7 +42,7 @@ public class TutorialPlayerFirstControlScript : MonoBehaviour
     // [3] = 뛰는소리1             [4] = 뛰는소리2            [5] = 뛰는소리3
     // 뛰는소리는 3,4,5랜덤하게 재생하면될듯 (Loop 걸어줘야 할수도 있음)
     [SerializeField] private AudioClip[] audioClip;
-    
+
 
 
     int jumpState = 0;
@@ -58,6 +61,27 @@ public class TutorialPlayerFirstControlScript : MonoBehaviour
 
     private bool userGameStart = false;
     private bool giveScripts = false;
+
+
+    //public event Action<bool> timeScaleReSetEvent; 
+
+    //private bool timeScaleReSet = false;
+
+    //public bool TimeScaleReSet
+    //{
+    //    get { return timeScaleReSet; }
+    //    set
+    //    {
+    //        if (timeScaleReSet != value)
+    //        {
+    //            timeScaleReSet = value;
+    //            timeScaleReSetEvent?.Invoke(timeScaleReSet);
+    //        }
+    //    }
+
+    //}
+
+
 
 
     // Start is called before the first frame update
@@ -87,7 +111,7 @@ public class TutorialPlayerFirstControlScript : MonoBehaviour
         // 실행순서 4
         if (Input.GetMouseButtonDown(0) && Time.timeScale == 0)
         {
-
+            leftClickimg.SetActive(false);
             //Debug.Log("TimeSclae 이 0 이여도 되나?");
             animator.Play("Attack");
             leftClickAttack.SetActive(true);
@@ -95,6 +119,7 @@ public class TutorialPlayerFirstControlScript : MonoBehaviour
             playerLight.SetActive(false);
             enemyLight.SetActive(false);
             globalLight.SetActive(false);
+            nextStageLight.SetActive(true);
             //cmVCAM.SetActive(false);  //좀 더 진행하고 해야함
 
             playerStart = null;
@@ -129,7 +154,7 @@ public class TutorialPlayerFirstControlScript : MonoBehaviour
             this.rigid.AddForce(new Vector2(8f, 0f), ForceMode2D.Impulse);
             animator.Play("IsRoll");
 
-            
+
             playerStart = null;
             playerStart = StartCoroutine(Play3());
             //animator.Play("Run");
@@ -241,7 +266,7 @@ public class TutorialPlayerFirstControlScript : MonoBehaviour
         rigid.AddForce(new Vector2(6f, 7f), ForceMode2D.Impulse);
         animator.Play("Fall002");
         jumpState = 1;
-        for(int i = 0; i <= 2; i++)
+        for (int i = 0; i <= 2; i++)
         {
             yield return waitForSecond;
         }
@@ -267,7 +292,7 @@ public class TutorialPlayerFirstControlScript : MonoBehaviour
 
         jumpState = 2;
 
-        for(int i = 0; i <= 2; i++)
+        for (int i = 0; i <= 2; i++)
         {
             yield return waitForSecond;
         }

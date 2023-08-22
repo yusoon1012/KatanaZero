@@ -7,11 +7,9 @@ using UnityEngine;
 
 public class SG_PlayerMovement : MonoBehaviour
 {
-    // ============== 마우스 좌표를 위한 테스트 변수들=================
-    //public GameObject testObj;
-    //private GameObject cloneObj;
 
     // 아래는 임펙트조건을 위한 int형 변수
+    // one 변수는 AttackEmpect 스크립트에서 참조 하기 때문에 public
     public int one = 0;
 
 
@@ -26,8 +24,6 @@ public class SG_PlayerMovement : MonoBehaviour
 
 
 
-
-
     private bool isJump = false;
 
 
@@ -35,20 +31,20 @@ public class SG_PlayerMovement : MonoBehaviour
     //나중에 플레이어 공중처리할 Bool변수
 
     public bool isAttacking = false;
-    public bool readyRun = false;
-    public bool leftClickAttackCoolTime = false;
+    private bool readyRun = false;
+    private bool leftClickAttackCoolTime = false;
 
     // 구르기 제작에 사용할 변수들
-    public bool isRightMove = false;
-    public bool isLeftMove = false;
-    public bool isDownKeyInput = false;
-    public bool isRollRock = false;
-    public bool isRolling = false;
+    private bool isRightMove = false;
+    private bool isLeftMove = false;
+    private bool isDownKeyInput = false;
+    private bool isRollRock = false;
+    private bool isRolling = false;
 
 
     // 벽붙기 제작에 사용할 변수들
     // 23.08.18 이걸로 벽에 붙었는지 안붙었는지 체크 할거임
-    public bool isWallGrab = false;
+    private bool isWallGrab = false;
 
     // 붙을수 있는 벽에 붙거나 나갈때에 변경될 변수
     private bool exitWallGrab = false;
@@ -56,8 +52,8 @@ public class SG_PlayerMovement : MonoBehaviour
 
     // 벽에 붙은뒤 대각선 점프할때 필요한 변수
     private bool wallJump = false;
-    public bool isleftWall = false;
-    public bool isRightWall = false;
+    private bool isleftWall = false;
+    private bool isRightWall = false;
 
     // 벽에 붙은뒤 공격시 에러가 나기때문에 만든 변수
     private bool isAttackClingWallCoolTimeBool = false;
@@ -103,6 +99,8 @@ public class SG_PlayerMovement : MonoBehaviour
     Vector3 frontScale = Vector3.one;
     Vector3 backScale = new Vector3(-1f, 1f, 1f);
 
+    #region 코루틴 캐싱 부분
+
     // ================= 코루틴 ======================
 
     private Coroutine leftAttackCoroutine;    // 코루틴 캐싱
@@ -125,6 +123,17 @@ public class SG_PlayerMovement : MonoBehaviour
 
     // ================= 코루틴 ======================
 
+    #endregion 코루틴 캐싱
+
+    #region 오디오 관련
+    AudioSource audioSource;
+
+    // [0] = Jump001 [1] = Jump002    [2] = Roll
+    // [3] = Run001  [4] = Run002     [5] = Run003
+    // [6] = Die     [7] = Landing001 [8] = FlipJump001
+
+    [SerializeField] private AudioClip[] audioClip;
+    #endregion 오디오 관련 
 
     // Start is called before the first frame update
     void Start()
@@ -133,6 +142,7 @@ public class SG_PlayerMovement : MonoBehaviour
         playerRigid = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         playerBoxCollider = GetComponent<BoxCollider2D>();
+        audioSource = GetComponent<AudioSource>();
         leftAttackObj.SetActive(false);
         FirstBoolFalse();
 
@@ -143,6 +153,8 @@ public class SG_PlayerMovement : MonoBehaviour
 
     }
     // Update is called once per frame
+
+    //주기적으로 부르는 업데이트
     void Update()
     {
         LeftMove();
@@ -153,7 +165,7 @@ public class SG_PlayerMovement : MonoBehaviour
         WallGrabAtInput();
         AttackClick();
 
-       // Debug.LogFormat("isAttacking ->{0}", isAttacking);
+        //Debug.LogFormat("playerPresentFloor -> {0}", playerPresentFloor);
 
     }
 
@@ -254,11 +266,21 @@ public class SG_PlayerMovement : MonoBehaviour
 
         //Debug.LogFormat("무엇이든 콜라이더 Enter 일때 {0}", isJump);
         //  !점프 if
-        if (collision.gameObject.CompareTag("Floor") && isJump == true)
+        if ((collision.gameObject.CompareTag("Floor") || collision.gameObject.CompareTag("Platform")) && isJump == true)
         {
             //여기서 다시 점프가능            
             isJump = false;
-            animator.SetTrigger("Landing");            
+
+            //!오디오 착지소리
+            // 땅의 포지션 Y보다 플레이어의 포지션 Y 가 더 클때만 소리 플레이
+            if (collision.gameObject.transform.position.y < this.transform.position.y)
+            {
+                audioSource.clip = audioClip[7];
+                audioSource.Play();
+            }
+            else { /*PASS*/ }
+
+            animator.SetTrigger("Landing");
             playerPresentFloor = true;
             jumpCoroutine = StartCoroutine(LandingTriggerReset());
 
@@ -266,7 +288,8 @@ public class SG_PlayerMovement : MonoBehaviour
         else { /*PASS*/ }
 
         // WallGrab 상태에서 ASD 키 눌렀을때 들어오게 하기 위한 if
-        if (collision.gameObject.CompareTag("Floor") && isJump == false && wallGrabTouch == true)
+        if ((collision.gameObject.CompareTag("Floor") || collision.gameObject.CompareTag("Platform"))
+            && isJump == false && wallGrabTouch == true)
         {
             animator.SetTrigger("Landing");
             wallGrabTouch = false;
@@ -284,15 +307,21 @@ public class SG_PlayerMovement : MonoBehaviour
         else { /*PASS*/ }
 
         // FlipJump 를 한뒤에 땅에 닿으면 애니메이터 Exit 해주기위함
-        if (collision.gameObject.CompareTag("Floor") && isFlipJump == true)
+        if ((collision.gameObject.CompareTag("Floor") || collision.gameObject.CompareTag("Platform"))
+            && isFlipJump == true)
         {
+            //!오디오 착지소리
+            audioSource.clip = audioClip[7];
+            audioSource.Play();
+
             animator.SetTrigger("FlipExit");
             isFlipJump = false;
         }
         else { /*PASS*/ }
 
         // 벽에서 흘러내려온다음 땅에 닿는다면
-        if (collision.gameObject.CompareTag("Floor") && isWallGrab == true)
+        if ((collision.gameObject.CompareTag("Floor") || collision.gameObject.CompareTag("Platform"))
+            && isWallGrab == true)
         {
             animator.SetTrigger("ExitWallGrab");
             isWallGrab = false;
@@ -310,7 +339,7 @@ public class SG_PlayerMovement : MonoBehaviour
         }
         else { /*PASS*/ }
 
-        if (collision.gameObject.CompareTag("Floor") && attackCount > 0)
+        if ((collision.gameObject.CompareTag("Floor") || collision.gameObject.CompareTag("Platform")) && attackCount > 0)
         {
             attackCount = 0;
             animator.SetTrigger("Landing");
@@ -322,7 +351,7 @@ public class SG_PlayerMovement : MonoBehaviour
             jumpCoroutine = StartCoroutine(LandingTriggerReset());
             // FlipExit 트리거 초기화
             flipExitCoroutine = StartCoroutine(FlipExitTriggerReset());
-            
+
         }
 
         #endregion
@@ -336,18 +365,40 @@ public class SG_PlayerMovement : MonoBehaviour
     //------------------------------------------- Collision Stay ---------------------------------------------
     public void OnCollisionStay2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("SG_ClingWall"))
+        if (collision.gameObject.CompareTag("Floor") || collision.gameObject.CompareTag("Platform"))
         {
             // 천천히 내려오게 하기 위해 중력 0으로 설정
             this.gameObject.transform.position = this.gameObject.transform.position - new Vector3(0f, 0.001f, 0f);
         }
         else { /*PASS*/ }
 
+        if (collision.gameObject.CompareTag("Floor") || collision.gameObject.CompareTag("Platform"))
+        {
+            // Floor 라는 바닥에 닿고 있는동안은 true
+            playerPresentFloor = true;
+        }
+
+
         //  땅에 닿아있는데 공격상태이고 Jump 애니메이션이 실행중이라면 강제로 Idle 애니메이션 으로 보냄
-        if (collision.gameObject.CompareTag("Floor") && isAttacking == true &&
+        if ((collision.gameObject.CompareTag("Floor") || collision.gameObject.CompareTag("Platform")) && isAttacking == true &&
            animator.GetCurrentAnimatorStateInfo(0).nameHash == Animator.StringToHash("Base Layer.Jump"))
         {
-            animator.Play("IdleAnimation");
+            //! 플레이어가 땅에 닿으면 그냥 Idle애니메이션으로 가게하지만 플렛폼이라면
+            //  서로의 Y를 비교해서 플레이어의  Y축이 더 높을때만 Idle로 가도록해서 아래서 부딫칠떄는 Idle로 가는걸 막음
+            if (collision.gameObject.CompareTag("Floor"))
+            {
+                animator.Play("IdleAnimation");
+            }
+
+            else if (collision.gameObject.CompareTag("Platform"))
+            {
+                if(collision.gameObject.transform.position.y < this.gameObject.transform.position.y)
+                {
+                    animator.Play("IdleAnimation");
+                }
+            }
+            else { /*PASS*/ }
+
         }
         else { /*PASS*/ }
 
@@ -369,7 +420,7 @@ public class SG_PlayerMovement : MonoBehaviour
         }
         else { /*PASS*/ }
 
-        if (collision.gameObject.CompareTag("Floor"))
+        if (collision.gameObject.CompareTag("Floor") || collision.gameObject.CompareTag("Platform"))
         {
             //Debug.Log("Exit에서 False로 바꿈");
             playerPresentFloor = false;
@@ -422,22 +473,28 @@ public class SG_PlayerMovement : MonoBehaviour
         // 무적 상태인지 체크할 변수
         isDodge = false;
 
+        // 현재 플레이어가 땅에 닿아 있는지 체크할 변수
+        // CollisionEnter = True CollisionExit = false
+        playerPresentFloor = false;
 
+        // 공격을 했는지 알려줄 변수
         isAttacking = false;
+        // 현제 공격이 쿨타임인지 체크할 변수 쿨타임이 true일시 클릭해도 공격이 나가지 않음
         leftClickAttackCoolTime = false;
 
-
+        // 벽점프를 했는지 알려줄 변수
         wallJump = false;
+
+        // 내가 붙은 벽이 왼쪽에 있는 벽인지 오른쪽에 있는벽인지 알려줄 변수
         isleftWall = false;
         isRightWall = false;
 
+        // 벽에 붙어서 공격후 다시 벽에 붙지 않게 해줄 변수
         isAttackClingWallCoolTimeBool = false;
 
 
-
-        playerPresentFloor = false;
-
     }
+
 
     #region 이동관련 커스텀함수
     public void LeftMove()
@@ -459,6 +516,10 @@ public class SG_PlayerMovement : MonoBehaviour
                 // } 플레이어 중력 정상화 로직
 
                 isLeftMove = true;
+
+                // 이동 오디오 커스텀 함수
+                MoveAudio();
+
                 this.gameObject.transform.localScale = backScale;
                 readyRun = true;
                 Vector3 move = new Vector3(-moveSpeed, playerRigid.velocity.y, 0f);
@@ -499,6 +560,10 @@ public class SG_PlayerMovement : MonoBehaviour
                 // } 플레이어 중력 정상화 로직
 
                 isRightMove = true;
+
+                // 이동 오디오 커스텀 함수
+                MoveAudio();
+
                 this.gameObject.transform.localScale = frontScale;
                 readyRun = true;
                 Vector3 move = new Vector3(moveSpeed, playerRigid.velocity.y, 0f);
@@ -602,6 +667,10 @@ public class SG_PlayerMovement : MonoBehaviour
             //점프 했을때에 또 점프 못하게 bool 처리
             isJump = true;
 
+            // !오디오 (점프)
+            audioSource.clip = audioClip[2];
+            audioSource.Play();
+
             playerRigid.AddForce(new Vector2(0f, jumpForce), ForceMode2D.Impulse);
 
             headOffPrecrouch = true;
@@ -633,6 +702,10 @@ public class SG_PlayerMovement : MonoBehaviour
 
             isFlipJump = true;
 
+            //!오디오 (벽점프)
+            audioSource.clip = audioClip[8];
+            audioSource.Play();
+
             animator.SetTrigger("FlipStart");
             this.gameObject.transform.localScale = backScale;
             playerRigid.AddForce(new Vector2(8f, 9f), ForceMode2D.Impulse);
@@ -657,6 +730,10 @@ public class SG_PlayerMovement : MonoBehaviour
             wallJump = true;
 
             isFlipJump = true;
+
+            //!오디오 (벽점프)
+            audioSource.clip = audioClip[8];
+            audioSource.Play();
 
             animator.SetTrigger("FlipStart");
             this.gameObject.transform.localScale = frontScale;
@@ -687,7 +764,7 @@ public class SG_PlayerMovement : MonoBehaviour
             // Test 해보았는데 여길 잘못건들이면 플레이어가 망가져 버리는거같음
             //isJump = true;
             //animator.SetTrigger("WallGrabToJump");
-            
+
             exitWallGrab = true;
 
             // 23.08.21     11:04 다시 시도
@@ -714,6 +791,35 @@ public class SG_PlayerMovement : MonoBehaviour
 
 
     #endregion
+
+    #region 오디오 관련 커스텀 함수
+    private void MoveAudio()
+    {
+
+        // if : (1)플레이어가 A or D 키를 누른 상태여야하고 (2)audio가 플레이 중이지 않아야하고 
+        //      (3)플레이어가 땅에 닿아 있어야 들어감
+        if (!audioSource.isPlaying && playerPresentFloor == true &&
+            (isRightMove == true || isLeftMove == true))
+        {
+            // if : 오디오가 순차적으로 재생 되도록 하고싶음            
+            if (audioSource.clip.name == ("Run002"))
+            {
+                // audioClip[5] = Run003
+                audioSource.clip = audioClip[5];
+                audioSource.Play();
+            }
+            else if (audioSource.clip.name != ("Run002"))
+            {
+                audioSource.clip = audioClip[4];
+                audioSource.Play();
+            }
+            else { /*PASS*/ }
+            //Debug.LogFormat("Clip Name -> {0}", audioSource.clip.name);
+        }
+        else { /*PASS*/ }
+    }
+
+    #endregion 오디오 관련 커스텀 함수
 
     public void AttackClick()
     {
@@ -902,6 +1008,10 @@ public class SG_PlayerMovement : MonoBehaviour
 
         if (isRightMove == true && isJump == false) // 오른쪽 구르기
         {
+            // !오디오 (구르기)
+            audioSource.clip = audioClip[2];
+            audioSource.Play();
+
             playerRigid.AddForce(new Vector3(8f, 0f, 0f), ForceMode2D.Impulse);
 
             for (int i = 0; i <= 10; i++)
@@ -923,6 +1033,10 @@ public class SG_PlayerMovement : MonoBehaviour
 
         if (isLeftMove == true && isJump == false) // 왼쪽 구르기
         {
+            // !오디오 (구르기)
+            audioSource.clip = audioClip[2];
+            audioSource.Play();
+
             playerRigid.AddForce(new Vector3(-8f, 0f, 0f), ForceMode2D.Impulse);
             for (int i = 0; i <= 10; i++)
             {

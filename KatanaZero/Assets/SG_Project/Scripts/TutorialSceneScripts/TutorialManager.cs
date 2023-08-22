@@ -16,10 +16,15 @@ public class TutorialManager : MonoBehaviour
     Color timeBackGroundColor;
     // } LEGACY : µÞ¹è°æ
 
+    public GameObject playerClickImg;
     public GameObject backGroundLight;
     public GameObject playerLight;
     public GameObject enemyLight;
     public Light2D globalLight;
+
+
+    public GameObject nextStageLight;
+
 
     Coroutine coroutineBoxing;
     WaitForFixedUpdate waitForFixed;
@@ -38,6 +43,10 @@ public class TutorialManager : MonoBehaviour
     
     void Start()
     {
+        nextStageLight.SetActive(false);
+        backGroundLight.SetActive(true);
+
+
         FirstInIt();
         tutorialEnemy.enemyShotEvent += EnemyShotBoolEvent;
         //globalLight = GetComponent<Light2D>();
@@ -111,8 +120,8 @@ public class TutorialManager : MonoBehaviour
                 timeBackGroundColor = globalLight.color;
 
                 timeBackGroundColor.r = timeBackGroundColor.r - backGroundRgb_A;
-                timeBackGroundColor.g = timeBackGroundColor.r - backGroundRgb_A;
-                timeBackGroundColor.b = timeBackGroundColor.r - backGroundRgb_A;
+                timeBackGroundColor.g = timeBackGroundColor.g - backGroundRgb_A;
+                timeBackGroundColor.b = timeBackGroundColor.b - backGroundRgb_A;
 
                 globalLight.color = timeBackGroundColor;
 
@@ -130,7 +139,7 @@ public class TutorialManager : MonoBehaviour
             
         }
 
-
+        playerClickImg.SetActive(true);
         audioSource.clip = audioClip[1];
         audioSource.Play();
         Time.timeScale = 0f;
