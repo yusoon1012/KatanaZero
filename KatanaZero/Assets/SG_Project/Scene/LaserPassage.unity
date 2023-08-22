@@ -5271,7 +5271,7 @@ Tilemap:
     second:
       serializedVersion: 2
       m_TileIndex: 10
-      m_TileSpriteIndex: 10
+      m_TileSpriteIndex: 35
       m_TileMatrixIndex: 0
       m_TileColorIndex: 0
       m_TileObjectToInstantiateIndex: 65535
@@ -6102,8 +6102,8 @@ Tilemap:
     m_Data: {fileID: 1061653746, guid: 3e13098e4b1bac1488c4b9aa4b01a98f, type: 3}
   - m_RefCount: 4
     m_Data: {fileID: 1838694024, guid: 3e13098e4b1bac1488c4b9aa4b01a98f, type: 3}
-  - m_RefCount: 1
-    m_Data: {fileID: 924718936, guid: 3e13098e4b1bac1488c4b9aa4b01a98f, type: 3}
+  - m_RefCount: 0
+    m_Data: {fileID: 0}
   - m_RefCount: 1
     m_Data: {fileID: 451758034, guid: 3e13098e4b1bac1488c4b9aa4b01a98f, type: 3}
   - m_RefCount: 69
@@ -6152,8 +6152,8 @@ Tilemap:
     m_Data: {fileID: -1295361036, guid: f570cd493d271aa46bd7e4ede4595da8, type: 3}
   - m_RefCount: 1
     m_Data: {fileID: 1035034586, guid: f570cd493d271aa46bd7e4ede4595da8, type: 3}
-  - m_RefCount: 0
-    m_Data: {fileID: 0}
+  - m_RefCount: 1
+    m_Data: {fileID: 924718936, guid: 3e13098e4b1bac1488c4b9aa4b01a98f, type: 3}
   m_TileMatrixArray:
   - m_RefCount: 318
     m_Data:
@@ -15822,7 +15822,7 @@ Tilemap:
     second:
       serializedVersion: 2
       m_TileIndex: 1
-      m_TileSpriteIndex: 1
+      m_TileSpriteIndex: 8
       m_TileMatrixIndex: 0
       m_TileColorIndex: 0
       m_TileObjectToInstantiateIndex: 65535
@@ -18811,8 +18811,8 @@ Tilemap:
   m_TileSpriteArray:
   - m_RefCount: 31
     m_Data: {fileID: -1925823456, guid: f570cd493d271aa46bd7e4ede4595da8, type: 3}
-  - m_RefCount: 1
-    m_Data: {fileID: 1315486156, guid: f570cd493d271aa46bd7e4ede4595da8, type: 3}
+  - m_RefCount: 0
+    m_Data: {fileID: 0}
   - m_RefCount: 5
     m_Data: {fileID: -68721746, guid: f570cd493d271aa46bd7e4ede4595da8, type: 3}
   - m_RefCount: 5
@@ -18825,8 +18825,8 @@ Tilemap:
     m_Data: {fileID: 627398823, guid: f570cd493d271aa46bd7e4ede4595da8, type: 3}
   - m_RefCount: 17
     m_Data: {fileID: -1219856273, guid: f570cd493d271aa46bd7e4ede4595da8, type: 3}
-  - m_RefCount: 0
-    m_Data: {fileID: 0}
+  - m_RefCount: 1
+    m_Data: {fileID: 1315486156, guid: f570cd493d271aa46bd7e4ede4595da8, type: 3}
   - m_RefCount: 31
     m_Data: {fileID: -104507809, guid: f570cd493d271aa46bd7e4ede4595da8, type: 3}
   - m_RefCount: 4
@@ -21196,8 +21196,8 @@ Camera:
   m_GameObject: {fileID: 1993920980}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_ClearFlags: 2
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0

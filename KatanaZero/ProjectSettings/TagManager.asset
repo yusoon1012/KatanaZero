@@ -20,6 +20,12 @@ TagManager:
   - Wall
   - Boss
   - Dead
+  - Stair
+  - Platform
+  - PlayerAttack
+  - Reflect
+  - SG_Bullet
+  - SG_PlayerAttack
   layers:
   - Default
   - TransparentFX

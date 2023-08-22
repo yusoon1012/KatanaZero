@@ -86,7 +86,7 @@ public class SG_ShotLaserControler002 : MonoBehaviour
             }
             else { /*PASS*/ }
 
-         
+           
 
         }
     }

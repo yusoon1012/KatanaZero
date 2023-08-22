@@ -34,7 +34,7 @@ public class SG_CameraMove : MonoBehaviour
         if (nowScene.name == "Tutorial")
         {
             offset = new Vector2(0f, 0.75f);
-            minPosition = new Vector2(-1.5f, -2f);
+            minPosition = new Vector2(-28.5f, -2f);
             maxPosition = new Vector2(105f, 30f);
         }
         else { /*PASS*/ }
@@ -53,6 +53,13 @@ public class SG_CameraMove : MonoBehaviour
             offset = new Vector2(0f, 0.75f);
             minPosition = new Vector2(8.2f, 1.5f);
             maxPosition = new Vector2(41f, 30f);
+        }
+
+        if(nowScene.name == "SG_DoctorMap004")
+        {
+            offset = new Vector2(0f, 0.75f);
+            minPosition = new Vector2(7.5f, 3.3f);
+            maxPosition = new Vector2(41.5f, 15.7f);
         }
 
 
