@@ -86,6 +86,12 @@ public class SG_PlayerMovement : MonoBehaviour
     // 현재플레이어가Floor 에  땅에 닿아 있는지 알려줄 Bool변수
     private bool playerPresentFloor = false;
 
+    // 왼쪽에서 맞음
+    private bool leftHit;
+
+    //  오른쪽에서 맞음 
+    private bool rightHit;
+
     public bool isDie = false;
 
     #endregion
@@ -194,6 +200,7 @@ public class SG_PlayerMovement : MonoBehaviour
             WallGrabAtInput();
             AttackClick();
         }
+
         //Debug.LogFormat("playerPresentFloor -> {0}", playerPresentFloor);
 
     }
@@ -207,40 +214,15 @@ public class SG_PlayerMovement : MonoBehaviour
     // --------------------------------------Collision Enter------------------------------------
     public void OnCollisionEnter2D(Collision2D collision)
     {
+        // 플레이어가 죽지 않은 상태일때에
         if (isDie == false)
         {
             // !플레이어가 무적이 아닐때
             if (isDodge == false)
             {
-                // 레이저에 맞아서 죽었을때에
-                if (collision.gameObject.CompareTag("SG_LaserShot"))
-                {
-                    isDie = true;
 
-                    // 죽는 애니메이션 재생
-                    animator.SetTrigger("DieTrigger");
 
-                    // X포지션이 양수로 날아가야함
-                    if (this.gameObject.transform.position.x > collision.gameObject.transform.position.x)
-                    {
-                        playerRigid.AddForce(new Vector2(3f, 3f));
-
-                        playerDiePositionPick = StartCoroutine(PlayerDiePositionPick());
-
-                        this.transform.localScale = backScale;
-
-                    }
-                    // X 포지션이 음수로 날아가야함
-                    else if (this.gameObject.transform.position.x < collision.gameObject.transform.position.x)
-                    {
-                        playerRigid.AddForce(new Vector2(-3f, 3f));
-
-                        playerDiePositionPick = StartCoroutine(PlayerDiePositionPick());
-
-                        this.transform.localScale = frontScale;
-                    }
-
-                }
+                
             }
             // !플레이어가 무적이 아닐때
 
@@ -262,18 +244,22 @@ public class SG_PlayerMovement : MonoBehaviour
             #endregion
 
 
-
-
-
-
+           
             // ================================= 태그가 붙을수 있는 벽일때 SG_ClingWall =================================
             #region       
+
+            // FlipJump 이후에 땅에 닿거나 붙을수 있는 벽을 다시 붙었을 경우 무적 해제
+            //if(isFlipJump == true && isDodge == true && 
+            //    (collision.gameObject.CompareTag("Floor") || collision.gameObject.CompareTag("SG_ClingWall")))
+            //{
+            //    isDodge = false;
+            //}
 
             if (collision.gameObject.CompareTag("SG_ClingWall") && isAttackClingWallCoolTimeBool == false)
             {
                 // 23.08.21     09 : 40  Jump 고친후 WallGrab상태에서 Flip 점프 못가는것때문에 false로 주는것 추가
                 isJump = false;
-
+                
                 exitWallGrab = false;
                 isWallGrab = true;
                 wallGrabCount = 1;
@@ -496,7 +482,90 @@ public class SG_PlayerMovement : MonoBehaviour
         }
     }
 
+
     #endregion 콜라이더
+
+    #region 트리거 콜라이더
+    public void OnTriggerEnter2D(Collider2D collision)
+    {
+        
+        if (isDie == false) //플레이어가 죽지않았을때
+        {
+            // !플레이어가 무적이 아닐때
+            if (isDodge == false)
+            {
+                // 레이저에 맞아서 죽었을때에
+                if (collision.gameObject.CompareTag("SG_LaserShot"))
+                {
+
+                    isDie = true;
+
+                    audioSource.clip = audioClip[6];
+                    audioSource.Play();
+
+                    // 죽는 애니메이션 재생
+                    animator.SetTrigger("DieTrigger");
+
+                    // X포지션이 양수로 날아가야함
+                    if (this.gameObject.transform.position.x > collision.gameObject.transform.position.x)
+                    {
+                        leftHit = true;                        
+
+                        playerDiePositionPick = StartCoroutine(PlayerDiePositionPick());
+
+                        this.transform.localScale = backScale;
+
+                    }
+                    // X 포지션이 음수로 날아가야함
+                    else if (this.gameObject.transform.position.x < collision.gameObject.transform.position.x)
+                    {
+                        rightHit = true;
+                        
+                        playerDiePositionPick = StartCoroutine(PlayerDiePositionPick());
+
+                        this.transform.localScale = frontScale;
+                    }
+                }
+                else{ /*PASS*/ }
+
+                // 환풍기에 맞으면 
+                if(collision.gameObject.CompareTag("SG_Fan"))
+                {
+                    isDie = true;
+
+                    audioSource.clip = audioClip[6];
+                    audioSource.Play();
+
+                    // 죽는 애니메이션 재생
+                    animator.SetTrigger("DieTrigger");
+
+                    // X포지션이 양수로 날아가야함
+                    if (this.gameObject.transform.position.x > collision.gameObject.transform.position.x)
+                    {
+                        leftHit = true;
+
+                        playerDiePositionPick = StartCoroutine(PlayerDiePositionPick());
+
+                        this.transform.localScale = backScale;
+
+                    }
+                    // X 포지션이 음수로 날아가야함
+                    else if (this.gameObject.transform.position.x < collision.gameObject.transform.position.x)
+                    {
+                        rightHit = true;
+
+                        playerDiePositionPick = StartCoroutine(PlayerDiePositionPick());
+
+                        this.transform.localScale = frontScale;
+                    }
+                }
+                else { /*PASS*/ }
+            }
+        }
+    }       // TriggerEnter
+
+
+    #endregion 트리거 콜라이더
 
 
     //=======================================커스텀 함수=========================================
@@ -751,6 +820,7 @@ public class SG_PlayerMovement : MonoBehaviour
     // 대각선 점프
     public void FlipJump()
     {
+        isDodge = true;
         if (isleftWall == true)
         {
             //  점프전에 중력 정상화
@@ -1089,13 +1159,13 @@ public class SG_PlayerMovement : MonoBehaviour
             playerRigid.velocity = Vector3.zero;
             isRolling = false;
             animator.SetTrigger("RollEnd");
-
+            isDodge = false;
             for (int j = 0; j <= 17; j++)
             {
                 yield return fixedUpdate;
             }
             isRightMove = false;
-            isDodge = false;
+            
         }   // 오른쪽 구르기
 
         if (isLeftMove == true && isJump == false) // 왼쪽 구르기
@@ -1113,13 +1183,13 @@ public class SG_PlayerMovement : MonoBehaviour
             playerRigid.velocity = Vector3.zero;
             isRolling = false;
             animator.SetTrigger("RollEnd");
-
+            isDodge = false;
             for (int j = 0; j <= 17; j++)
             {
                 yield return fixedUpdate;
             }
             isLeftMove = false;
-            isDodge = false;
+            
         }   // 왼쪽 구르기
         isRollRock = false;
 
@@ -1136,11 +1206,35 @@ public class SG_PlayerMovement : MonoBehaviour
     // 죽었을때에 포지션을 공중에 고정 시키기위한 코루틴
     private IEnumerator PlayerDiePositionPick()
     {
+
+        for(int i=0; i <= 5; i++)
+        {
+            yield return new WaitForEndOfFrame();
+        }
+        
+
+        // 왼쪽에서 맞았는지 체크
+        if (leftHit == true && rightHit == false)
+        {
+            playerRigid.velocity = Vector3.zero;
+            playerRigid.AddForce(new Vector2(5f, 5f), ForceMode2D.Impulse);
+            leftHit = false;
+        }
+        // 오른쪽에서 맞았는지 체크
+        else if (leftHit == false && rightHit == true)
+        {
+            playerRigid.velocity = Vector3.zero;
+            playerRigid.AddForce(new Vector2(-5f, 5f), ForceMode2D.Impulse);
+            rightHit = false;
+        }
+        else { /*PASS*/ }
+
         // 여기에 좌표를 저장하고 계속 포지션을 갱신 시켜줘야함
         for (int i = 0; i <= 25; i++)
         {
             yield return fixedUpdate;
         }
+        
         diePosition = this.transform.position;
 
         // !23.08.22 임시로 해둠 추후 고쳐야할수도 있음
@@ -1148,12 +1242,13 @@ public class SG_PlayerMovement : MonoBehaviour
         playerRigid.gravityScale = 0f;
         playerRigid.mass = 0f;
 
-        
-        for (int j = 0; j <= 100; j++)
+
+        // TODO : 아래 for문을 시간 되돌리기 전까지 돌도록 하면 될거같음
+        for (int j = 0; j <= 1000; j++)
         {
             this.transform.position = diePosition;
-            yield return waitSecond;
-        }
+            yield return fixedUpdate;
+        }        
         // !23.08.22 임시로 해둠 추후 고쳐야할수도 있음
 
     }

@@ -59,19 +59,19 @@ public class SG_ShotLaserControler : MonoBehaviour
 
     void OnEnable()
     {
-            // SetActive == true 될 때 수행할 작업
+        // SetActive == true 될 때 수행할 작업
 
         if (shotLaserIsbuttonOn == true)
-        {
-            Initialization();
-            audioSource.Play();
-            changeColor = StartCoroutine(ColorChange());
+        {                                    
+                Initialization();
+                audioSource.Play();
+                changeColor = StartCoroutine(ColorChange());            
         }
     }
 
     void OnDisable()
     {
-            // SetActive == flase 될 때 수행할 작업
+        // SetActive == flase 될 때 수행할 작업
 
         if (shotLaserIsbuttonOn == true)
         {
@@ -84,19 +84,19 @@ public class SG_ShotLaserControler : MonoBehaviour
 
     public void OnTriggerEnter2D(Collider2D collision)
     {
+        //  LEGACY
         //  레이저에 닿은것이 플레이어라면
-        if (collision.gameObject.CompareTag("Player"))
-        {
-            // 참조해와야할 변수가 비어있으면 그떄만 가져옴
-            if (player == default || player == null)
-            {
-                player = FindObjectOfType<SG_PlayerMovement>();
-            }
-            else { /*PASS*/ }
-
-     
-
-        }
+        //if (collision.gameObject.CompareTag("Player"))
+        //{
+        //    //Debug.Log("플레이어가 닿아서 레이저가 인식함");
+        //    // 참조해와야할 변수가 비어있으면 그떄만 가져옴
+        //    if (player == default || player == null)
+        //    {
+        //        player = FindObjectOfType<SG_PlayerMovement>();
+        //    }
+        //    else { /*PASS*/ }
+        //}
+        //  LEGACY
     }
 
     // 초기화 해주는 함수
