@@ -8,8 +8,10 @@ public class EnemyRay : MonoBehaviour
     {
         Idle,Patrol,Chase
     }
-  //  public Transform rayCast;
+    //  public Transform rayCast;
     //public LayerMask rayCastMask;
+    public GameObject bloodPrefab_Vertical;
+    public GameObject bloodPrefab_Horizontal;
     public float rayCastLength;
     public float attackDistance;
     public float moveSpeed;
@@ -305,6 +307,14 @@ public class EnemyRay : MonoBehaviour
 
     public void Die()
     {
+        if(isGrounded)
+        {
+            GameObject blood = Instantiate(bloodPrefab_Horizontal, transform.position, transform.rotation);
+        }
+        else
+        {
+            GameObject blood = Instantiate(bloodPrefab_Horizontal, transform.position, transform.rotation);
+        }
         cameraShake.ShakeCamera();
         anim.Play("Grunt_Die_Ground");
         isDie = true;

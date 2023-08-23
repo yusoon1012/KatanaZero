@@ -35,12 +35,12 @@ public class Kissyface_manager : MonoBehaviour
     private Kissyface_Lunge lunge;
     private Kissyface_Throw throwAttack;
     private BoxCollider2D kissyfaceCollider;
-    float distance;
-    const int IDLE = 0;
+  
     const int JUMP_ATTACK = 1;
     const int LUNGE = 2;
     const int THROW = 3;
     Animator anim;
+    float distance;
     Player player;
     Vector3 leftAngle = new Vector3(0, 180, 0);
     Vector3 rightAngle = new Vector3(0, 0, 0);
@@ -53,12 +53,16 @@ public class Kissyface_manager : MonoBehaviour
     {
         gageSlider.value = 0;
         player = ReInput.players.GetPlayer(0);
+
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
+
         kissyfaceCollider = GetComponent<BoxCollider2D>();
+
         throwAttack = GetComponent<Kissyface_Throw>();
         jumpAttack = GetComponent<KissyFace_JumpAttack>();
         lunge = GetComponent<Kissyface_Lunge>();
+
         StartCoroutine(SelectAction());
         Physics2D.IgnoreCollision(kissyfaceCollider, playerCollider);
 
@@ -243,6 +247,8 @@ public class Kissyface_manager : MonoBehaviour
         if (isDie)
         { yield break; }
         anim.Play("Kissyface_recover");
+        yield return new WaitForSeconds(0.5f);
+
         isAction = false;
         isHit = false;
 

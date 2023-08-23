@@ -11,7 +11,7 @@ public class Enemy_Gunner : MonoBehaviour
         Patrol
     }
     public EnemyState startingState = EnemyState.Patrol; // 시작 상태 설정
-
+    public GameObject bloodPrefab;
     private EnemyState currentState;
     public float attackDistance;
     public float moveSpeed;
@@ -175,6 +175,7 @@ public class Enemy_Gunner : MonoBehaviour
     }
     public void Die()
     {
+        GameObject blood = Instantiate(bloodPrefab, transform.position, transform.rotation);
         deathSound.Play();
         cameraShake.ShakeCamera();
         anim.Play("Gangster_Die");
