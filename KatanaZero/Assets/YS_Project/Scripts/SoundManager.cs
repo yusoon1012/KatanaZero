@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Rewired;
+
 
 public class SoundManager : MonoBehaviour
 {
@@ -10,25 +10,13 @@ public class SoundManager : MonoBehaviour
     [SerializeField] private AudioClip[] slashClip;
     private static SoundManager instance;
     AudioSource soundEffect;
-    Player player;
+  
 
-    private void Awake()
-    {
-        if (instance == null)
-        {
-            instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-        DontDestroyOnLoad(gameObject);
-    }
+   
     // Start is called before the first frame update
     void Start()
     {
-        player = ReInput.players.GetPlayer(0);
+       
         soundEffect = GetComponent<AudioSource>();
       
     }

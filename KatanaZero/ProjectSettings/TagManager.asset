@@ -20,6 +20,7 @@ TagManager:
   - Wall
   - Boss
   - Dead
+  - Door
   layers:
   - Default
   - TransparentFX

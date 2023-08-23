@@ -29,12 +29,12 @@ public class PlayerMove : MonoBehaviour
     public float attackCooldown = 1f; // ���� ��ٿ�
     public bool isDodge = false;
     public bool isDie = false;
+    public AudioClip deathClip;
     #endregion
     private float jumpForce = 7f;
     private bool isRun;
     private bool isJump;
     private bool isStair;
-
     private AudioSource deathSound;
     private bool isWallJump;
     private bool isWall;
@@ -58,13 +58,19 @@ public class PlayerMove : MonoBehaviour
     Player player;
     int playerId = 0;
     SoundManager soundManager;
+    IntroManager introManager;
     Vector2 targetPosition;
     Vector3 leftScale=new Vector3(-1f, 1f, 1f);
     Vector3 rightScale= new Vector3(1f, 1f, 1f);
     // Start is called before the first frame update
-    void Start()
+    private void Awake()
     {
         soundManager = FindAnyObjectByType<SoundManager>();
+        
+    }
+    void Start()
+    {
+        introManager = FindAnyObjectByType<IntroManager>();
         player = ReInput.players.GetPlayer(playerId);
         playerRigid = GetComponent<Rigidbody2D>();
         playerAni = GetComponent<Animator>();
@@ -74,7 +80,14 @@ public class PlayerMove : MonoBehaviour
         deathSound = GetComponent<AudioSource>();
         if (state == PlayerState.Intro)
         {
+            if(introManager!=null)
+            {
+                if(introManager.introOver==false)
+                {
             StartCoroutine(Intro());
+
+                }
+            }
 
         }
 
@@ -95,13 +108,16 @@ public class PlayerMove : MonoBehaviour
         isWall = Physics2D.Raycast(wallCheck.position, Vector2.right * playerScale, wallCheckDis, wall_mask);
 
 
-       
-            if (state == PlayerState.Intro)
+       if(introManager!=null)
+        {
+
+            if (state == PlayerState.Intro&&introManager.introOver==false)
             {
                 ghost.isGhostMake = false;
                 
             return;
             }
+        }
           
         
         if ((player.GetButton("Down") && player.GetButtonDown("MoveLeft") && isGrounded)
@@ -430,6 +446,7 @@ public class PlayerMove : MonoBehaviour
     public void Die()
     {
         gameOverUi.SetActive(true);
+        deathSound.clip = deathClip;
         deathSound.Play();
         isDie = true;
     }

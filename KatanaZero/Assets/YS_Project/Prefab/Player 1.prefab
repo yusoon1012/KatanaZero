@@ -4920,6 +4920,7 @@ GameObject:
   - component: {fileID: 8981571697883857506}
   - component: {fileID: 7866400184953844010}
   - component: {fileID: 1078093829}
+  - component: {fileID: 1600521758}
   m_Layer: 0
   m_Name: Player 1
   m_TagString: Player
@@ -5092,6 +5093,7 @@ MonoBehaviour:
   attackCooldown: 1
   isDodge: 0
   isDie: 0
+  deathClip: {fileID: 8300000, guid: 97d421171bff5614f89e2e8f58b9c096, type: 3}
 --- !u!114 &8981571697883857517
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5231,3 +5233,22 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &1600521758
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8981571697883857819}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3d32e7583a19464e941d687d31df5d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  slowMotionClip: {fileID: 8300000, guid: 09aeda75b5324df4ebf61c183fe1b9de, type: 3}
+  slashClip:
+  - {fileID: 8300000, guid: 5cc72f8ded52e36418f66ba980e443c8, type: 3}
+  - {fileID: 8300000, guid: 59b0003cd6584ec4fa2fc63eebce5c5a, type: 3}
+  - {fileID: 8300000, guid: 2d94691931620394d953ee783ad92910, type: 3}
+  - {fileID: 8300000, guid: 792f3e4169f1a6e4c901172e7265b74f, type: 3}
+  - {fileID: 8300000, guid: bf085a343351e1048b739985c9ea164a, type: 3}

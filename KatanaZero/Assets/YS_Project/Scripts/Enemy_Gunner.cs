@@ -28,15 +28,17 @@ public class Enemy_Gunner : MonoBehaviour
     private bool cooldown;
     private bool onPlatform;
     private bool onStair;
-    private bool isDie = false;
+    public bool isDie = false;
     private bool isGrounded;
     private Rigidbody2D enemyRigid;
     AudioSource deathSound;
+    CameraShake cameraShake;
     // Start is called before the first frame update
     void Start()
     {
         anim = GetComponent<Animator>();
         enemyRigid = GetComponent<Rigidbody2D>();
+        cameraShake = FindAnyObjectByType<CameraShake>();
         currentState = startingState;
         deathSound = GetComponent<AudioSource>();
         if (currentState == EnemyState.Patrol)
@@ -174,6 +176,7 @@ public class Enemy_Gunner : MonoBehaviour
     public void Die()
     {
         deathSound.Play();
+        cameraShake.ShakeCamera();
         anim.Play("Gangster_Die");
         EnemyCountManager.Instance.currentCount += 1;
         isDie = true;

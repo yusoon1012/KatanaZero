@@ -62,7 +62,11 @@ public class PlayerAttack : MonoBehaviour
             {
                 slashSound.clip = killClip;
                 slashSound.Play();
+                if(enemyCollision.isDie==false)
+                {
                 enemyCollision.Die();
+
+                }
             }
             Enemy_Gunner gunnerCollision = collision.GetComponent<Enemy_Gunner>();
             if(gunnerCollision!=null)
@@ -70,7 +74,11 @@ public class PlayerAttack : MonoBehaviour
                 slashSound.clip = killClip;
                 slashSound.Play();
 
+                if(gunnerCollision.isDie==false)
+                {
                 gunnerCollision.Die();
+
+                }
             }
            
 
@@ -85,6 +93,17 @@ public class PlayerAttack : MonoBehaviour
         if(collision.tag.Equals("Breakable"))
         {
             collision.GetComponent<BreakableObject>().BreakPlatform();
+        }
+        if(collision.tag.Equals("Door"))
+        {
+            Door openDoor = collision.GetComponent<Door>();
+            Debug.Log("Door에 공격");
+            if(openDoor!=null)
+            {
+                Debug.Log("Door가 null이 아니다");
+
+                openDoor.DoorOpen();
+            }
         }
     }
     

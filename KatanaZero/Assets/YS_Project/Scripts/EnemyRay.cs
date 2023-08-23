@@ -29,7 +29,7 @@ public class EnemyRay : MonoBehaviour
     private float intTimer;
     private bool onPlatform;
     private bool onStair;
-    private bool isDie=false;
+    public bool isDie=false;
     private bool isGrounded;
     EnemyPlatformPass platformPass;
     Rigidbody2D enemyRigid;
@@ -37,6 +37,7 @@ public class EnemyRay : MonoBehaviour
     Vector3 initPosition;
     PlayerMove playerMove;
     TimeBody timeBody;
+    CameraShake cameraShake;
     // Start is called before the first frame update
     void Awake()
     {
@@ -49,6 +50,7 @@ public class EnemyRay : MonoBehaviour
         enemyCollider = GetComponent<BoxCollider2D>();
         playerMove = FindAnyObjectByType<PlayerMove>();
         timeBody = GetComponent<TimeBody>();
+        cameraShake = FindAnyObjectByType<CameraShake>();
     }
 
     // Update is called once per frame
@@ -303,15 +305,12 @@ public class EnemyRay : MonoBehaviour
 
     public void Die()
     {
+        cameraShake.ShakeCamera();
         anim.Play("Grunt_Die_Ground");
         isDie = true;
         EnemyCountManager.Instance.currentCount += 1;
 
-        if (isGrounded)
-        {
-        StartCoroutine(DieRoutine());
-
-        }
+       
     }
     private IEnumerator DieRoutine()
     {
