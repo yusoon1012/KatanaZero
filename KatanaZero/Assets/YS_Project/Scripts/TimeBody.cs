@@ -14,13 +14,15 @@ public class TimeBody : MonoBehaviour
     public bool isRewindOver = false;
     private bool isReplay = false;
     int positionIdx=0;
+    SoundManager soundManager;
     // Start is called before the first frame update
     void Start()
     {
         animator = GetComponent<Animator>();
         animations=new List<AnimatorClipInfo[]>();
         positions =new List<Vector3>();
-        scales=new List<Vector3>();
+        soundManager = FindAnyObjectByType<SoundManager>();
+        scales =new List<Vector3>();
     }
 
    
@@ -96,10 +98,11 @@ public class TimeBody : MonoBehaviour
                 // Play the animation in reverse
                 animator.Play(animClip.name, 0, reversedTime);
             }
-
+            soundManager.RewindSound();
         }
         else if(positions.Count<=1)
         {
+
             Debug.Log("府客牢靛 墨款飘场");
             Time.timeScale = 1;
             isRewindOver = true;

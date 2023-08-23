@@ -16,7 +16,7 @@ public class Kissyface_manager : MonoBehaviour
     public bool isAction = false;
     public int pattern = 0;
     public int lastPattern = 0;
-    public BoxCollider2D playerCollider;
+    public CapsuleCollider2D playerCollider;
     public Transform playerTransform;
     public bool isAttackable = false;
     public bool isHit = false;

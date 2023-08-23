@@ -1733,6 +1733,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ca177a7a83823704992f2ca2f42e6a75, type: 3}
+--- !u!70 &681010237 stripped
+CapsuleCollider2D:
+  m_CorrespondingSourceObject: {fileID: 212432039, guid: ca177a7a83823704992f2ca2f42e6a75, type: 3}
+  m_PrefabInstance: {fileID: 681010236}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &735024428
 GameObject:
   m_ObjectHideFlags: 0
@@ -2334,11 +2339,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 8981571697883857819, guid: ca177a7a83823704992f2ca2f42e6a75, type: 3}
   m_PrefabInstance: {fileID: 681010236}
   m_PrefabAsset: {fileID: 0}
---- !u!61 &966387488 stripped
-BoxCollider2D:
-  m_CorrespondingSourceObject: {fileID: 8981571697883857505, guid: ca177a7a83823704992f2ca2f42e6a75, type: 3}
-  m_PrefabInstance: {fileID: 681010236}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &966387492 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8981571697883857509, guid: ca177a7a83823704992f2ca2f42e6a75, type: 3}
@@ -2783,7 +2783,7 @@ MonoBehaviour:
   isAction: 0
   pattern: 0
   lastPattern: 0
-  playerCollider: {fileID: 966387488}
+  playerCollider: {fileID: 681010237}
   playerTransform: {fileID: 966387492}
   isAttackable: 0
   isHit: 0

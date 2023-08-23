@@ -6,6 +6,10 @@ using UnityEngine;
 
 public class Switch : MonoBehaviour
 {
+    public AudioClip laserOnClip;
+    public AudioClip laserOffClip;
+    AudioSource laserOnOffSource;
+    public GameObject spaceBar;
     // 다른클레스에서 알아야하는 bool을 매개변수로 받는 이벤트선언
     public event Action<bool> switchButtionboolChanged;
 
@@ -45,6 +49,7 @@ public class Switch : MonoBehaviour
 
     public void Awake()
     {
+        laserOnOffSource = GetComponent<AudioSource>();
         //isSwitchOn = true;
     }
 
@@ -75,6 +80,7 @@ public class Switch : MonoBehaviour
         if (collision.gameObject.CompareTag("Player"))
         {
             switchControlNum = 1;
+            spaceBar.SetActive(true);
         }
     }
     public void OnTriggerExit2D(Collider2D collision)
@@ -82,6 +88,8 @@ public class Switch : MonoBehaviour
         if (collision.gameObject.CompareTag("Player"))
         {
             switchControlNum = 0;
+            spaceBar.SetActive(false);
+
         }
     }
 
@@ -100,6 +108,8 @@ public class Switch : MonoBehaviour
                     //Debug.LogFormat("값 : {0}", switchSpriteRenderer.sprite);
                     IsSwitchOn = false;
                     touchButton = StartCoroutine(ChangeTouchSwitch());
+                    laserOnOffSource.clip = laserOffClip;
+                    laserOnOffSource.Play();
 
                 }
                 else if (IsSwitchOn == false && isTouchButton == false)
@@ -109,6 +119,8 @@ public class Switch : MonoBehaviour
                     //Debug.LogFormat("값 : {0}", switchSpriteRenderer.sprite);
                     IsSwitchOn = true;
                     touchButton = StartCoroutine(ChangeTouchSwitch());
+                    laserOnOffSource.clip = laserOnClip;
+                    laserOnOffSource.Play();
                 }
                 Debug.LogFormat("IsSwitchOn 값 : {0}", IsSwitchOn);
                 //  { 스페이스 입력하면 스위치 온,오프 조정

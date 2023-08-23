@@ -12,10 +12,10 @@ public class SG_RedDottedLineControler : MonoBehaviour
     public GameObject dotted002;
     public GameObject dotted003;
     public GameObject dotted004;
-
+    
     private Switch switchClass;
 
-
+   public LaserSound laserSound;
     private bool redDottedIsButtonSwitch = true;
 
     #region StackOverflow
@@ -46,6 +46,7 @@ public class SG_RedDottedLineControler : MonoBehaviour
     
     void Start()
     {
+        
         switchClass = FindAnyObjectByType<Switch>();      
 
         switchClass.switchButtionboolChanged += RedDotteLineIsSwitchOn;
@@ -83,7 +84,6 @@ public class SG_RedDottedLineControler : MonoBehaviour
         if (redDottedIsButtonSwitch == true)
         { 
             shotLaser.gameObject.SetActive(true);
-
         }
     }
 
@@ -96,6 +96,20 @@ public class SG_RedDottedLineControler : MonoBehaviour
         {
             if (collision.gameObject.CompareTag("Player"))
             {
+
+                PlayerMove playerMove = collision.GetComponent<PlayerMove>();
+                if(playerMove!=null)
+                {
+                    if(playerMove.isDie==false)
+                    {
+                        laserSound.LaserHitSound();
+                        if(playerMove.isDodge==false)
+                        {
+                        playerMove.Die();
+
+                        }
+                    }
+                }
                 this.gameObject.SetActive(false);
          
             }
