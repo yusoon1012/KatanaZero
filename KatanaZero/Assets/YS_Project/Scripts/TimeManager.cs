@@ -76,7 +76,7 @@ public class TimeManager : MonoBehaviour
         }
         if(player.GetButtonDown("SlowTime"))
         {
-            soundManager.SlowSound();
+           
         }
         if(player.GetButton("SlowTime"))
         {

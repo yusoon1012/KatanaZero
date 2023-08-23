@@ -35,7 +35,7 @@ public class EnemyRay : MonoBehaviour
     private bool isGrounded;
     EnemyPlatformPass platformPass;
     Rigidbody2D enemyRigid;
-    BoxCollider2D enemyCollider;
+    CapsuleCollider2D enemyCollider;
     Vector3 initPosition;
     PlayerMove playerMove;
     TimeBody timeBody;
@@ -49,7 +49,7 @@ public class EnemyRay : MonoBehaviour
         anim = GetComponent<Animator>();
         platformPass = GetComponent<EnemyPlatformPass>();
         enemyRigid = GetComponent<Rigidbody2D>();
-        enemyCollider = GetComponent<BoxCollider2D>();
+        enemyCollider = GetComponent<CapsuleCollider2D>();
         playerMove = FindAnyObjectByType<PlayerMove>();
         timeBody = GetComponent<TimeBody>();
         cameraShake = FindAnyObjectByType<CameraShake>();

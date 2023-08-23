@@ -6,7 +6,7 @@ using UnityEngine;
 public class SoundManager : MonoBehaviour
 {
     
-    [SerializeField] private AudioClip slowMotionClip;
+   
     [SerializeField] private AudioClip[] slashClip;
     private static SoundManager instance;
     AudioSource soundEffect;
@@ -26,11 +26,7 @@ public class SoundManager : MonoBehaviour
     {
         
     }
-    public void SlowSound()
-    {
-        soundEffect.clip = slowMotionClip;
-        soundEffect.Play();
-    }
+  
     public void AttackSound()
     {
         int randomIdx = Random.Range(0, 4);

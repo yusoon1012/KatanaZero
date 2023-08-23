@@ -4921,6 +4921,7 @@ GameObject:
   - component: {fileID: 7866400184953844010}
   - component: {fileID: 1078093829}
   - component: {fileID: 1600521758}
+  - component: {fileID: 212432039}
   m_Layer: 0
   m_Name: Player 1
   m_TagString: Player
@@ -5046,7 +5047,7 @@ BoxCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8981571697883857819}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 0
@@ -5084,7 +5085,7 @@ MonoBehaviour:
   wall_mask:
     serializedVersion: 2
     m_Bits: 64
-  state: 0
+  state: 1
   introCan: {fileID: 0}
   rollDust: {fileID: 587758967}
   moveSpeed: 6
@@ -5106,7 +5107,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1152468317d10074f95fe5e2d136b5bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerCollider: {fileID: 8981571697883857505}
+  playerCollider: {fileID: 212432039}
 --- !u!114 &8981571697883857506
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5245,10 +5246,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3d32e7583a19464e941d687d31df5d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  slowMotionClip: {fileID: 8300000, guid: 09aeda75b5324df4ebf61c183fe1b9de, type: 3}
   slashClip:
   - {fileID: 8300000, guid: 5cc72f8ded52e36418f66ba980e443c8, type: 3}
   - {fileID: 8300000, guid: 59b0003cd6584ec4fa2fc63eebce5c5a, type: 3}
   - {fileID: 8300000, guid: 2d94691931620394d953ee783ad92910, type: 3}
   - {fileID: 8300000, guid: 792f3e4169f1a6e4c901172e7265b74f, type: 3}
   - {fileID: 8300000, guid: bf085a343351e1048b739985c9ea164a, type: 3}
+--- !u!70 &212432039
+CapsuleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8981571697883857819}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_Size: {x: 0.5, y: 1.1666666}
+  m_Direction: 0

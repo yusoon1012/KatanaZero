@@ -47,7 +47,7 @@ public class PlayerMove : MonoBehaviour
     private float moveDirection;
     private float jumpTimer = 0;
     private float jumpRate = 0.2f;
-    private BoxCollider2D playerCollider;
+    private CapsuleCollider2D playerCollider;
     private float rollTimer = 0;
     private float rollRate = 0.3f;
     private int attackCount = 0;
@@ -75,7 +75,7 @@ public class PlayerMove : MonoBehaviour
         playerRigid = GetComponent<Rigidbody2D>();
         playerAni = GetComponent<Animator>();
         ghost = FindAnyObjectByType<Ghost>();
-        playerCollider = GetComponent<BoxCollider2D>();
+        playerCollider = GetComponent<CapsuleCollider2D>();
         introCan = FindAnyObjectByType<IntroCanvas>();
         deathSound = GetComponent<AudioSource>();
         if (state == PlayerState.Intro)
@@ -491,7 +491,7 @@ public class PlayerMove : MonoBehaviour
         }
         if(collision.collider.CompareTag("Enemy"))
         {
-            BoxCollider2D enemyCollider = collision.gameObject.GetComponent<BoxCollider2D>();
+            CapsuleCollider2D enemyCollider = collision.gameObject.GetComponent<CapsuleCollider2D>();
             if(enemyCollider!=null)
             {
                 Physics2D.IgnoreCollision(playerCollider, enemyCollider);

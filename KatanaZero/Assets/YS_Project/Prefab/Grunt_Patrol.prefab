@@ -149,6 +149,7 @@ GameObject:
   - component: {fileID: 8788086652011660057}
   - component: {fileID: 8788086652011660056}
   - component: {fileID: 8788086652011660058}
+  - component: {fileID: 1800538289}
   m_Layer: 0
   m_Name: Grunt_Patrol
   m_TagString: Enemy
@@ -270,7 +271,7 @@ BoxCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8788086652011660065}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 0
@@ -336,8 +337,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 250bac754db2a0f4eb38c68a1574142f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bloodPrefab_Vertical: {fileID: 0}
-  bloodPrefab_Horizontal: {fileID: 0}
+  bloodPrefab_Vertical: {fileID: 321780370833154666, guid: 8644ef1576f5dc64ab115f49fdd60fd3, type: 3}
+  bloodPrefab_Horizontal: {fileID: 6503726870197652357, guid: 4e0cb713341c95d469492a74207f6b44, type: 3}
   rayCastLength: 6
   attackDistance: 0.7
   moveSpeed: 2
@@ -348,7 +349,7 @@ MonoBehaviour:
   inRange: 0
   hotZone: {fileID: 8788086651627664747}
   triggerArea: {fileID: 8788086651535884881}
-  state: 0
+  state: 1
   isDie: 0
 --- !u!114 &8788086652011660058
 MonoBehaviour:
@@ -365,6 +366,22 @@ MonoBehaviour:
   isRewindin: 0
   animator: {fileID: 0}
   isRewindOver: 0
+--- !u!70 &1800538289
+CapsuleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8788086652011660065}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: -0.1}
+  m_Size: {x: 0.5, y: 1.2}
+  m_Direction: 0
 --- !u!1 &8788086652937983457
 GameObject:
   m_ObjectHideFlags: 0

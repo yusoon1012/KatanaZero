@@ -50,7 +50,7 @@ public class Kissyface_Lunge : MonoBehaviour
     {
 
         //Debug.Log(distance);
-        distance = Vector2.Distance(targetPosition, transform.position);
+        distance = Vector2.Distance(target.position, transform.position);
         
         if (distance < 1.8f&& isAttack)
         {
