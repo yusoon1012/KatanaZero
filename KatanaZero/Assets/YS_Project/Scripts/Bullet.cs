@@ -48,7 +48,7 @@ public class Bullet : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.tag.Equals("Wall") || collision.tag.Equals("Floor"))
+        if (collision.tag.Equals("Wall") || collision.tag.Equals("Floor") || collision.tag.Equals("Door") || collision.tag.Equals("Stair"))
         {
             Destroy(gameObject);
         }
@@ -71,13 +71,18 @@ public class Bullet : MonoBehaviour
             {
                 enemyGunner.Die();
             }
+            Destroy(gameObject);
         }
         if(collision.tag.Equals("Player"))
         {
             PlayerMove playerMove = collision.GetComponent<PlayerMove>();
             if(playerMove!=null)
             {
+                if(playerMove.isDodge==false)
+                {
+
                 playerMove.Die();
+                }
             }
         }
     }

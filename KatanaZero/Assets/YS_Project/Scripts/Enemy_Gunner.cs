@@ -11,7 +11,8 @@ public class Enemy_Gunner : MonoBehaviour
         Patrol
     }
     public EnemyState startingState = EnemyState.Patrol; // 시작 상태 설정
-    public GameObject bloodPrefab;
+    public GameObject[] bloodPrefabs;
+
     private EnemyState currentState;
     public float attackDistance;
     public float moveSpeed;
@@ -33,9 +34,12 @@ public class Enemy_Gunner : MonoBehaviour
     private Rigidbody2D enemyRigid;
     AudioSource deathSound;
     CameraShake cameraShake;
+    CapsuleCollider2D enemyCollider;
+    public GameObject followMark;
     // Start is called before the first frame update
     void Start()
     {
+        enemyCollider = GetComponent<CapsuleCollider2D>();
         anim = GetComponent<Animator>();
         enemyRigid = GetComponent<Rigidbody2D>();
         cameraShake = FindAnyObjectByType<CameraShake>();
@@ -60,13 +64,15 @@ public class Enemy_Gunner : MonoBehaviour
         if (inRange)
         {
 
-
+            followMark.SetActive(true);
             anim.Play("Gangster_aim");
             gun.SetActive(true);
 
         }
         else
         {
+            followMark.SetActive(false);
+
             gun.SetActive(false);
         }
         if (isDie)
@@ -112,7 +118,14 @@ public class Enemy_Gunner : MonoBehaviour
                 break;
         }
     }
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Player") )
+        {
+            Physics2D.IgnoreCollision(collision.collider, enemyCollider);
+        }
 
+    }
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Player") && isDie == false)
@@ -175,7 +188,8 @@ public class Enemy_Gunner : MonoBehaviour
     }
     public void Die()
     {
-        GameObject blood = Instantiate(bloodPrefab, transform.position, transform.rotation);
+        int randomIdx = Random.Range(0, 3);
+        GameObject blood = Instantiate(bloodPrefabs[randomIdx], transform.position, transform.rotation);
         deathSound.Play();
         cameraShake.ShakeCamera();
         anim.Play("Gangster_Die");

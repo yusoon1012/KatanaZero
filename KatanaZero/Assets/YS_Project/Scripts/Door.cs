@@ -7,10 +7,14 @@ public class Door : MonoBehaviour
     public GameObject doorAttackPrefab;
     BoxCollider2D doorCollider;
     Animator doorAni;
+    AudioSource doorBreak;
+    CameraShake cameraShake;
     // Start is called before the first frame update
     void Start()
     {
-        doorCollider=GetComponent<BoxCollider2D>();
+        doorBreak = GetComponent<AudioSource>();
+        cameraShake = FindAnyObjectByType<CameraShake>();
+        doorCollider =GetComponent<BoxCollider2D>();
         doorAni=GetComponent<Animator>();
     }
 
@@ -33,6 +37,8 @@ public class Door : MonoBehaviour
     }
     public void DoorOpen()
     {
+        doorBreak.Play();
+        cameraShake.ShakeCamera();
         doorAni.SetTrigger("DoorOpen");
         Instantiate(doorAttackPrefab, transform.position, transform.rotation);
     }

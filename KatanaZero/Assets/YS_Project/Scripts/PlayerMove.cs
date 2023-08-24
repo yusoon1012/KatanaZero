@@ -336,6 +336,7 @@ public class PlayerMove : MonoBehaviour
 
             if (player.GetButtonDown("Attack") && attackCount < 4)
             {
+                isDodge = true;
                 soundManager.AttackSound();
                 isAttacking = true;
                 attackCount += 1;
@@ -559,6 +560,7 @@ public class PlayerMove : MonoBehaviour
     private IEnumerator AttackCoolDown()
     {
         yield return new WaitForSeconds(0.3f);
+        isDodge = false;
         isAttacking = false;
     }
    

@@ -10,8 +10,8 @@ public class EnemyRay : MonoBehaviour
     }
     //  public Transform rayCast;
     //public LayerMask rayCastMask;
-    public GameObject bloodPrefab_Vertical;
-    public GameObject bloodPrefab_Horizontal;
+    public GameObject[] bloodPrefabs;
+   
     public float rayCastLength;
     public float attackDistance;
     public float moveSpeed;
@@ -40,12 +40,14 @@ public class EnemyRay : MonoBehaviour
     PlayerMove playerMove;
     TimeBody timeBody;
     CameraShake cameraShake;
+    AudioSource hitSound;
     // Start is called before the first frame update
     void Awake()
     {
         SelecTarget();
         initPosition = transform.position;
         intTimer = timer;
+        hitSound = GetComponent<AudioSource>();
         anim = GetComponent<Animator>();
         platformPass = GetComponent<EnemyPlatformPass>();
         enemyRigid = GetComponent<Rigidbody2D>();
@@ -58,6 +60,7 @@ public class EnemyRay : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+      
         if(timeBody.isRewindin)
         {
             return;
@@ -307,14 +310,10 @@ public class EnemyRay : MonoBehaviour
 
     public void Die()
     {
-        if(isGrounded)
-        {
-            GameObject blood = Instantiate(bloodPrefab_Horizontal, transform.position, transform.rotation);
-        }
-        else
-        {
-            GameObject blood = Instantiate(bloodPrefab_Horizontal, transform.position, transform.rotation);
-        }
+        int randomIdx = Random.Range(0, 3);  
+            GameObject blood = Instantiate(bloodPrefabs[randomIdx], transform.position, transform.rotation);
+        hitSound.Play();
+      
         cameraShake.ShakeCamera();
         anim.Play("Grunt_Die_Ground");
         isDie = true;

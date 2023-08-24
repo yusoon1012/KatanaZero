@@ -16,6 +16,7 @@ public class SG_RedDottedLineControler : MonoBehaviour
     private Switch switchClass;
 
    public LaserSound laserSound;
+    private CameraShake cameraShake;
     private bool redDottedIsButtonSwitch = true;
 
     #region StackOverflow
@@ -46,7 +47,7 @@ public class SG_RedDottedLineControler : MonoBehaviour
     
     void Start()
     {
-        
+        cameraShake = FindAnyObjectByType<CameraShake>();
         switchClass = FindAnyObjectByType<Switch>();      
 
         switchClass.switchButtionboolChanged += RedDotteLineIsSwitchOn;
@@ -100,7 +101,8 @@ public class SG_RedDottedLineControler : MonoBehaviour
                 PlayerMove playerMove = collision.GetComponent<PlayerMove>();
                 if(playerMove!=null)
                 {
-                    if(playerMove.isDie==false)
+                    cameraShake.ShakeCamera();
+                    if (playerMove.isDie==false)
                     {
                         laserSound.LaserHitSound();
                         if(playerMove.isDodge==false)
