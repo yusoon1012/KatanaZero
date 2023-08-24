@@ -113,7 +113,7 @@ public class TutorialManager : MonoBehaviour
         audioSource.Play();
         for(int i = 0; i <= 5; i++)
         {
-            Time.timeScale -= 0.19f;
+            Time.timeScale -= 0.15f;
 
             for(int j =0; j <= 10; j++)
             {

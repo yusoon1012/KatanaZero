@@ -8,7 +8,7 @@ public class GoalLightScript : MonoBehaviour
 {
     Light2D thisLight;
     public GameObject clearText;
-
+    public GameObject lights;
     Coroutine moreAndMoreBlack;
 
     WaitForFixedUpdate waitForFixed;
@@ -44,7 +44,7 @@ public class GoalLightScript : MonoBehaviour
     private IEnumerator MoreAndMoreBlack()
     {
         isCoroutineing = true;
-
+        lights.SetActive(false);
         //텍스트 켜주기
         clearText.SetActive(true);
 

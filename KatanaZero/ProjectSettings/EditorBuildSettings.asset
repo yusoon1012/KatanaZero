@@ -21,6 +21,9 @@ EditorBuildSettings:
     path: Assets/SG_Project/Scene/SG_LaserPassage002.unity
     guid: beef87fd3083c5841ae376b277982a8a
   - enabled: 1
+    path: Assets/SG_Project/Scene/SG_DoctorMap004.unity
+    guid: 950ec16c88fba394386d75075556fd2c
+  - enabled: 1
     path: Assets/YS_Project/Scenes/BossScene.unity
     guid: ce200203b816a5443bc311ae76a65535
   m_configObjects: {}

@@ -12,9 +12,10 @@ public class PlayerMove : MonoBehaviour
 {
     public enum PlayerState
     {
-        Intro, Idle, Run, Jump, Attack
+        Intro, Idle, Run, Jump, Attack,Crouch
     }
     #region Public 변수
+    public bool dodgeReturn=false;
     public GameObject gameOverUi;
     public GameObject slash;
     public Transform wallCheck;
@@ -98,6 +99,10 @@ public class PlayerMove : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(isGrounded&&state==PlayerState.Idle)
+        {
+            playerRigid.velocity = Vector2.zero;
+        }
         if(isDie)
         {
             playerAni.Play("PlayerDie");
@@ -125,6 +130,7 @@ public class PlayerMove : MonoBehaviour
         {
             if (isDodge == false)
             {
+                dodgeReturn = false;
                 playerRigid.velocity = Vector2.zero;
                 transform.localScale = leftScale;
                 direction = -1;
@@ -162,6 +168,14 @@ public class PlayerMove : MonoBehaviour
         }
         if (isDodge == true)
         {
+            if(isWallJump)
+            {
+                return;
+            }
+            if(dodgeReturn)
+            {
+                StartCoroutine(DodgeReset());
+                return; }
             ghost.isGhostMake = true;
 
             playerRigid.gravityScale = 3f;
@@ -199,6 +213,7 @@ public class PlayerMove : MonoBehaviour
         }
         else if(player.GetButtonDown("Down") && isGrounded)
         {
+            state = PlayerState.Crouch;
             playerAni.Play("PlayerCrouch");
         }
 
@@ -336,7 +351,7 @@ public class PlayerMove : MonoBehaviour
 
             if (player.GetButtonDown("Attack") && attackCount < 4)
             {
-                isDodge = true;
+                
                 soundManager.AttackSound();
                 isAttacking = true;
                 attackCount += 1;
@@ -373,12 +388,11 @@ public class PlayerMove : MonoBehaviour
         }
 
 
-        //if(isWallJump)
-        //{
-        //    Vector3 wallJump = new Vector3(-10f, jumpForce, 0f);
-        //    playerRigid.AddForce(wallJump, ForceMode2D.Impulse);
-        //    transform.localScale = new Vector3(-1, 1, 1);
-        //}
+        if(isWallJump)
+        {
+            ghost.isGhostMake = true;
+
+        }
         if (isJump == true)
         {
             state = PlayerState.Jump;
@@ -419,6 +433,7 @@ public class PlayerMove : MonoBehaviour
                 {
                     playerAni.Play("Player_Flip");
                     isWallJump = true;
+                        isDodge = true;
                     Invoke("FreezeX", 0.3f);
                     
                     playerRigid.velocity = new Vector2(-playerScale * 10f, 0.9f * 8f);
@@ -443,6 +458,7 @@ public class PlayerMove : MonoBehaviour
     void FreezeX()
     {
         isWallJump = false;
+        isDodge = false;
     }
     public void Die()
     {
@@ -460,6 +476,17 @@ public class PlayerMove : MonoBehaviour
             Die();
 
             }
+        }
+        if(collision.CompareTag("SG_Fan"))
+        {
+            dodgeReturn = true;
+        }
+    }
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.CompareTag("SG_Fan"))
+        {
+            dodgeReturn = false;
         }
     }
     private void OnCollisionEnter2D(Collision2D collision)
@@ -564,5 +591,9 @@ public class PlayerMove : MonoBehaviour
         isAttacking = false;
     }
    
-
+    private IEnumerator DodgeReset()
+    {
+        yield return new WaitForSeconds(0.5f);
+        isDodge = false;
+    }
 }

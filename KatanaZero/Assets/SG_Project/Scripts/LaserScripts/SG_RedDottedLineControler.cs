@@ -44,6 +44,7 @@ public class SG_RedDottedLineControler : MonoBehaviour
     private float onOffDotted = 0f;
     private float dottedSpeed = 2f;
     private int dottedcontrolNum = 0;
+    bool isPlayerIn=false;
 
     void Start()
     {
@@ -97,7 +98,9 @@ public class SG_RedDottedLineControler : MonoBehaviour
         {
             if (collision.gameObject.CompareTag("Player"))
             {
-
+                if(isPlayerIn==false)
+                {
+                    isPlayerIn = true;
                 PlayerMove playerMove = collision.GetComponent<PlayerMove>();
                 if (playerMove != null)
                 {
@@ -113,8 +116,17 @@ public class SG_RedDottedLineControler : MonoBehaviour
                     }
                 }
                 gameObject.SetActive(false);
+                }
 
             }
+        }
+
+    }
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+            if (collision.gameObject.CompareTag("Player"))
+        {
+            isPlayerIn = false;
         }
 
     }

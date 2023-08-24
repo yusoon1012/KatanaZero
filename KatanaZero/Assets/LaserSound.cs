@@ -21,17 +21,10 @@ public class LaserSound : MonoBehaviour
     {
 
         laserSource.clip = laserHitSound;
-        if(isPlaying==false)
-        {
-            isPlaying = true;
+        
         laserSource.Play();
             
-        }
-        if (laserSource.isPlaying == false)
-        {
-
-            isPlaying = false;
-
-        }
+        
+      
     }
 }

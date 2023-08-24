@@ -179,7 +179,7 @@ public class TutorialPlayerFirstControlScript : MonoBehaviour
             jumpState = 0;
             userGameStart = true;
             rigid.gravityScale = 1f;
-            cmVCAM.SetActive(false);
+           // cmVCAM.SetActive(false);
 
             //this.transform.localScale = Vector3.one;
         }

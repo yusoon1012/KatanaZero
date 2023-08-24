@@ -11,7 +11,7 @@ public class SG_PlayerMovement : MonoBehaviour
     // 아래는 임펙트조건을 위한 int형 변수
     // one 변수는 AttackEmpect 스크립트에서 참조 하기 때문에 public
     public int one = 0;
-
+    public bool dodgeReturn=false;
 
     // ============== 마우스 좌표를 위한 테스트 변수들=================
 
@@ -26,7 +26,7 @@ public class SG_PlayerMovement : MonoBehaviour
     // private
     private bool isJump = false;
 
-
+    SG_Ghost ghost;
 
     //나중에 플레이어 공중처리할 Bool변수
 
@@ -159,6 +159,7 @@ public class SG_PlayerMovement : MonoBehaviour
 
     public void Awake()
     {
+        ghost = GetComponent<SG_Ghost>();
     }
     // Start is called before the first frame update
     void Start()
@@ -199,6 +200,15 @@ public class SG_PlayerMovement : MonoBehaviour
             IsRoll();
             WallGrabAtInput();
             AttackClick();
+            if(player.GetAnyButton())
+            {
+
+                ghost.isGhostMake = true;
+            }
+            else
+            {
+                ghost.isGhostMake = false;
+            }
         }
 
         //Debug.LogFormat("playerPresentFloor -> {0}", playerPresentFloor);
@@ -455,6 +465,8 @@ public class SG_PlayerMovement : MonoBehaviour
     {
         if (isDie == false)
         {
+            if(playerRigid!=null)
+            { 
             if (playerRigid.gravityScale == 0)
             {
                 playerRigid.mass = 1;
@@ -462,6 +474,7 @@ public class SG_PlayerMovement : MonoBehaviour
             }
             else { /*PASS*/ }
 
+            }
             if (collision.gameObject.CompareTag("SG_ClingWall"))
             {
                 exitWallGrab = true;
@@ -485,6 +498,21 @@ public class SG_PlayerMovement : MonoBehaviour
 
     #endregion 콜라이더
 
+    public void Die()
+    {
+        if(isDie==false)
+        {
+
+        isDie = true;
+        gameOverUi.SetActive(true);
+        audioSource.clip = audioClip[6];
+        audioSource.Play();
+
+        // 죽는 애니메이션 재생
+        animator.SetTrigger("DieTrigger");
+        }
+
+    }
     #region 트리거 콜라이더
     public void OnTriggerEnter2D(Collider2D collision)
     {
@@ -544,38 +572,38 @@ public class SG_PlayerMovement : MonoBehaviour
                 else{ /*PASS*/ }
 
                 // 환풍기에 맞으면 
-                if(collision.gameObject.CompareTag("SG_Fan"))
-                {
-                    isDie = true;
-                    gameOverUi.SetActive(true);
+                //if(collision.gameObject.CompareTag("SG_Fan"))
+                //{
+                //    isDie = true;
+                //    gameOverUi.SetActive(true);
 
-                    audioSource.clip = audioClip[6];
-                    audioSource.Play();
+                //    audioSource.clip = audioClip[6];
+                //    audioSource.Play();
 
-                    // 죽는 애니메이션 재생
-                    animator.SetTrigger("DieTrigger");
+                //    // 죽는 애니메이션 재생
+                //    animator.SetTrigger("DieTrigger");
 
-                    // X포지션이 양수로 날아가야함
-                    if (this.gameObject.transform.position.x > collision.gameObject.transform.position.x)
-                    {
-                        leftHit = true;
+                //    // X포지션이 양수로 날아가야함
+                //    if (this.gameObject.transform.position.x > collision.gameObject.transform.position.x)
+                //    {
+                //        leftHit = true;
 
-                        playerDiePositionPick = StartCoroutine(PlayerDiePositionPick());
+                //        playerDiePositionPick = StartCoroutine(PlayerDiePositionPick());
 
-                        this.transform.localScale = backScale;
+                //        this.transform.localScale = backScale;
 
-                    }
-                    // X 포지션이 음수로 날아가야함
-                    else if (this.gameObject.transform.position.x < collision.gameObject.transform.position.x)
-                    {
-                        rightHit = true;
+                //    }
+                //    // X 포지션이 음수로 날아가야함
+                //    else if (this.gameObject.transform.position.x < collision.gameObject.transform.position.x)
+                //    {
+                //        rightHit = true;
 
-                        playerDiePositionPick = StartCoroutine(PlayerDiePositionPick());
+                //        playerDiePositionPick = StartCoroutine(PlayerDiePositionPick());
 
-                        this.transform.localScale = frontScale;
-                    }
-                }
-                else { /*PASS*/ }
+                //        this.transform.localScale = frontScale;
+                //    }
+                //}
+                //else { /*PASS*/ }
             }
         }
     }       // TriggerEnter
@@ -785,6 +813,9 @@ public class SG_PlayerMovement : MonoBehaviour
                 // 달리기 끄는 로직
                 readyRun = false;
                 animator.SetBool("ReadyRun", readyRun);
+                dodgeReturn = false;
+
+
 
             }       // if: 오른쪽 구르기인지?
             else { /*PASS*/ }
@@ -800,6 +831,7 @@ public class SG_PlayerMovement : MonoBehaviour
                 // 달리기 끄는 로직
                 readyRun = false;
                 animator.SetBool("ReadyRun", readyRun);
+                dodgeReturn = false;
 
             }       // if: 왼쪽 구르기인지?
             else { /*PASS*/ }
@@ -987,7 +1019,7 @@ public class SG_PlayerMovement : MonoBehaviour
         //  좌클릭시
         if (Input.GetMouseButtonDown(0))
         {
-
+            ghost.isGhostMake = true;
             if (leftClickAttackCoolTime == false && attackCount < 3) // 좌클릭 쿨타임 아닐때에 실행됨                        
             {
                 //// 벽붙기 트리거 초기화
@@ -1146,15 +1178,15 @@ public class SG_PlayerMovement : MonoBehaviour
             yield return fixedUpdate;
         }
 
-        //  플레이어보다 앞을 눌렀을때에
-        if (mousePosition.x > gameObject.transform.position.x)
-        {
-            playerRigid.velocity = Vector3.one;
-        }
-        else if (mousePosition.x < gameObject.transform.position.x)
-        {
-            playerRigid.velocity = Vector3.one * -1;
-        }
+            playerRigid.velocity = Vector3.zero;
+        ////  플레이어보다 앞을 눌렀을때에
+        //if (mousePosition.x > gameObject.transform.position.x)
+        //{
+        //}
+        //else if (mousePosition.x < gameObject.transform.position.x)
+        //{
+        //    playerRigid.velocity = Vector3.one * -1;
+        //}
     }
     // } 공격후 AddForce의 힘값을 일정시간 이후 초기화
 
@@ -1179,7 +1211,10 @@ public class SG_PlayerMovement : MonoBehaviour
             {
                 yield return fixedUpdate;
             }
-
+            if(dodgeReturn)
+            {
+                yield break;
+            }
             playerRigid.velocity = Vector3.zero;
             isRolling = false;
             animator.SetTrigger("RollEnd");
@@ -1203,7 +1238,10 @@ public class SG_PlayerMovement : MonoBehaviour
             {
                 yield return fixedUpdate;
             }
-
+            if (dodgeReturn)
+            {
+                yield break;
+            }
             playerRigid.velocity = Vector3.zero;
             isRolling = false;
             animator.SetTrigger("RollEnd");
