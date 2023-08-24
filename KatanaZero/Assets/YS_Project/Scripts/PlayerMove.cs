@@ -29,12 +29,12 @@ public class PlayerMove : MonoBehaviour
     public float attackCooldown = 1f; // ���� ��ٿ�
     public bool isDodge = false;
     public bool isDie = false;
+    public AudioClip deathClip;
     #endregion
     private float jumpForce = 7f;
     private bool isRun;
     private bool isJump;
     private bool isStair;
-
     private AudioSource deathSound;
     private bool isWallJump;
     private bool isWall;
@@ -47,7 +47,7 @@ public class PlayerMove : MonoBehaviour
     private float moveDirection;
     private float jumpTimer = 0;
     private float jumpRate = 0.2f;
-    private BoxCollider2D playerCollider;
+    private CapsuleCollider2D playerCollider;
     private float rollTimer = 0;
     private float rollRate = 0.3f;
     private int attackCount = 0;
@@ -58,23 +58,36 @@ public class PlayerMove : MonoBehaviour
     Player player;
     int playerId = 0;
     SoundManager soundManager;
+    IntroManager introManager;
     Vector2 targetPosition;
     Vector3 leftScale=new Vector3(-1f, 1f, 1f);
     Vector3 rightScale= new Vector3(1f, 1f, 1f);
     // Start is called before the first frame update
-    void Start()
+    private void Awake()
     {
         soundManager = FindAnyObjectByType<SoundManager>();
+        
+    }
+    void Start()
+    {
+        introManager = FindAnyObjectByType<IntroManager>();
         player = ReInput.players.GetPlayer(playerId);
         playerRigid = GetComponent<Rigidbody2D>();
         playerAni = GetComponent<Animator>();
         ghost = FindAnyObjectByType<Ghost>();
-        playerCollider = GetComponent<BoxCollider2D>();
+        playerCollider = GetComponent<CapsuleCollider2D>();
         introCan = FindAnyObjectByType<IntroCanvas>();
         deathSound = GetComponent<AudioSource>();
         if (state == PlayerState.Intro)
         {
+            if(introManager!=null)
+            {
+                if(introManager.introOver==false)
+                {
             StartCoroutine(Intro());
+
+                }
+            }
 
         }
 
@@ -95,13 +108,16 @@ public class PlayerMove : MonoBehaviour
         isWall = Physics2D.Raycast(wallCheck.position, Vector2.right * playerScale, wallCheckDis, wall_mask);
 
 
-       
-            if (state == PlayerState.Intro)
+       if(introManager!=null)
+        {
+
+            if (state == PlayerState.Intro&&introManager.introOver==false)
             {
                 ghost.isGhostMake = false;
                 
             return;
             }
+        }
           
         
         if ((player.GetButton("Down") && player.GetButtonDown("MoveLeft") && isGrounded)
@@ -320,6 +336,7 @@ public class PlayerMove : MonoBehaviour
 
             if (player.GetButtonDown("Attack") && attackCount < 4)
             {
+                isDodge = true;
                 soundManager.AttackSound();
                 isAttacking = true;
                 attackCount += 1;
@@ -430,6 +447,7 @@ public class PlayerMove : MonoBehaviour
     public void Die()
     {
         gameOverUi.SetActive(true);
+        deathSound.clip = deathClip;
         deathSound.Play();
         isDie = true;
     }
@@ -437,7 +455,11 @@ public class PlayerMove : MonoBehaviour
     {
         if (collision.CompareTag("Dead"))
         {
+            if(isDie==false)
+            {
             Die();
+
+            }
         }
     }
     private void OnCollisionEnter2D(Collision2D collision)
@@ -470,7 +492,7 @@ public class PlayerMove : MonoBehaviour
         }
         if(collision.collider.CompareTag("Enemy"))
         {
-            BoxCollider2D enemyCollider = collision.gameObject.GetComponent<BoxCollider2D>();
+            CapsuleCollider2D enemyCollider = collision.gameObject.GetComponent<CapsuleCollider2D>();
             if(enemyCollider!=null)
             {
                 Physics2D.IgnoreCollision(playerCollider, enemyCollider);
@@ -538,6 +560,7 @@ public class PlayerMove : MonoBehaviour
     private IEnumerator AttackCoolDown()
     {
         yield return new WaitForSeconds(0.3f);
+        isDodge = false;
         isAttacking = false;
     }
    

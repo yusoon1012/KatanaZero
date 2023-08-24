@@ -26,6 +26,7 @@ TagManager:
   - Reflect
   - SG_Bullet
   - SG_PlayerAttack
+  - Door
   layers:
   - Default
   - TransparentFX

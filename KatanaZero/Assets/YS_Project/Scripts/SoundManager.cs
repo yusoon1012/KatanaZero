@@ -1,25 +1,25 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Rewired;
+
 
 public class SoundManager : MonoBehaviour
 {
     
-    [SerializeField] private AudioClip slowMotionClip;
+   
     [SerializeField] private AudioClip[] slashClip;
+    [SerializeField] private AudioClip rewindClip;
+    private static SoundManager instance;
     AudioSource soundEffect;
-    Player player;
+    private bool rewindOn=false;
+    TimeBody timeBody;
 
-    private void Awake()
-    {
-        DontDestroyOnLoad(gameObject);
-    }
+   
     // Start is called before the first frame update
     void Start()
     {
-        player = ReInput.players.GetPlayer(0);
-        soundEffect = GetComponent<AudioSource>();
+        timeBody = FindAnyObjectByType<TimeBody>();
+         soundEffect = GetComponent<AudioSource>();
       
     }
 
@@ -28,15 +28,27 @@ public class SoundManager : MonoBehaviour
     {
         
     }
-    public void SlowSound()
-    {
-        soundEffect.clip = slowMotionClip;
-        soundEffect.Play();
-    }
+  
     public void AttackSound()
     {
         int randomIdx = Random.Range(0, 4);
         soundEffect.clip = slashClip[randomIdx];
         soundEffect.Play();
+    }
+    public void RewindSound()
+    {
+        
+        if(timeBody.isRewindOver==false)
+        {
+            rewindOn = true;
+            soundEffect.clip = rewindClip;
+            if(soundEffect.isPlaying==false)
+            {
+            soundEffect.Play();
+
+            }
+
+
+        }
     }
 }

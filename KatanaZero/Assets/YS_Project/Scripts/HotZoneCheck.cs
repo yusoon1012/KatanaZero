@@ -20,7 +20,11 @@ public class HotZoneCheck : MonoBehaviour
     {
         if (inRange && !anim.GetCurrentAnimatorStateInfo(0).IsName("Grunt_attack"))
             {
+            if(enemyParent.isDie==false)
+            {
             enemyParent.Flip();
+
+            }
         }
         if(timeBody.isRewindOver)
         {

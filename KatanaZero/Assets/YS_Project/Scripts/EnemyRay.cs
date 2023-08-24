@@ -8,8 +8,10 @@ public class EnemyRay : MonoBehaviour
     {
         Idle,Patrol,Chase
     }
-  //  public Transform rayCast;
+    //  public Transform rayCast;
     //public LayerMask rayCastMask;
+    public GameObject[] bloodPrefabs;
+   
     public float rayCastLength;
     public float attackDistance;
     public float moveSpeed;
@@ -29,31 +31,36 @@ public class EnemyRay : MonoBehaviour
     private float intTimer;
     private bool onPlatform;
     private bool onStair;
-    private bool isDie=false;
+    public bool isDie=false;
     private bool isGrounded;
     EnemyPlatformPass platformPass;
     Rigidbody2D enemyRigid;
-    BoxCollider2D enemyCollider;
+    CapsuleCollider2D enemyCollider;
     Vector3 initPosition;
     PlayerMove playerMove;
     TimeBody timeBody;
+    CameraShake cameraShake;
+    AudioSource hitSound;
     // Start is called before the first frame update
     void Awake()
     {
         SelecTarget();
         initPosition = transform.position;
         intTimer = timer;
+        hitSound = GetComponent<AudioSource>();
         anim = GetComponent<Animator>();
         platformPass = GetComponent<EnemyPlatformPass>();
         enemyRigid = GetComponent<Rigidbody2D>();
-        enemyCollider = GetComponent<BoxCollider2D>();
+        enemyCollider = GetComponent<CapsuleCollider2D>();
         playerMove = FindAnyObjectByType<PlayerMove>();
         timeBody = GetComponent<TimeBody>();
+        cameraShake = FindAnyObjectByType<CameraShake>();
     }
 
     // Update is called once per frame
     void Update()
     {
+      
         if(timeBody.isRewindin)
         {
             return;
@@ -303,15 +310,16 @@ public class EnemyRay : MonoBehaviour
 
     public void Die()
     {
+        int randomIdx = Random.Range(0, 3);  
+            GameObject blood = Instantiate(bloodPrefabs[randomIdx], transform.position, transform.rotation);
+        hitSound.Play();
+      
+        cameraShake.ShakeCamera();
         anim.Play("Grunt_Die_Ground");
         isDie = true;
         EnemyCountManager.Instance.currentCount += 1;
 
-        if (isGrounded)
-        {
-        StartCoroutine(DieRoutine());
-
-        }
+       
     }
     private IEnumerator DieRoutine()
     {

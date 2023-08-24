@@ -4920,6 +4920,8 @@ GameObject:
   - component: {fileID: 8981571697883857506}
   - component: {fileID: 7866400184953844010}
   - component: {fileID: 1078093829}
+  - component: {fileID: 1600521758}
+  - component: {fileID: 212432039}
   m_Layer: 0
   m_Name: Player 1
   m_TagString: Player
@@ -4936,7 +4938,7 @@ Transform:
   m_GameObject: {fileID: 8981571697883857819}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: -1, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8981571696202472714}
@@ -5045,7 +5047,7 @@ BoxCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8981571697883857819}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 0
@@ -5076,6 +5078,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56cb8f8d6f453dd408fc40500c8a0494, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameOverUi: {fileID: 0}
   slash: {fileID: 0}
   wallCheck: {fileID: 8981571696202472714}
   wallCheckDis: 0.5
@@ -5091,6 +5094,7 @@ MonoBehaviour:
   attackCooldown: 1
   isDodge: 0
   isDie: 0
+  deathClip: {fileID: 8300000, guid: 97d421171bff5614f89e2e8f58b9c096, type: 3}
 --- !u!114 &8981571697883857517
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5103,7 +5107,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1152468317d10074f95fe5e2d136b5bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerCollider: {fileID: 8981571697883857505}
+  playerCollider: {fileID: 212432039}
 --- !u!114 &8981571697883857506
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5133,6 +5137,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isRewindin: 0
   animator: {fileID: 0}
+  isRewindOver: 0
 --- !u!82 &1078093829
 AudioSource:
   m_ObjectHideFlags: 0
@@ -5229,3 +5234,37 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &1600521758
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8981571697883857819}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3d32e7583a19464e941d687d31df5d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  slashClip:
+  - {fileID: 8300000, guid: 5cc72f8ded52e36418f66ba980e443c8, type: 3}
+  - {fileID: 8300000, guid: 59b0003cd6584ec4fa2fc63eebce5c5a, type: 3}
+  - {fileID: 8300000, guid: 2d94691931620394d953ee783ad92910, type: 3}
+  - {fileID: 8300000, guid: 792f3e4169f1a6e4c901172e7265b74f, type: 3}
+  - {fileID: 8300000, guid: bf085a343351e1048b739985c9ea164a, type: 3}
+--- !u!70 &212432039
+CapsuleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8981571697883857819}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_Size: {x: 0.5, y: 1.1666666}
+  m_Direction: 0

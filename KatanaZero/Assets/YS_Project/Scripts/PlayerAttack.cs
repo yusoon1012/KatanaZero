@@ -62,7 +62,16 @@ public class PlayerAttack : MonoBehaviour
             {
                 slashSound.clip = killClip;
                 slashSound.Play();
+                if(enemyCollision.isDie==false)
+                {
                 enemyCollision.Die();
+                    Rigidbody2D enemyRigidbody = collision.GetComponent<Rigidbody2D>();
+                    if (enemyRigidbody != null)
+                    {
+                        enemyRigidbody.velocity = Vector2.zero; // Reset any previous velocity
+                        enemyRigidbody.AddForce(-attackDirection * 10f, ForceMode2D.Impulse);
+                    }
+                }
             }
             Enemy_Gunner gunnerCollision = collision.GetComponent<Enemy_Gunner>();
             if(gunnerCollision!=null)
@@ -70,21 +79,36 @@ public class PlayerAttack : MonoBehaviour
                 slashSound.clip = killClip;
                 slashSound.Play();
 
+                if(gunnerCollision.isDie==false)
+                {
                 gunnerCollision.Die();
+                    Rigidbody2D enemyRigidbody = collision.GetComponent<Rigidbody2D>();
+                    if (enemyRigidbody != null)
+                    {
+                        enemyRigidbody.velocity = Vector2.zero; // Reset any previous velocity
+                        enemyRigidbody.AddForce(-attackDirection * 10f, ForceMode2D.Impulse);
+                    }
+                }
             }
            
 
             // Apply force to the enemy
-            Rigidbody2D enemyRigidbody = collision.GetComponent<Rigidbody2D>();
-            if (enemyRigidbody != null)
-            {
-                enemyRigidbody.velocity = Vector2.zero; // Reset any previous velocity
-                enemyRigidbody.AddForce(-attackDirection * 10f, ForceMode2D.Impulse);
-            }
+            
         }
         if(collision.tag.Equals("Breakable"))
         {
             collision.GetComponent<BreakableObject>().BreakPlatform();
+        }
+        if(collision.tag.Equals("Door"))
+        {
+            Door openDoor = collision.GetComponent<Door>();
+            Debug.Log("Door에 공격");
+            if(openDoor!=null)
+            {
+                Debug.Log("Door가 null이 아니다");
+
+                openDoor.DoorOpen();
+            }
         }
     }
     
