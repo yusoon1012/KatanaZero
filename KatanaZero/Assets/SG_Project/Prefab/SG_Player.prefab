@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 6680663369625733320}
   - component: {fileID: 9098782405950725837}
   - component: {fileID: 9098782405950725827}
+  - component: {fileID: 9027827653131465973}
   m_Layer: 0
   m_Name: SG_Player
   m_TagString: Player
@@ -299,8 +300,10 @@ MonoBehaviour:
   one: 0
   moveSpeed: 10
   jumpForce: 7
+  gameOverUi: {fileID: 0}
   isAttacking: 0
   isDodge: 0
+  isDie: 0
   attackCount: 0
   wallGrabCount: 0
   mousePosition: {x: 0, y: 0, z: 0}
@@ -315,6 +318,21 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 6c6144cab88f4024b8a57e9086d82ca8, type: 3}
   - {fileID: 8300000, guid: e6de600e6f3c46e4483f5289aa025050, type: 3}
   - {fileID: 8300000, guid: 2e4cc922c03673141a060b1677fda95c, type: 3}
+--- !u!114 &9027827653131465973
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4640741116290769517}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 923cb373a2beb3e4a9e5e8fd30072388, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isRewindin: 0
+  animator: {fileID: 0}
+  isRewindOver: 0
 --- !u!1 &4640741116343191734
 GameObject:
   m_ObjectHideFlags: 0

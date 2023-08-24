@@ -12,6 +12,7 @@ public class LaserSound : MonoBehaviour
     void Start()
     {
         laserSource = GetComponent<AudioSource>();
+        laserSource.clip = laserHitSound;
     }
 
   

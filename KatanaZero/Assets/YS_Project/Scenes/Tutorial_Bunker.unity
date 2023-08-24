@@ -944,6 +944,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 260305835}
     - target: {fileID: 8981571697883857507, guid: ca177a7a83823704992f2ca2f42e6a75, type: 3}
+      propertyPath: state
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8981571697883857507, guid: ca177a7a83823704992f2ca2f42e6a75, type: 3}
       propertyPath: introCan
       value: 
       objectReference: {fileID: 1901122213}
@@ -5663,6 +5667,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 8788086652011660056, guid: 55bd3b1b026cac34dae2eea60f2988f2, type: 3}
+      propertyPath: state
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8788086652011660056, guid: 55bd3b1b026cac34dae2eea60f2988f2, type: 3}
       propertyPath: leftLimit
       value: 

@@ -19,7 +19,7 @@ public class SG_PlayerMovement : MonoBehaviour
     public float jumpForce = 7f;
 
 
-
+    public GameObject gameOverUi;
     #region Bool 변수
 
 
@@ -40,7 +40,7 @@ public class SG_PlayerMovement : MonoBehaviour
     // 구르기 제작에 사용할 변수들
     private bool isRightMove = false;
     private bool isLeftMove = false;
-    private bool isDownKeyInput = false;
+    private bool isDownInput = false;
     private bool isRollRock = false;
     private bool isRolling = false;
 
@@ -195,7 +195,7 @@ public class SG_PlayerMovement : MonoBehaviour
             LeftMove();
             RightMove();
             JumpMove();
-            IsDownKey();
+            IsDown();
             IsRoll();
             WallGrabAtInput();
             AttackClick();
@@ -489,6 +489,21 @@ public class SG_PlayerMovement : MonoBehaviour
     public void OnTriggerEnter2D(Collider2D collision)
     {
         
+        if(collision.tag.Equals("Dead"))
+        {
+            if(isDie==false)
+            {
+
+            isDie = true;
+            gameOverUi.SetActive(true);
+            audioSource.clip = audioClip[6];
+            audioSource.Play();
+
+            // 죽는 애니메이션 재생
+            animator.SetTrigger("DieTrigger");
+            }
+
+        }
         if (isDie == false) //플레이어가 죽지않았을때
         {
             // !플레이어가 무적이 아닐때
@@ -499,7 +514,7 @@ public class SG_PlayerMovement : MonoBehaviour
                 {
 
                     isDie = true;
-
+                    gameOverUi.SetActive(true);
                     audioSource.clip = audioClip[6];
                     audioSource.Play();
 
@@ -532,6 +547,7 @@ public class SG_PlayerMovement : MonoBehaviour
                 if(collision.gameObject.CompareTag("SG_Fan"))
                 {
                     isDie = true;
+                    gameOverUi.SetActive(true);
 
                     audioSource.clip = audioClip[6];
                     audioSource.Play();
@@ -587,7 +603,7 @@ public class SG_PlayerMovement : MonoBehaviour
         headOffPrecrouch = false;
 
         // S 라는 키를 눌렀는지 확인할 변수
-        isDownKeyInput = false;
+        isDownInput = false;
 
         // 구르기 쿨타임인지 체크할 변수
         isRollRock = false;
@@ -671,6 +687,10 @@ public class SG_PlayerMovement : MonoBehaviour
             }
 
         }
+        if(player.GetButtonUp("MoveLeft")&& playerPresentFloor)
+        {
+            playerRigid.velocity = Vector2.zero;
+        }
 
     }
 
@@ -716,29 +736,33 @@ public class SG_PlayerMovement : MonoBehaviour
                 animator.SetBool("ReadyRun", readyRun);
             }
         }
+        if (player.GetButtonUp("MoveRight") && playerPresentFloor)
+        {
+            playerRigid.velocity = Vector2.zero;
+        }
 
     }
-    public void IsDownKey()
+    public void IsDown()
     {
 
-        if (player.GetButtonDown("DownKey") && headOffPrecrouch == false)
+        if (player.GetButtonDown("Down") && headOffPrecrouch == false)
         {
-            isDownKeyInput = true;
-            animator.SetBool("PrecrouchBool", isDownKeyInput);
+            isDownInput = true;
+            animator.SetBool("PrecrouchBool", isDownInput);
             playerBoxCollider.offset = new Vector2(0.07f, -0.27f);
             playerBoxCollider.size = new Vector2(0.55f, 0.64f);
         }
         else { /*PASS*/ }
 
-        if (player.GetButton("DownKey") && headOffPrecrouch == false)
+        if (player.GetButton("Down") && headOffPrecrouch == false)
         {
-            isDownKeyInput = true;
+            isDownInput = true;
         }
 
-        if (player.GetButtonUp("DownKey") && headOffPrecrouch == false)
+        if (player.GetButtonUp("Down") && headOffPrecrouch == false)
         {
-            isDownKeyInput = false;
-            animator.SetBool("PrecrouchBool", isDownKeyInput);
+            isDownInput = false;
+            animator.SetBool("PrecrouchBool", isDownInput);
 
             playerBoxCollider.offset = new Vector2(0.07f, -0.03f);
             playerBoxCollider.size = new Vector2(0.55f, 1.1f);
@@ -750,7 +774,7 @@ public class SG_PlayerMovement : MonoBehaviour
     {
         if (isJump == false && isRollRock == false && isWallGrab == false)
         {
-            if (isRightMove == true && isDownKeyInput == true
+            if (isRightMove == true && isDownInput == true
                 && isLeftMove == false)
             {
                 isDodge = true;
@@ -765,7 +789,7 @@ public class SG_PlayerMovement : MonoBehaviour
             }       // if: 오른쪽 구르기인지?
             else { /*PASS*/ }
 
-            if (isLeftMove == true && isDownKeyInput == true &&
+            if (isLeftMove == true && isDownInput == true &&
                 isRightMove == false)
             {
                 isDodge = true;
@@ -788,7 +812,7 @@ public class SG_PlayerMovement : MonoBehaviour
     public void JumpMove()
     {
 
-        if (player.GetButtonDown("MoveJump") && isJump == false && isWallGrab == false)
+        if (player.GetButtonDown("Jump") && isJump == false && isWallGrab == false)
         {
             animator.Play("Jump");
             if (playerRigid.mass < 1 || playerRigid.gravityScale < 1)
@@ -810,7 +834,7 @@ public class SG_PlayerMovement : MonoBehaviour
         }
         else { /*PASS*/ }
         //  붙는 벽에 달라붙은 상태에서 점프를 했을경우
-        if (player.GetButtonDown("MoveJump") && isJump == false && isWallGrab == true)
+        if (player.GetButtonDown("Jump") && isJump == false && isWallGrab == true)
         {
             FlipJump();
         }
@@ -889,7 +913,7 @@ public class SG_PlayerMovement : MonoBehaviour
 
         //  { if : 벽에붙어있으며 W키가아닌 A,S,D 키중 하나라도 눌렀을경우 
         if (isWallGrab == true && isFlipJump == false &&
-            (player.GetButtonDown("MoveLeft") || player.GetButtonDown("MoveRight") || player.GetButtonDown("DownKey")))
+            (player.GetButtonDown("MoveLeft") || player.GetButtonDown("MoveRight") || player.GetButtonDown("Down")))
         {
             // 쿨타임을 주어서 벽에서 붙은판정으로 가지 못하게 막음
 

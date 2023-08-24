@@ -6,7 +6,7 @@ using UnityEngine.PlayerLoop;
 public class SG_ShotLaserControler : MonoBehaviour
 {
     // 플레이어랑 닿았을때에 플레이어 사망처리를 위한 Class참조
-    public SG_PlayerMovement player = default;
+    //public SG_PlayerMovement player = default;
 
     public GameObject dottedLine;
 
@@ -64,7 +64,11 @@ public class SG_ShotLaserControler : MonoBehaviour
         if (shotLaserIsbuttonOn == true)
         {                                    
                 Initialization();
+            if(audioSource!=null)
+            {
                 audioSource.Play();
+
+            }
                 changeColor = StartCoroutine(ColorChange());            
         }
     }

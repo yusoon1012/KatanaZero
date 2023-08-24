@@ -77,7 +77,7 @@ public class SG_SceneManager : MonoBehaviour
     public void IsLaserPassageSceneClear(bool eventValue)
     {
         isLaserPassageSceneClear = eventValue;
-        Debug.LogFormat("이벤트가 잘 불러와져서 바뀌었나? -> {0}", isLaserPassageSceneClear);
+        //Debug.LogFormat("이벤트가 잘 불러와져서 바뀌었나? -> {0}", isLaserPassageSceneClear);
     }
 
 

@@ -182,10 +182,14 @@ public class EnemyRay : MonoBehaviour
 
     void EnemyLogic()
     {
+        if(playerMove!=null)
+        {
+
         if(playerMove.isDie)
         {
             StopAttack();
             return;
+        }
         }
         distance = Vector2.Distance(transform.position, target.position);
         if(distance>attackDistance)

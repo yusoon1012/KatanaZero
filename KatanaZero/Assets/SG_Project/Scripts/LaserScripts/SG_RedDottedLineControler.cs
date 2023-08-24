@@ -12,10 +12,10 @@ public class SG_RedDottedLineControler : MonoBehaviour
     public GameObject dotted002;
     public GameObject dotted003;
     public GameObject dotted004;
-    
+
     private Switch switchClass;
 
-   public LaserSound laserSound;
+    public LaserSound laserSound;
     private CameraShake cameraShake;
     private bool redDottedIsButtonSwitch = true;
 
@@ -44,11 +44,11 @@ public class SG_RedDottedLineControler : MonoBehaviour
     private float onOffDotted = 0f;
     private float dottedSpeed = 2f;
     private int dottedcontrolNum = 0;
-    
+
     void Start()
     {
         cameraShake = FindAnyObjectByType<CameraShake>();
-        switchClass = FindAnyObjectByType<Switch>();      
+        switchClass = FindAnyObjectByType<Switch>();
 
         switchClass.switchButtionboolChanged += RedDotteLineIsSwitchOn;
     }
@@ -83,7 +83,7 @@ public class SG_RedDottedLineControler : MonoBehaviour
     {
         // SetActive == flase 될 때 수행할 작업
         if (redDottedIsButtonSwitch == true)
-        { 
+        {
             shotLaser.gameObject.SetActive(true);
         }
     }
@@ -99,21 +99,21 @@ public class SG_RedDottedLineControler : MonoBehaviour
             {
 
                 PlayerMove playerMove = collision.GetComponent<PlayerMove>();
-                if(playerMove!=null)
+                if (playerMove != null)
                 {
                     cameraShake.ShakeCamera();
-                    if (playerMove.isDie==false)
+                    if (playerMove.isDie == false)
                     {
                         laserSound.LaserHitSound();
-                        if(playerMove.isDodge==false)
+                        if (playerMove.isDodge == false)
                         {
-                        playerMove.Die();
+                            playerMove.Die();
 
                         }
                     }
                 }
-                this.gameObject.SetActive(false);
-         
+                gameObject.SetActive(false);
+
             }
         }
 
