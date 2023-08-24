@@ -23,7 +23,7 @@ public class SG_PlayerMovement : MonoBehaviour
     #region Bool 변수
 
 
-
+    // private
     private bool isJump = false;
 
 
@@ -31,9 +31,12 @@ public class SG_PlayerMovement : MonoBehaviour
     //나중에 플레이어 공중처리할 Bool변수
 
     public bool isAttacking = false;
+
+    //private
     private bool readyRun = false;
     private bool leftClickAttackCoolTime = false;
 
+    //private
     // 구르기 제작에 사용할 변수들
     private bool isRightMove = false;
     private bool isLeftMove = false;
@@ -42,28 +45,35 @@ public class SG_PlayerMovement : MonoBehaviour
     private bool isRolling = false;
 
 
+    //private
     // 벽붙기 제작에 사용할 변수들
     // 23.08.18 이걸로 벽에 붙었는지 안붙었는지 체크 할거임
     private bool isWallGrab = false;
 
+    //private
     // 붙을수 있는 벽에 붙거나 나갈때에 변경될 변수
     private bool exitWallGrab = false;
 
 
+    //private
     // 벽에 붙은뒤 대각선 점프할때 필요한 변수
     private bool wallJump = false;
     private bool isleftWall = false;
     private bool isRightWall = false;
 
+    //private
     // 벽에 붙은뒤 공격시 에러가 나기때문에 만든 변수
     private bool isAttackClingWallCoolTimeBool = false;
 
-
+    //private
     // 23.08.20 Flip 했는지 처리할 변수
     private bool isFlipJump = false;
 
+    //private
     // 23.08.21 WallGrab상태중 ASD 눌렀는지 확인 해줄 변수
     private bool wallGrabTouch = false;
+
+    //private
     // 덤블링후 앉지 못하게 처리할 변수
     //  true상태일때 못하게 할거임
     private bool headOffPrecrouch = false;
@@ -72,9 +82,17 @@ public class SG_PlayerMovement : MonoBehaviour
     // 플레이어 데미지 받을수 있는 상태인지 체크하는 변수
     public bool isDodge = false;
 
+    //private
     // 현재플레이어가Floor 에  땅에 닿아 있는지 알려줄 Bool변수
     private bool playerPresentFloor = false;
 
+    // 왼쪽에서 맞음
+    private bool leftHit;
+
+    //  오른쪽에서 맞음 
+    private bool rightHit;
+
+    public bool isDie = false;
 
     #endregion
 
@@ -98,6 +116,7 @@ public class SG_PlayerMovement : MonoBehaviour
 
     Vector3 frontScale = Vector3.one;
     Vector3 backScale = new Vector3(-1f, 1f, 1f);
+    Vector3 diePosition;
 
     #region 코루틴 캐싱 부분
 
@@ -108,6 +127,9 @@ public class SG_PlayerMovement : MonoBehaviour
     private Coroutine addforceReset;
     private Coroutine rollRock;
     private Coroutine isAttackClingWallCoolTime;
+
+    // 23.08.22추가 죽어서 AddForce로 힘을 주고 그대로 정지 시키게 하기 위해서코루틴 이용 예정
+    private Coroutine playerDiePositionPick;
 
     // 23.08.21     10 : 55 리펙토링 하면서 코루틴 추가 점프 문제로 추가했음
     private Coroutine jumpCoroutine;
@@ -135,6 +157,9 @@ public class SG_PlayerMovement : MonoBehaviour
     [SerializeField] private AudioClip[] audioClip;
     #endregion 오디오 관련 
 
+    public void Awake()
+    {
+    }
     // Start is called before the first frame update
     void Start()
     {
@@ -143,6 +168,13 @@ public class SG_PlayerMovement : MonoBehaviour
         animator = GetComponent<Animator>();
         playerBoxCollider = GetComponent<BoxCollider2D>();
         audioSource = GetComponent<AudioSource>();
+
+        // clip 이 비어있는상태에서 비교하거나 가져오면 오류가 뜨기때문에 처음에 clip만 삽입해주고 Play하지 않음
+        if (audioSource.clip == default || audioSource.clip == null)
+        {
+            audioSource.clip = audioClip[5];
+        }
+
         leftAttackObj.SetActive(false);
         FirstBoolFalse();
 
@@ -157,13 +189,17 @@ public class SG_PlayerMovement : MonoBehaviour
     //주기적으로 부르는 업데이트
     void Update()
     {
-        LeftMove();
-        RightMove();
-        JumpMove();
-        IsDownKey();
-        IsRoll();
-        WallGrabAtInput();
-        AttackClick();
+        // 죽지 않았을때에 돌게 만듦
+        if (isDie == false)
+        {
+            LeftMove();
+            RightMove();
+            JumpMove();
+            IsDownKey();
+            IsRoll();
+            WallGrabAtInput();
+            AttackClick();
+        }
 
         //Debug.LogFormat("playerPresentFloor -> {0}", playerPresentFloor);
 
@@ -178,262 +214,358 @@ public class SG_PlayerMovement : MonoBehaviour
     // --------------------------------------Collision Enter------------------------------------
     public void OnCollisionEnter2D(Collision2D collision)
     {
-
-        // !플레이어가 무적이 아닐때
-        if (isDodge == false)
+        // 플레이어가 죽지 않은 상태일때에
+        if (isDie == false)
         {
-
-        }
-        // !플레이어가 무적이 아닐때
-
-        // 아래 변수를 조건을 조금 변경해야 함 SG_ClingWall이라는 벽이 아니라면 으로 조건걸고 넣어야함
-        headOffPrecrouch = false;
-
-        // ================================태그가 적일때 ========================================
-        #region
-        if (collision.gameObject.CompareTag("Enemy"))
-        {
-
-        }
-        else
-        {
-            //attackCount = 0;
-            // 23.08.21 09:36 점프 오류로 인한 임시 주석처리
-            //isJump = false;
-        }
-        #endregion
-
-
-
-
-
-
-        // ================================= 태그가 붙을수 있는 벽일때 SG_ClingWall =================================
-        #region       
-
-        if (collision.gameObject.CompareTag("SG_ClingWall") && isAttackClingWallCoolTimeBool == false)
-        {
-            // 23.08.21     09 : 40  Jump 고친후 WallGrab상태에서 Flip 점프 못가는것때문에 false로 주는것 추가
-            isJump = false;
-
-            exitWallGrab = false;
-            isWallGrab = true;
-            wallGrabCount = 1;
-
-            #region 붙는 벽에따라 플레이어의 Scale을 조정하는 코드
-            // 여기다 bool 형 오른쪽 왼쪽 넘겨주어야함
-            if (collision.gameObject.transform.position.x < this.gameObject.transform.position.x)
+            // !플레이어가 무적이 아닐때
+            if (isDodge == false)
             {
-                isleftWall = true;
+
+
+                
             }
-            else if (collision.gameObject.transform.position.x > this.gameObject.transform.position.x)
+            // !플레이어가 무적이 아닐때
+
+            // 아래 변수를 조건을 조금 변경해야 함 SG_ClingWall이라는 벽이 아니라면 으로 조건걸고 넣어야함
+            headOffPrecrouch = false;
+
+            // ================================태그가 적일때 ========================================
+            #region
+            if (collision.gameObject.CompareTag("Enemy"))
             {
-                isRightWall = true;
+
+            }
+            else
+            {
+                //attackCount = 0;
+                // 23.08.21 09:36 점프 오류로 인한 임시 주석처리
+                //isJump = false;
+            }
+            #endregion
+
+
+           
+            // ================================= 태그가 붙을수 있는 벽일때 SG_ClingWall =================================
+            #region       
+
+            // FlipJump 이후에 땅에 닿거나 붙을수 있는 벽을 다시 붙었을 경우 무적 해제
+            //if(isFlipJump == true && isDodge == true && 
+            //    (collision.gameObject.CompareTag("Floor") || collision.gameObject.CompareTag("SG_ClingWall")))
+            //{
+            //    isDodge = false;
+            //}
+
+            if (collision.gameObject.CompareTag("SG_ClingWall") && isAttackClingWallCoolTimeBool == false)
+            {
+                // 23.08.21     09 : 40  Jump 고친후 WallGrab상태에서 Flip 점프 못가는것때문에 false로 주는것 추가
+                isJump = false;
+                
+                exitWallGrab = false;
+                isWallGrab = true;
+                wallGrabCount = 1;
+
+                #region 붙는 벽에따라 플레이어의 Scale을 조정하는 코드
+                // 여기다 bool 형 오른쪽 왼쪽 넘겨주어야함
+                if (collision.gameObject.transform.position.x < this.gameObject.transform.position.x)
+                {
+                    isleftWall = true;
+                }
+                else if (collision.gameObject.transform.position.x > this.gameObject.transform.position.x)
+                {
+                    isRightWall = true;
+                }
+                else { /*PASS*/ }
+
+                // 아래는 붙는 벽에따라 플레이어 좌,우 변경 if문
+                if (isleftWall == true)
+                {
+                    this.gameObject.transform.localScale = backScale;
+                }
+                else if (isRightWall == true)
+                {
+                    this.gameObject.transform.localScale = frontScale;
+                }
+                else { /*PASS*/ }
+                #endregion 붙는 벽에따라 플레이어의 Scale을 조정하는 코드
+
+                animator.Play("WallGrab");
+                // ?? 플레이어가 빨리 떨어지지 않게하기 위해 한거같음 ??
+                if (playerRigid.gravityScale == 1 && playerRigid.mass > 0)
+                {
+                    playerRigid.gravityScale = 0.3f;
+                    playerRigid.mass = 0.3f;
+                }
+
+                else { /*PASS*/ }
+
+
+            }
+
+
+            #endregion
+            // 덤블링 후 바닥에 닿았을떄에 if
+
+            // ================================= 태그가 바닥일때 Floor ================================================
+            #region
+
+            //Debug.LogFormat("무엇이든 콜라이더 Enter 일때 {0}", isJump);
+            //  !점프 if
+            if ((collision.gameObject.CompareTag("Floor") || collision.gameObject.CompareTag("Platform")) && isJump == true)
+            {
+                //여기서 다시 점프가능            
+                isJump = false;
+
+                //!오디오 착지소리
+                // 땅의 포지션 Y보다 플레이어의 포지션 Y 가 더 클때만 소리 플레이
+                if (collision.gameObject.transform.position.y < this.transform.position.y)
+                {
+                    audioSource.clip = audioClip[7];
+                    audioSource.Play();
+                }
+                else { /*PASS*/ }
+
+                animator.SetTrigger("Landing");
+                playerPresentFloor = true;
+                jumpCoroutine = StartCoroutine(LandingTriggerReset());
+
+            }   //  !점프 if
+            else { /*PASS*/ }
+
+            // WallGrab 상태에서 ASD 키 눌렀을때 들어오게 하기 위한 if
+            if ((collision.gameObject.CompareTag("Floor") || collision.gameObject.CompareTag("Platform"))
+                && isJump == false && wallGrabTouch == true)
+            {
+                animator.SetTrigger("Landing");
+                wallGrabTouch = false;
+                // 점프착지 트리거 초기화
+                jumpCoroutine = StartCoroutine(LandingTriggerReset());
+
+                // 벽붙기 트리거 초기화
+                exitWallGrabCoroutine = StartCoroutine(ExitWallGrabTriggerReset());
+
+                // 벽붙기 -> 점프 로 가는 트리거 초기화
+                wallGrabToJumpCoroutine = StartCoroutine(WallGrabToJumpTriggerReset());
+
+                //animator.ResetTrigger("ExitWallGrab");
             }
             else { /*PASS*/ }
 
-            // 아래는 붙는 벽에따라 플레이어 좌,우 변경 if문
-            if (isleftWall == true)
+            // FlipJump 를 한뒤에 땅에 닿으면 애니메이터 Exit 해주기위함
+            if ((collision.gameObject.CompareTag("Floor") || collision.gameObject.CompareTag("Platform"))
+                && isFlipJump == true)
             {
-                this.gameObject.transform.localScale = backScale;
-            }
-            else if (isRightWall == true)
-            {
-                this.gameObject.transform.localScale = frontScale;
-            }
-            else { /*PASS*/ }
-            #endregion 붙는 벽에따라 플레이어의 Scale을 조정하는 코드
-
-            animator.Play("WallGrab");
-            // ?? 플레이어가 빨리 떨어지지 않게하기 위해 한거같음 ??
-            if (playerRigid.gravityScale == 1 && playerRigid.mass > 0)
-            {
-                playerRigid.gravityScale = 0.3f;
-                playerRigid.mass = 0.3f;
-            }
-
-            else { /*PASS*/ }
-
-
-        }
-
-
-        #endregion
-        // 덤블링 후 바닥에 닿았을떄에 if
-
-        // ================================= 태그가 바닥일때 Floor ================================================
-        #region
-
-        //Debug.LogFormat("무엇이든 콜라이더 Enter 일때 {0}", isJump);
-        //  !점프 if
-        if ((collision.gameObject.CompareTag("Floor") || collision.gameObject.CompareTag("Platform")) && isJump == true)
-        {
-            //여기서 다시 점프가능            
-            isJump = false;
-
-            //!오디오 착지소리
-            // 땅의 포지션 Y보다 플레이어의 포지션 Y 가 더 클때만 소리 플레이
-            if (collision.gameObject.transform.position.y < this.transform.position.y)
-            {
+                //!오디오 착지소리
                 audioSource.clip = audioClip[7];
                 audioSource.Play();
+
+                animator.SetTrigger("FlipExit");
+                isFlipJump = false;
             }
             else { /*PASS*/ }
 
-            animator.SetTrigger("Landing");
-            playerPresentFloor = true;
-            jumpCoroutine = StartCoroutine(LandingTriggerReset());
-
-        }   //  !점프 if
-        else { /*PASS*/ }
-
-        // WallGrab 상태에서 ASD 키 눌렀을때 들어오게 하기 위한 if
-        if ((collision.gameObject.CompareTag("Floor") || collision.gameObject.CompareTag("Platform"))
-            && isJump == false && wallGrabTouch == true)
-        {
-            animator.SetTrigger("Landing");
-            wallGrabTouch = false;
-            // 점프착지 트리거 초기화
-            jumpCoroutine = StartCoroutine(LandingTriggerReset());
-
-            // 벽붙기 트리거 초기화
-            exitWallGrabCoroutine = StartCoroutine(ExitWallGrabTriggerReset());
-
-            // 벽붙기 -> 점프 로 가는 트리거 초기화
-            wallGrabToJumpCoroutine = StartCoroutine(WallGrabToJumpTriggerReset());
-
-            //animator.ResetTrigger("ExitWallGrab");
-        }
-        else { /*PASS*/ }
-
-        // FlipJump 를 한뒤에 땅에 닿으면 애니메이터 Exit 해주기위함
-        if ((collision.gameObject.CompareTag("Floor") || collision.gameObject.CompareTag("Platform"))
-            && isFlipJump == true)
-        {
-            //!오디오 착지소리
-            audioSource.clip = audioClip[7];
-            audioSource.Play();
-
-            animator.SetTrigger("FlipExit");
-            isFlipJump = false;
-        }
-        else { /*PASS*/ }
-
-        // 벽에서 흘러내려온다음 땅에 닿는다면
-        if ((collision.gameObject.CompareTag("Floor") || collision.gameObject.CompareTag("Platform"))
-            && isWallGrab == true)
-        {
-            animator.SetTrigger("ExitWallGrab");
-            isWallGrab = false;
-
-            // 붙은 벽에서 흘러내려서 땅에 닿았을때 반대편을 벽에서 바라본방향으로 향하게 하는 로직
-            if (this.transform.localScale == frontScale)
+            // 벽에서 흘러내려온다음 땅에 닿는다면
+            if ((collision.gameObject.CompareTag("Floor") || collision.gameObject.CompareTag("Platform"))
+                && isWallGrab == true)
             {
-                this.transform.localScale = backScale;
+                animator.SetTrigger("ExitWallGrab");
+                isWallGrab = false;
+
+                // 붙은 벽에서 흘러내려서 땅에 닿았을때 반대편을 벽에서 바라본방향으로 향하게 하는 로직
+                if (this.transform.localScale == frontScale)
+                {
+                    this.transform.localScale = backScale;
+                }
+                else if (this.transform.localScale == backScale)
+                {
+                    this.transform.localScale = frontScale;
+                }
+
             }
-            else if (this.transform.localScale == backScale)
+            else { /*PASS*/ }
+
+            if ((collision.gameObject.CompareTag("Floor") || collision.gameObject.CompareTag("Platform")) && attackCount > 0)
             {
-                this.transform.localScale = frontScale;
+                attackCount = 0;
+                animator.SetTrigger("Landing");
+
+                // 공격이후 땅에 붙었을때 켜지면 안돼는 Trigger들 초기화
+                // 벽붙기 트리거 초기화
+                exitWallGrabCoroutine = StartCoroutine(ExitWallGrabTriggerReset());
+                // 점프착지 트리거 초기화
+                jumpCoroutine = StartCoroutine(LandingTriggerReset());
+                // FlipExit 트리거 초기화
+                flipExitCoroutine = StartCoroutine(FlipExitTriggerReset());
+
             }
 
-        }
-        else { /*PASS*/ }
+            #endregion
 
-        if ((collision.gameObject.CompareTag("Floor") || collision.gameObject.CompareTag("Platform")) && attackCount > 0)
-        {
-            attackCount = 0;
-            animator.SetTrigger("Landing");
 
-            // 공격이후 땅에 붙었을때 켜지면 안돼는 Trigger들 초기화
-            // 벽붙기 트리거 초기화
-            exitWallGrabCoroutine = StartCoroutine(ExitWallGrabTriggerReset());
-            // 점프착지 트리거 초기화
-            jumpCoroutine = StartCoroutine(LandingTriggerReset());
-            // FlipExit 트리거 초기화
-            flipExitCoroutine = StartCoroutine(FlipExitTriggerReset());
 
         }
-
-        #endregion
-
-
-
-
     }   //OnCollisionEnter
 
 
     //------------------------------------------- Collision Stay ---------------------------------------------
     public void OnCollisionStay2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Floor") || collision.gameObject.CompareTag("Platform"))
+        if (isDie == false)
         {
-            // 천천히 내려오게 하기 위해 중력 0으로 설정
-            this.gameObject.transform.position = this.gameObject.transform.position - new Vector3(0f, 0.001f, 0f);
-        }
-        else { /*PASS*/ }
-
-        if (collision.gameObject.CompareTag("Floor") || collision.gameObject.CompareTag("Platform"))
-        {
-            // Floor 라는 바닥에 닿고 있는동안은 true
-            playerPresentFloor = true;
-        }
-
-
-        //  땅에 닿아있는데 공격상태이고 Jump 애니메이션이 실행중이라면 강제로 Idle 애니메이션 으로 보냄
-        if ((collision.gameObject.CompareTag("Floor") || collision.gameObject.CompareTag("Platform")) && isAttacking == true &&
-           animator.GetCurrentAnimatorStateInfo(0).nameHash == Animator.StringToHash("Base Layer.Jump"))
-        {
-            //! 플레이어가 땅에 닿으면 그냥 Idle애니메이션으로 가게하지만 플렛폼이라면
-            //  서로의 Y를 비교해서 플레이어의  Y축이 더 높을때만 Idle로 가도록해서 아래서 부딫칠떄는 Idle로 가는걸 막음
-            if (collision.gameObject.CompareTag("Floor"))
+            if (collision.gameObject.CompareTag("Floor") || collision.gameObject.CompareTag("Platform"))
             {
-                animator.Play("IdleAnimation");
-            }
-
-            else if (collision.gameObject.CompareTag("Platform"))
-            {
-                if(collision.gameObject.transform.position.y < this.gameObject.transform.position.y)
-                {
-                    animator.Play("IdleAnimation");
-                }
+                // 천천히 내려오게 하기 위해 중력 0으로 설정
+                this.gameObject.transform.position = this.gameObject.transform.position - new Vector3(0f, 0.001f, 0f);
             }
             else { /*PASS*/ }
 
-        }
-        else { /*PASS*/ }
+            if (collision.gameObject.CompareTag("Floor") || collision.gameObject.CompareTag("Platform"))
+            {
+                // Floor 라는 바닥에 닿고 있는동안은 true
+                playerPresentFloor = true;
+            }
 
+
+            //  땅에 닿아있는데 공격상태이고 Jump 애니메이션이 실행중이라면 강제로 Idle 애니메이션 으로 보냄
+            if ((collision.gameObject.CompareTag("Floor") || collision.gameObject.CompareTag("Platform")) && isAttacking == true &&
+               animator.GetCurrentAnimatorStateInfo(0).nameHash == Animator.StringToHash("Base Layer.Jump"))
+            {
+                //! 플레이어가 땅에 닿으면 그냥 Idle애니메이션으로 가게하지만 플렛폼이라면
+                //  서로의 Y를 비교해서 플레이어의  Y축이 더 높을때만 Idle로 가도록해서 아래서 부딫칠떄는 Idle로 가는걸 막음
+                if (collision.gameObject.CompareTag("Floor"))
+                {
+                    animator.Play("IdleAnimation");
+                }
+
+                else if (collision.gameObject.CompareTag("Platform"))
+                {
+                    if (collision.gameObject.transform.position.y < this.gameObject.transform.position.y)
+                    {
+                        animator.Play("IdleAnimation");
+                    }
+                }
+                else { /*PASS*/ }
+
+            }
+            else { /*PASS*/ }
+        }
     }   // OnCollisionStay
 
     //------------------------------------------ Collision Exit --------------------------------------------
     public void OnCollisionExit2D(Collision2D collision)
     {
-        if (playerRigid.gravityScale == 0)
+        if (isDie == false)
         {
-            playerRigid.mass = 1;
-            playerRigid.gravityScale = 1;
+            if (playerRigid.gravityScale == 0)
+            {
+                playerRigid.mass = 1;
+                playerRigid.gravityScale = 1;
+            }
+            else { /*PASS*/ }
+
+            if (collision.gameObject.CompareTag("SG_ClingWall"))
+            {
+                exitWallGrab = true;
+            }
+            else { /*PASS*/ }
+
+            if (collision.gameObject.CompareTag("Floor") || collision.gameObject.CompareTag("Platform"))
+            {
+                //Debug.Log("Exit에서 False로 바꿈");
+                playerPresentFloor = false;
+            }
+
+            //  나중에 이상한곳에서 false가 된다면 위에 mass,gravityScale 1로 만드는 조건문 안에 넣으면 될거같음
+            isleftWall = false;
+            isRightWall = false;
+
+
         }
-        else { /*PASS*/ }
-
-        if (collision.gameObject.CompareTag("SG_ClingWall"))
-        {
-            exitWallGrab = true;
-        }
-        else { /*PASS*/ }
-
-        if (collision.gameObject.CompareTag("Floor") || collision.gameObject.CompareTag("Platform"))
-        {
-            //Debug.Log("Exit에서 False로 바꿈");
-            playerPresentFloor = false;
-        }
-
-        //  나중에 이상한곳에서 false가 된다면 위에 mass,gravityScale 1로 만드는 조건문 안에 넣으면 될거같음
-        isleftWall = false;
-        isRightWall = false;
-
-
     }
 
+
     #endregion 콜라이더
+
+    #region 트리거 콜라이더
+    public void OnTriggerEnter2D(Collider2D collision)
+    {
+        
+        if (isDie == false) //플레이어가 죽지않았을때
+        {
+            // !플레이어가 무적이 아닐때
+            if (isDodge == false)
+            {
+                // 레이저에 맞아서 죽었을때에
+                if (collision.gameObject.CompareTag("SG_LaserShot"))
+                {
+
+                    isDie = true;
+
+                    audioSource.clip = audioClip[6];
+                    audioSource.Play();
+
+                    // 죽는 애니메이션 재생
+                    animator.SetTrigger("DieTrigger");
+
+                    // X포지션이 양수로 날아가야함
+                    if (this.gameObject.transform.position.x > collision.gameObject.transform.position.x)
+                    {
+                        leftHit = true;                        
+
+                        playerDiePositionPick = StartCoroutine(PlayerDiePositionPick());
+
+                        this.transform.localScale = backScale;
+
+                    }
+                    // X 포지션이 음수로 날아가야함
+                    else if (this.gameObject.transform.position.x < collision.gameObject.transform.position.x)
+                    {
+                        rightHit = true;
+                        
+                        playerDiePositionPick = StartCoroutine(PlayerDiePositionPick());
+
+                        this.transform.localScale = frontScale;
+                    }
+                }
+                else{ /*PASS*/ }
+
+                // 환풍기에 맞으면 
+                if(collision.gameObject.CompareTag("SG_Fan"))
+                {
+                    isDie = true;
+
+                    audioSource.clip = audioClip[6];
+                    audioSource.Play();
+
+                    // 죽는 애니메이션 재생
+                    animator.SetTrigger("DieTrigger");
+
+                    // X포지션이 양수로 날아가야함
+                    if (this.gameObject.transform.position.x > collision.gameObject.transform.position.x)
+                    {
+                        leftHit = true;
+
+                        playerDiePositionPick = StartCoroutine(PlayerDiePositionPick());
+
+                        this.transform.localScale = backScale;
+
+                    }
+                    // X 포지션이 음수로 날아가야함
+                    else if (this.gameObject.transform.position.x < collision.gameObject.transform.position.x)
+                    {
+                        rightHit = true;
+
+                        playerDiePositionPick = StartCoroutine(PlayerDiePositionPick());
+
+                        this.transform.localScale = frontScale;
+                    }
+                }
+                else { /*PASS*/ }
+            }
+        }
+    }       // TriggerEnter
+
+
+    #endregion 트리거 콜라이더
 
 
     //=======================================커스텀 함수=========================================
@@ -688,6 +820,7 @@ public class SG_PlayerMovement : MonoBehaviour
     // 대각선 점프
     public void FlipJump()
     {
+        isDodge = true;
         if (isleftWall == true)
         {
             //  점프전에 중력 정상화
@@ -801,6 +934,10 @@ public class SG_PlayerMovement : MonoBehaviour
         if (!audioSource.isPlaying && playerPresentFloor == true &&
             (isRightMove == true || isLeftMove == true))
         {
+            //Debug.LogFormat("audioSource.clip 이 존재 하는지?? {0}", audioSource.clip != null);
+            //Debug.LogFormat("audioSource.clip은 null이라서 이름도 못찾음. -> {0}", audioSource.clip.name);
+
+
             // if : 오디오가 순차적으로 재생 되도록 하고싶음            
             if (audioSource.clip.name == ("Run002"))
             {
@@ -1022,13 +1159,13 @@ public class SG_PlayerMovement : MonoBehaviour
             playerRigid.velocity = Vector3.zero;
             isRolling = false;
             animator.SetTrigger("RollEnd");
-
+            isDodge = false;
             for (int j = 0; j <= 17; j++)
             {
                 yield return fixedUpdate;
             }
             isRightMove = false;
-            isDodge = false;
+            
         }   // 오른쪽 구르기
 
         if (isLeftMove == true && isJump == false) // 왼쪽 구르기
@@ -1046,13 +1183,13 @@ public class SG_PlayerMovement : MonoBehaviour
             playerRigid.velocity = Vector3.zero;
             isRolling = false;
             animator.SetTrigger("RollEnd");
-
+            isDodge = false;
             for (int j = 0; j <= 17; j++)
             {
                 yield return fixedUpdate;
             }
             isLeftMove = false;
-            isDodge = false;
+            
         }   // 왼쪽 구르기
         isRollRock = false;
 
@@ -1065,6 +1202,57 @@ public class SG_PlayerMovement : MonoBehaviour
         isAttackClingWallCoolTimeBool = false;
         exitWallGrab = false;
     }
+
+    // 죽었을때에 포지션을 공중에 고정 시키기위한 코루틴
+    private IEnumerator PlayerDiePositionPick()
+    {
+
+        for(int i=0; i <= 5; i++)
+        {
+            yield return new WaitForEndOfFrame();
+        }
+        
+
+        // 왼쪽에서 맞았는지 체크
+        if (leftHit == true && rightHit == false)
+        {
+            playerRigid.velocity = Vector3.zero;
+            playerRigid.AddForce(new Vector2(5f, 5f), ForceMode2D.Impulse);
+            leftHit = false;
+        }
+        // 오른쪽에서 맞았는지 체크
+        else if (leftHit == false && rightHit == true)
+        {
+            playerRigid.velocity = Vector3.zero;
+            playerRigid.AddForce(new Vector2(-5f, 5f), ForceMode2D.Impulse);
+            rightHit = false;
+        }
+        else { /*PASS*/ }
+
+        // 여기에 좌표를 저장하고 계속 포지션을 갱신 시켜줘야함
+        for (int i = 0; i <= 25; i++)
+        {
+            yield return fixedUpdate;
+        }
+        
+        diePosition = this.transform.position;
+
+        // !23.08.22 임시로 해둠 추후 고쳐야할수도 있음
+
+        playerRigid.gravityScale = 0f;
+        playerRigid.mass = 0f;
+
+
+        // TODO : 아래 for문을 시간 되돌리기 전까지 돌도록 하면 될거같음
+        for (int j = 0; j <= 1000; j++)
+        {
+            this.transform.position = diePosition;
+            yield return fixedUpdate;
+        }        
+        // !23.08.22 임시로 해둠 추후 고쳐야할수도 있음
+
+    }
+    // 아래는 트리거 초기화 해줄 코루틴
 
     private IEnumerator LandingTriggerReset()
     {

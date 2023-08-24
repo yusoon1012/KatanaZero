@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Animations;
+using UnityEngine.SceneManagement;
 
 public class SG_AttackImfact : MonoBehaviour
 {
@@ -13,6 +14,7 @@ public class SG_AttackImfact : MonoBehaviour
     private AudioSource audioSource;
     [SerializeField]private AudioClip[] audioClip;
 
+    private Scene nowScene;
     //private SG_PlayerMovement playerMovementClass;
 
     private SG_PlayerMovement playerMovementClass;
@@ -27,7 +29,13 @@ public class SG_AttackImfact : MonoBehaviour
 
     public void Awake()
     {
-        
+        // nowScene에다가 현재 씬 넣어줌 이제 카메라 좌,우 움직임 최소,최대치 씬이름에 따라 다르게 적용가능
+        nowScene = SceneManager.GetActiveScene();
+
+        if(nowScene.name != ("Tutorial"))
+        {
+            endTutorial = true;
+        }
     }
 
     // Start is called before the first frame update
@@ -42,9 +50,9 @@ public class SG_AttackImfact : MonoBehaviour
         // PlayerIsClick();
 
         // 임시 주석처리
-        //TutorialOneAttack();
+        TutorialOneAttack();
 
-        //PlayerIsClick001();
+        PlayerIsClick001();
     }
     public void LateUpdate()
     {
@@ -59,6 +67,11 @@ public class SG_AttackImfact : MonoBehaviour
         playerMovementClass = FindAnyObjectByType<SG_PlayerMovement>();
 
         audioSource = GetComponent<AudioSource>();
+
+        // 오디오 클립 비어있을때에 오류가 뜰수도 있는경우가 있기에 삽입
+        // Play는 하지 않기에 게임의 큰 영향은 주지않음
+        // 하지만 먼저 Play하고 clip을 바꾸는 곳이 있다면 주의해야함
+        audioSource.clip = audioClip[0];
 
         boxCollider.enabled = true;
 

@@ -40,12 +40,24 @@ public class Switch : MonoBehaviour
 
     public SpriteRenderer switchSpriteRenderer;
 
+    /// <summary>
+    /// sprite [1] == 온  sprite [0] == 오프
+    /// </summary>
     public Sprite[] switchSprite = new Sprite[2];
 
     // 코루틴 캐싱
     private Coroutine touchButton;
 
     private WaitForFixedUpdate waitForFixedUpdate = default;
+
+
+    // 오디오
+    private AudioSource audioSource;
+
+    /// <summary>
+    /// [0] = Switch On [1] = Switch Off
+    /// </summary>
+    [SerializeField] AudioClip[] audioClip;
 
     public void Awake()
     {
@@ -62,6 +74,11 @@ public class Switch : MonoBehaviour
         if(waitForFixedUpdate == default || waitForFixedUpdate == null)
         {
             waitForFixedUpdate = new WaitForFixedUpdate();
+        }
+        else { /*PASS*/ }
+        if (audioSource == default || audioSource == null)
+        {
+            audioSource = GetComponent<AudioSource>();
         }
         else { /*PASS*/ }
 
@@ -104,6 +121,10 @@ public class Switch : MonoBehaviour
                 //  { 스페이스 입력하면 스위치 온,오프 조정
                 if (IsSwitchOn == true && isTouchButton == false)
                 {
+                    //스위치 꺼지는 소리
+                    audioSource.clip = audioClip[1];
+                    audioSource.Play();
+                    // sprite [0] == 오프
                     switchSpriteRenderer.sprite = switchSprite[0];
                     //Debug.LogFormat("값 : {0}", switchSpriteRenderer.sprite);
                     IsSwitchOn = false;
@@ -114,7 +135,11 @@ public class Switch : MonoBehaviour
                 }
                 else if (IsSwitchOn == false && isTouchButton == false)
                 {
-                    
+                    //스위치 켜지는 소리
+                    audioSource.clip = audioClip[0];
+                    audioSource.Play();
+
+                    // sprite [1] == 온
                     switchSpriteRenderer.sprite = switchSprite[1];
                     //Debug.LogFormat("값 : {0}", switchSpriteRenderer.sprite);
                     IsSwitchOn = true;
@@ -122,7 +147,7 @@ public class Switch : MonoBehaviour
                     laserOnOffSource.clip = laserOnClip;
                     laserOnOffSource.Play();
                 }
-                Debug.LogFormat("IsSwitchOn 값 : {0}", IsSwitchOn);
+                //Debug.LogFormat("IsSwitchOn 값 : {0}", IsSwitchOn);
                 //  { 스페이스 입력하면 스위치 온,오프 조정
             }
             else { /*PASS*/ }

@@ -31807,9 +31807,9 @@ MonoBehaviour:
   m_ComponentVersion: 1
   m_LightType: 3
   m_BlendStyleIndex: 0
-  m_FalloffIntensity: 0.5
+  m_FalloffIntensity: 0.316
   m_Color: {r: 0, g: 0.7436116, b: 1, a: 1}
-  m_Intensity: 2
+  m_Intensity: 3.34
   m_LightVolumeIntensity: 1
   m_LightVolumeIntensityEnabled: 0
   m_ApplyToSortingLayers: c9ea488b
@@ -43593,6 +43593,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56cb8f8d6f453dd408fc40500c8a0494, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameOverUi: {fileID: 0}
   slash: {fileID: 1355673772}
   wallCheck: {fileID: 1740202472}
   wallCheckDis: 0.7
@@ -43600,11 +43601,14 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   state: 1
-  moveSpeed: 6
   introCan: {fileID: 446545321}
+  rollDust: {fileID: 0}
+  moveSpeed: 6
   attackDuration: 0.2
   attackSpeed: 5
   attackCooldown: 1
+  isDodge: 0
+  isDie: 0
 --- !u!114 &1897071880
 MonoBehaviour:
   m_ObjectHideFlags: 0
