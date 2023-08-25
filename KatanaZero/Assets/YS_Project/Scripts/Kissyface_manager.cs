@@ -13,6 +13,9 @@ public class Kissyface_manager : MonoBehaviour
     public GameObject headPrefab;
     public GameObject playerObj;
     public GameObject sliderObj;
+    public AudioClip hitClip;
+    public AudioClip dieClip;
+
     public bool isAction = false;
     public int pattern = 0;
     public int lastPattern = 0;
@@ -28,20 +31,22 @@ public class Kissyface_manager : MonoBehaviour
     private float struggleRate = 3;
 
     private bool isHeadSpawn = false;
-    private bool isDie = false;
+    public bool isDie = false;
     private bool isStruggle = false;
     private bool isBlock = false;
     private KissyFace_JumpAttack jumpAttack;
     private Kissyface_Lunge lunge;
     private Kissyface_Throw throwAttack;
     private BoxCollider2D kissyfaceCollider;
-  
+    
     const int JUMP_ATTACK = 1;
     const int LUNGE = 2;
     const int THROW = 3;
     Animator anim;
     float distance;
+    AudioSource audioSource;
     Player player;
+    TimeBody timeBody;
     Vector3 leftAngle = new Vector3(0, 180, 0);
     Vector3 rightAngle = new Vector3(0, 0, 0);
     Vector3 playerAttackPosition;
@@ -51,6 +56,8 @@ public class Kissyface_manager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        audioSource = GetComponent<AudioSource>();
+        timeBody = GetComponent<TimeBody>();
         gageSlider.value = 0;
         player = ReInput.players.GetPlayer(0);
 
@@ -71,6 +78,12 @@ public class Kissyface_manager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (timeBody.isRewindin)
+        {
+            isAction = true;
+            StopAllCoroutines();
+            return;
+        }
         distance = Vector2.Distance(playerTransform.position, transform.position);
 
         if (isStruggle)
@@ -101,6 +114,8 @@ public class Kissyface_manager : MonoBehaviour
             {
 
                 StopAllCoroutines();
+                audioSource.clip = dieClip;
+                audioSource.Play();
                 anim.Play("Kissyface_die");
                 isDie = true;
                 StartCoroutine(DieRoutine());
@@ -159,6 +174,7 @@ public class Kissyface_manager : MonoBehaviour
             }
             if (isAttackable)
             {
+               
                 if (isHit && isDie == false)
                 {
                     StopAllCoroutines();

@@ -54,7 +54,11 @@ public class Bullet : MonoBehaviour
         }
         else if (collision.tag.Equals("Reflect") && !isReflected)
         {
+            if(reflectSound!=null)
+            {
             reflectSound.Play();
+
+            }
             dieTrigger = true;
             ReflectBullet();
         }

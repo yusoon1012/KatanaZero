@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class SlowMusic : MonoBehaviour
 {
     AudioSource bgm;
     TimeManager timeManager;
+    Kissyface_manager kissyface;
     private static SlowMusic _instance;
 
     // 다른 스크립트에서 TimeManager에 접근할 때 사용할 정적 인스턴스
@@ -36,11 +38,16 @@ public class SlowMusic : MonoBehaviour
     {
         timeManager = FindAnyObjectByType<TimeManager>();
         bgm = GetComponent<AudioSource>();
+        kissyface = FindAnyObjectByType<Kissyface_manager>();
     }
 
     // Update is called once per frame
     void Update()
     {
+        if(kissyface.isDie)
+        {
+            bgm.Stop();
+        }
         if(timeManager.isTimeSlow==true)
         {
             bgm.pitch = 0.5f;

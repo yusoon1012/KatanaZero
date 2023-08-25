@@ -21,11 +21,13 @@ public class Kissyface_Lunge : MonoBehaviour
     float initDistance;
     float distance;
     Kissyface_manager manager;
+    CameraShake cameraShake;
     Vector3 leftAngle = new Vector3(0, 180, 0);
     Vector3 rightAngle = new Vector3(0, 0, 0);
     // Start is called before the first frame update
     void Start()
     {
+        cameraShake = FindAnyObjectByType<CameraShake>();
     }
     private void OnEnable()
     {
@@ -60,6 +62,7 @@ public class Kissyface_Lunge : MonoBehaviour
             rb.velocity = stopx;
             if (!isClose)
             {
+                cameraShake.ShakeCamera();
                  anim.Play("Kissyface_lungeAttack");
                 isClose = true;
                 manager.isAction = false;

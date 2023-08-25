@@ -76,7 +76,7 @@ public class TimeBody : MonoBehaviour
             rewindSoundOn=true;
             soundManager.RewindSound();
         }
-        Time.timeScale = 3f;
+        Time.timeScale = 2f;
         if(positions.Count > 0)
         {
             Debug.Log("리와인드 카운트중");
