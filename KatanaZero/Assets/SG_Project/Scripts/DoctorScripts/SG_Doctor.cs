@@ -38,6 +38,9 @@ public class SG_Doctor : MonoBehaviour
     // 박사 머리를 Instance 했는지 확인할 변수
     private bool makeHead = false;
 
+    // 박사 cutin 이 끝났는지 알려줄 변수 박사가 쓰러지고 2~3초뒤에 엔딩이 실행되게 하기위한 변수
+    public bool isCutinEnding = false;
+
     private bool neckWarningSoundPlay = false;
 
     //플레이어가 내 x 좌표보다
@@ -111,7 +114,7 @@ public class SG_Doctor : MonoBehaviour
         }
         animator.SetTrigger("ChairToStandUp");
 
-        for (int i = 0; i < 50; i++)
+        for (int i = 0; i < 100; i++)
         {
             yield return waitForFixedUpdate;
         }
@@ -205,6 +208,10 @@ public class SG_Doctor : MonoBehaviour
         doctorBoom = true;
         isFront = false;
         isBack = false;
+
+        // 10 초뒤 엔딩 나오게 하기 위한 딜레이
+        yield return new WaitForSeconds(3f);
+        isCutinEnding = true;
     }
 
     //PlayCutin 005
@@ -217,6 +224,7 @@ public class SG_Doctor : MonoBehaviour
             audioSource.Play();
             makeHead = true;
             headClone = Instantiate(doctorHeadPrefab, this.gameObject.transform.position, this.gameObject.transform.localRotation);
+
         }
     }
 
