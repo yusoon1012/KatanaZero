@@ -75,7 +75,7 @@ public class Bullet : MonoBehaviour
             {
                 enemyGunner.Die();
             }
-            Destroy(gameObject);
+            
         }
         if(collision.tag.Equals("Player"))
         {
