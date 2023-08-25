@@ -19,13 +19,13 @@ public class NextStage : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.tag.Equals("Player"))
-        {
-            if(EnemyCountManager.Instance.isAllClear)
+        int sceneIdx;
+        if (collision.tag.Equals("Player"))
+        {        
+            if (EnemyCountManager.Instance.isAllClear)
             {
                 sceneIdx = SceneManager.GetActiveScene().buildIndex;
                 SceneManager.LoadScene(sceneIdx + 1);
-
             }
         }
     }
