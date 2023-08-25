@@ -2,12 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class SlowMusic : MonoBehaviour
 {
     AudioSource bgm;
     TimeManager timeManager;
     Kissyface_manager kissyface;
+
     private static SlowMusic _instance;
 
     // 다른 스크립트에서 TimeManager에 접근할 때 사용할 정적 인스턴스
@@ -44,6 +46,10 @@ public class SlowMusic : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(SceneManager.GetActiveScene().name!= "BossScene")
+        {
+            Destroy(gameObject);
+        }
         if(kissyface.isDie)
         {
             Destroy(gameObject);

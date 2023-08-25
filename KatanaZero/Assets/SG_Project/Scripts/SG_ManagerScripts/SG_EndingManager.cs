@@ -5,7 +5,6 @@ using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using TMPro;
 using Unity.VisualScripting;
-using UnityEditor.SceneManagement;
 using UnityEngine.SceneManagement;
 
 public class SG_EndingManager : MonoBehaviour

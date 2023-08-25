@@ -62,7 +62,9 @@ public class IntroManager : MonoBehaviour
         }
 
 
-        
+        if(TimeManager.Instance!=null)
+        {
+
         if (TimeManager.Instance.isTimeSlow == true)
         {
             if (isSlow == false)
@@ -76,6 +78,7 @@ public class IntroManager : MonoBehaviour
         {
             bgm.pitch = 1f;
             isSlow = false;
+        }
         }
     }
     public void IntroAction()
