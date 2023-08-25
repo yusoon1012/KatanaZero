@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Rewired;
+using UnityEngine.SceneManagement;
 
 public class IntroCanvas : MonoBehaviour
 {
@@ -43,7 +44,13 @@ public class IntroCanvas : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(player.GetButtonDown("Attack"))
+        string currentSceneName = SceneManager.GetActiveScene().name;
+
+        if (currentSceneName == "BossScene" || currentSceneName == "TitleScene")
+        {
+            Destroy(gameObject);
+        }
+        if (player.GetButtonDown("Attack"))
         {
             this.gameObject.SetActive(false);
             isIntroOver = true;

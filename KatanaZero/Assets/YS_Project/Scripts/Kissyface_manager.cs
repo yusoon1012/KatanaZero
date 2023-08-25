@@ -15,6 +15,7 @@ public class Kissyface_manager : MonoBehaviour
     public GameObject sliderObj;
     public AudioClip hitClip;
     public AudioClip dieClip;
+    public AudioClip guardClip;
 
     public bool isAction = false;
     public int pattern = 0;
@@ -52,7 +53,7 @@ public class Kissyface_manager : MonoBehaviour
     Vector3 playerAttackPosition;
     Vector3 jailPosition = new Vector3(-20, -3.8f, 0);
     Rigidbody2D rb;
-
+    CameraShake cameraShake;
     // Start is called before the first frame update
     void Start()
     {
@@ -60,7 +61,7 @@ public class Kissyface_manager : MonoBehaviour
         timeBody = GetComponent<TimeBody>();
         gageSlider.value = 0;
         player = ReInput.players.GetPlayer(0);
-
+        cameraShake = FindAnyObjectByType<CameraShake>();
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
 
@@ -91,6 +92,7 @@ public class Kissyface_manager : MonoBehaviour
 
             if (player.GetButton("Attack"))
             {
+                
                 sliderObj.SetActive(true);
                 struggleTimer += Time.deltaTime;
                 if (struggleTimer >= struggleRate)
@@ -161,6 +163,7 @@ public class Kissyface_manager : MonoBehaviour
     {
         if (collision.CompareTag("PlayerAttack"))
         {
+            
             Debug.Log("공격에 맞았다.");
             if (isDie)
             {
@@ -174,7 +177,7 @@ public class Kissyface_manager : MonoBehaviour
             }
             if (isAttackable)
             {
-               
+                cameraShake.ShakeCamera();
                 if (isHit && isDie == false)
                 {
                     StopAllCoroutines();
@@ -271,6 +274,8 @@ public class Kissyface_manager : MonoBehaviour
     }
     private IEnumerator BlockRoutine()
     {
+        audioSource.clip = guardClip;
+        audioSource.Play();
         yield return new WaitForSeconds(0.5f);
         StopAllCoroutines();
         isAction = false;

@@ -46,7 +46,7 @@ public class SlowMusic : MonoBehaviour
     {
         if(kissyface.isDie)
         {
-            bgm.Stop();
+            Destroy(gameObject);
         }
         if(timeManager.isTimeSlow==true)
         {

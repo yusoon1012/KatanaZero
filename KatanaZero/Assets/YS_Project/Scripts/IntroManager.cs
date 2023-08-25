@@ -47,7 +47,7 @@ public class IntroManager : MonoBehaviour
     {
         string currentSceneName = SceneManager.GetActiveScene().name;
 
-        if (currentSceneName == "BossScene")
+        if (currentSceneName == "BossScene"|| currentSceneName== "TitleScene")
         {
             Destroy(gameObject);
         }
