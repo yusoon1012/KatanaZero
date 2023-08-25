@@ -19,7 +19,7 @@ public class SG_Doctor : MonoBehaviour
     SpriteRenderer spriteRenderer;
 
     AudioSource audioSource;
-
+    BoxCollider2D doctorCollider;
     /// <summary>
     /// [0] = 박사 힘들어하는소리 [1] = 목의 폭탄의 위험 소리 [2] = 목에 폭탄이 터지는 소리
     /// </summary>
@@ -59,6 +59,7 @@ public class SG_Doctor : MonoBehaviour
 
     public void Awake()
     {
+        doctorCollider = GetComponent<BoxCollider2D>();
         animator = GetComponent<Animator>();
         rigid = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -236,6 +237,13 @@ public class SG_Doctor : MonoBehaviour
             neckWarningSoundPlay = true;
             audioSource.clip = audioClip[1];
             audioSource.Play();
+        }
+    }
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if(collision.collider.tag.Equals("Enemy"))
+        {
+            Physics2D.IgnoreCollision(collision.collider, doctorCollider);
         }
     }
 
