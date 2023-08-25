@@ -9,6 +9,8 @@ public class ClearText001 : MonoBehaviour
     Color firstAlpha;
 
     TextMeshProUGUI text;
+    public GameObject playerUI;
+    public GameObject[] lights;
 
     Color startColor;
     Color endColor;
@@ -70,7 +72,12 @@ public class ClearText001 : MonoBehaviour
 
     private IEnumerator MoreAndMoreWhite()
     {
-       
+       playerUI.SetActive(false);
+        for(int i = 0; i < lights.Length; i++)
+        {
+            lights[i].SetActive(false);
+        }
+
         while (timeElapsed < duration)
         {
             timeElapsed += Time.deltaTime;

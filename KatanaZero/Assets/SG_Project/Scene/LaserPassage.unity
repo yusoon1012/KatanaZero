@@ -336,6 +336,11 @@ Transform:
   m_Father: {fileID: 1441512523}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &29234262 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6047517075541008257, guid: 04923b05be4d56b419bca372a8685213, type: 3}
+  m_PrefabInstance: {fileID: 885106528}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &29812386
 GameObject:
   m_ObjectHideFlags: 0
@@ -10670,6 +10675,14 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6047517075450372870, guid: 04923b05be4d56b419bca372a8685213, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6047517075541008257, guid: 04923b05be4d56b419bca372a8685213, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6047517075842658642, guid: 04923b05be4d56b419bca372a8685213, type: 3}
       propertyPath: m_Name
       value: Canvas
@@ -10758,6 +10771,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6047517075842658670, guid: 04923b05be4d56b419bca372a8685213, type: 3}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 1993920982}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 04923b05be4d56b419bca372a8685213, type: 3}
 --- !u!1 &885106529 stripped
@@ -23152,6 +23169,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6eceeca09847f5747bbab61c1f33bed1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerUI: {fileID: 29234262}
+  lights:
+  - {fileID: 2933636191077866740}
+  - {fileID: 285141451}
+  - {fileID: 270173470}
+  - {fileID: 1352736879}
+  - {fileID: 1386173855}
+  - {fileID: 5263510955758861306}
+  - {fileID: 867592796}
+  - {fileID: 1464254932}
+  - {fileID: 163366490}
 --- !u!1 &1755589752
 GameObject:
   m_ObjectHideFlags: 0

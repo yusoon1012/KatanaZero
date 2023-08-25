@@ -4,20 +4,30 @@ using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
+using TMPro;
 
 public class TutorialMap : MonoBehaviour
 {
     public GameObject tutorialBackLightObj;
 
+    public TextMeshProUGUI clearText;
+
     private Light2D tutorialBackLight;
 
     private Coroutine backGroundColorChange;
+
+
 
     private Scene nowScene;
 
     private Color MinusbackGround;
 
+    private Color clearTextStartColor;
+    private Color clearTextEndColor;
+
     private bool isGoalInPlayer = false;
+
+    int sceneIdx;
 
     // 0.1 초로 초기화 했음
     private WaitForSeconds waitForSeconds;
@@ -29,6 +39,10 @@ public class TutorialMap : MonoBehaviour
         waitForSeconds = new WaitForSeconds(0.2f);
         tutorialBackLight = tutorialBackLightObj.GetComponent<Light2D>();
         FirstInItColor();
+
+        clearTextStartColor = new Color(1, 1, 1, 0);
+        clearTextEndColor = new Color(1, 1, 1, 1);
+        clearText.color = clearTextStartColor;
 
     }
 
@@ -126,7 +140,7 @@ public class TutorialMap : MonoBehaviour
 
         while (timeElapsed < duration)
         {
-            timeElapsed += Time.deltaTime;
+            timeElapsed += Time.deltaTime;            
 
             float time = Mathf.Clamp01(timeElapsed / duration);
 
@@ -134,7 +148,28 @@ public class TutorialMap : MonoBehaviour
             yield return null;
         }
 
-        // 여기서 다음씬으로 가면될듯
+        timeElapsed = 0.0f;
+
+        //글자 켜지기
+        while (timeElapsed < duration)
+        {
+            Debug.Log("글씨 나오는 로직 들어가나?");
+            timeElapsed += Time.deltaTime;
+
+            float time = Mathf.Clamp01(timeElapsed / duration);
+
+            clearText.color = Color.Lerp(clearTextStartColor, clearTextEndColor, time);
+            yield return null;
+        }
+
+        //다음 씬으로
+        if (EnemyCountManager.Instance.isAllClear)
+        {            
+            sceneIdx = SceneManager.GetActiveScene().buildIndex;
+            SceneManager.LoadScene(sceneIdx + 1);
+        }
+
+        
 
     }
 
